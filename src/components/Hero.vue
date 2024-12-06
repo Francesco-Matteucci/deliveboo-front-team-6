@@ -1,6 +1,5 @@
 <script>
 import RestaurantCard from './RestaurantCard.vue';
-import RestaurantCard from './RestaurantCard.vue';
     export default {
         name: "Hero",
         methods: {
