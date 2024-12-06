@@ -32,7 +32,7 @@
             /* Immagine a sinistra */
             url('/src/assets/hero-bg-top.jpg');
         /* Logo in alto a destra */
-        background-size: 20%, 120px;
+        background-size: 20%, 200px;
         /* Dimensione personalizzata per ogni immagine */
         background-position: right center, left top;
         /* Posizioni delle immagini */
