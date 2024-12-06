@@ -2,6 +2,7 @@
     import axios from "axios";
     import Hero from "../components/Hero.vue";
     import ServiceSection from "../components/ServiceSection.vue";
+    import TrackingSection from "../components/TrackingSection.vue";
 
     export default {
         name: "Home",
@@ -19,6 +20,7 @@
         components: {
             Hero,
             ServiceSection,
+            TrackingSection,
         },
         methods: {
             fetchRestaurants() {
@@ -124,6 +126,7 @@
             </div>
         </div>
     </div>
+    <TrackingSection />
     <ServiceSection />
 </template>
 
