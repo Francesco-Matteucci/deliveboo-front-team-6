@@ -2,6 +2,12 @@
     import axios from "axios";
 
     export default {
+        props: {
+            id: {
+                type: Number,
+                required: true,
+            },
+        },
         data() {
             return {
                 dishes: [],
@@ -9,10 +15,10 @@
             };
         },
         components: {
-    
+
         },
         methods: {
-            fetchDishes() {
+            fetchRestaurantDetails() {
                 axios
                     .get("http://127.0.0.1:8000/api/dishes")
                     .then((response) => {
@@ -29,27 +35,24 @@
             },
         },
         mounted() {
-            this.fetchDishes();
+            this.fetchRestaurantDetails();
         },
     };
 </script>
 
 <template>
     <div>
-        <div class="container mt-4 restaurant-list">
-            <h1 class="text-center">Lista dei Ristoranti</h1>
-            <p v-if="loading" class="text-center">Caricamento in corso...</p>
-            <p v-if="error" class="text-danger text-center">{{ error }}</p>
-            <div v-if="!loading && !error" class="row">
-                <div v-for="dish in dishes" :key="dish.id" class="col-md-4 mb-4">
-                    <div class="restaurant-card">
-                        <div class="restaurant-card-image" :style="{ backgroundImage: `url(${dish.image})` }">
-                            <div class="restaurant-card-overlay">
-                                <h5 class="restaurant-name">{{ dish.name }}</h5>
-                            </div>
-                        </div>
-                    </div>
+        <p v-if="loading" class="text-center">Caricamento in corso...</p>
+        <p v-if="error" class="text-danger text-center">{{ error }}</p>
+        <div v-if="restaurant" class="restaurant-card">
+            <div class="restaurant-card-image" :style="{ backgroundImage: `url(${restaurant.image})` }">
+                <div class="restaurant-card-overlay">
+                    <h5 class="restaurant-name">{{ restaurant.name }}</h5>
                 </div>
+            </div>
+            <div class="restaurant-card-body">
+                <p><strong>Indirizzo:</strong> {{ restaurant.address }}</p>
+                <p><strong>Partita IVA:</strong> {{ restaurant.vat_number }}</p>
             </div>
         </div>
     </div>
