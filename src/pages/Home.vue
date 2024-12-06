@@ -84,9 +84,9 @@
     <div>
         <Hero />
         <div class="container mt-4">
-            <h1 class="text-center">Lista dei Ristoranti</h1>
-
+            
             <div v-if="categories.length" class="categories-container text-center mb-4">
+                <h1 class="text-center">Lista dei Ristoranti</h1>
                 <h2 class="mb-3">Filtra per Categoria</h2>
                 <div class="categories-list d-flex flex-wrap justify-content-center">
                     <button v-for="category in categories" :key="category.id"

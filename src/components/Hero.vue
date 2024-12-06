@@ -4,7 +4,7 @@ export default {
   name: "Hero",
   methods: {
     scrollToRestaurants() {
-      const section = document.querySelector(".restaurant-list");
+      const section = document.querySelector(".categories-container");
       if (section) {
         section.scrollIntoView({ behavior: "smooth" });
       }
@@ -27,7 +27,7 @@ export default {
 <template>
   <section class="hero">
     <div class="hero-bg-left-clickable" @click="reloadPage"></div>
-    <div class="hero-content text-center">
+    <div class="hero-content text-center mt-5">
       <h1 class="hero-title text-dark">Scopri i migliori ristoranti</h1>
       <p class="hero-description text-dark">
         Ordina il tuo cibo preferito dai migliori ristoranti vicino a te.
@@ -44,24 +44,30 @@ export default {
 
 <style scoped>
 .hero {
-  /* Logo in alto a destra */
-  background-image: url("/src/assets/hero-bg-left.png");
+  /* Logo in basso a destra */
+  background-image: url("/src/assets/hero-bg-left.png"),
+    url("/src/assets/hero-bg-right.png"), url("/src/assets/fries.png");
   /* Dimensione personalizzata per ogni immagine */
-  background-size: 20%, 200px;
+  background-size: 20%, 30%, 20%;
+
+  object-fit: cover;
   /* Posizioni delle immagini */
-  background-position: right center, left top;
+  background-position: right bottom, right top, left bottom;
   /* Nessuna ripetizione */
-  background-repeat: no-repeat, no-repeat;
-  margin: 20px;
+  background-repeat: no-repeat;
   /* Sfondo fisso rispetto al viewport */
   padding: 100px 20px;
   text-align: center;
+  height: 100vh;
+  align-items: center;
+  display: flex;
+  background-color: rgb(241, 233, 233);
 }
 
 .hero-content {
   max-width: 600px;
   margin: 0 auto;
-  z-index: 2;
+  z-index: 3;
   /* Porta in primo piano il contenuto */
   position: relative;
   /* Necessario per z-index */
@@ -80,15 +86,15 @@ export default {
 }
 
 .hero-bg-left-clickable {
-  background-image: url("/src/assets/hero-bg-top.jpg");
+  background-image: url("/src/assets/deliveroo-1.svg");
   background-repeat: no-repeat;
   background-size: 100%;
-  margin: 20px;
+  margin: 20px 30px;
   position: absolute;
   top: 0;
   left: 0;
-  width: 10%;
-  height: 10%;
+  width: 15%;
+  height: 15%;
   cursor: pointer;
 }
 </style>
