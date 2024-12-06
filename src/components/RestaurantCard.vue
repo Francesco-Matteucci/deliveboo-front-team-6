@@ -1,6 +1,6 @@
 <script>
 import axios from "axios";
-
+import 'bootstrap-icons/font/bootstrap-icons.css';
 export default {
     data() {
         return {
@@ -49,8 +49,19 @@ export default {
                                 <h3 class="fw-semibold m-0">{{ dish.name }}</h3>
                             </div>
                             <div>
-                                <div class="badge dish-badge">{{ dish.price }} €</div>
+                                <div class="badge dish-badge">
+                                    {{ dish.price }} €
+                                </div>
+                                <div class="badge dish-view-description">
+                                    Descrizione
+                                </div>
                             </div>
+                            <span v-if="dish.visible" class="ms-2 text-success">
+                                <i class="fs-2 bi bi-bag-check-fill"></i>
+                            </span>
+                            <span v-else class="ms-2 text-danger">
+                                <i class="fs-2 bi bi-bag-x-fill"></i>
+                            </span>
                         </div>
                         <div class="dish-card-back justify-content-center text-white text-center align-items-center fw-semibold">
                             <p class="fs-4 dish-title-description p-2 rounded-2 align-items-center p-0">Descrizione del piatto</p>
@@ -67,10 +78,6 @@ export default {
 
 
 <style scoped>
-
-    .dish-container{
-        user-select: none;
-    }
 
     .dish-list{
         background-color: rgba(255, 166, 0, 0.400);
@@ -128,6 +135,15 @@ export default {
         padding: 10px;
         background-color: rgb(197, 148, 57);
     }
+
+    .dish-view-description{
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        padding: 10px;
+        background-color: rgb(197, 148, 57);
+    }
+
     .dish-card:hover .dish-card-image {
         opacity: 0;
     }
