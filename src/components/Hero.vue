@@ -1,4 +1,5 @@
 <script>
+import RestaurantCard from './RestaurantCard.vue';
     export default {
         name: "Hero",
         methods: {
@@ -9,6 +10,13 @@
                 }
             },
         },
+        data(){
+            return{
+                components:{
+                    RestaurantCard,
+                }
+            }
+        }
     };
 </script>
 
@@ -23,6 +31,9 @@
                 Esplora Ristoranti
             </button>
         </div>
+    </section>
+    <section>
+        <RestaurantCard/>
     </section>
 </template>
 
