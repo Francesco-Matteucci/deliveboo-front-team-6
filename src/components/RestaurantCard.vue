@@ -48,21 +48,8 @@ export default {
                             <div class="dish-card-overlay">
                                 <h3 class="fw-semibold m-0">{{ dish.name }}</h3>
                             </div>
-                            <div>
-                                <div class="badge dish-badge">
-                                    {{ dish.price }} €
-                                </div>
-                                <div class="badge dish-view-description">
-                                    Descrizione
-                                </div>
-                            </div>
-                            <span v-if="dish.visible" class="ms-2 text-success">
-                                <i class="fs-2 bi bi-bag-check-fill"></i>
-                            </span>
-                            <span v-else class="ms-2 text-danger">
-                                <i class="fs-2 bi bi-bag-x-fill"></i>
-                            </span>
                         </div>
+                        <!--Card hoover-->
                         <div class="dish-card-back justify-content-center text-white text-center align-items-center fw-semibold">
                             <p class="fs-4 dish-title-description p-2 rounded-2 align-items-center p-0">Descrizione del piatto</p>
                             <div class="dish-description">
@@ -70,6 +57,20 @@ export default {
                             </div>
                         </div>
                     </div>
+                    <!--Card bottom-->
+                    <div class="d-flex gap-3 mt-2 justify-content-end align-items-center">
+                            <div>
+                                <span v-if="dish.visible" class="ms-2 text-success bg-white rounded-2 p-1 fw-semibold">
+                                    <i class="bi bi-bag-check-fill"> Disponibile</i>
+                                </span>
+                                <span v-else class="ms-2 text-danger bg-white rounded-2 p-1 fw-semibold">
+                                    <i class="bi bi-bag-x-fill"> Non disponibile</i>
+                                </span>
+                            </div>
+                            <button type="button" class="badge add-to-cart-button">
+                                 {{ dish.price }} €
+                            </button>
+                        </div>
                 </div>
             </div>
         </div>
@@ -128,18 +129,16 @@ export default {
         text-align: center;
     }
 
-    .dish-badge{
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
+    .add-to-cart-button{
         padding: 10px;
         background-color: rgb(197, 148, 57);
+        border: rgb(197, 148, 57);
+    }
+    .add-to-cart-button:hover{
+        scale: 1.1;
     }
 
     .dish-view-description{
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
         padding: 10px;
         background-color: rgb(197, 148, 57);
     }
