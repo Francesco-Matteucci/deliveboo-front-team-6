@@ -82,12 +82,12 @@ export default {
 <template>
   <div>
     <Hero />
-    <div class="container mt-4">
+    <div class="container-fluid pt-5">
       <div
         v-if="categories.length"
         class="categories-container text-center mb-4"
       >
-        <h1 class="text-center">Lista dei Ristoranti</h1>
+        <h1 class="text-center fs-4 mb-4">Filtra per categoria</h1>
         <div
           class="categories-list d-flex flex-wrap justify-content-center w-75"
         >
@@ -95,7 +95,7 @@ export default {
             v-for="category in categories"
             :key="category.id"
             @click="toggleCategorySelection(category.id)"
-            class="btn btn-outline-primary mx-2 mb-2"
+            class="btn btn-outline-primary mx-2 mb-1 fs-6"
             :class="{ active: selectedCategories.includes(category.id) }"
           >
             {{ category.name }}
@@ -105,7 +105,7 @@ export default {
               selectedCategories = [];
               filterRestaurants();
             "
-            class="btn btn-outline-secondary mx-2 mb-2"
+            class="btn btn-outline-primary mx-1 mb-1"
             :class="{ active: selectedCategories.length === 0 }"
           >
             Tutte le Categorie
@@ -128,7 +128,7 @@ export default {
         {{ errorCategories }}
       </p>
 
-      <div v-if="!loading && !error" class="row">
+      <div v-if="!loading && !error" class="row px-5">
         <div
           v-for="restaurant in filteredRestaurants"
           :key="restaurant.id"
@@ -140,12 +140,14 @@ export default {
               :style="{ backgroundImage: `url(${restaurant.image})` }"
             >
               <div class="restaurant-card-overlay">
-                <h5 class="restaurant-name">{{ restaurant.name }}</h5>
+                <h5 class="restaurant-name fs-5">{{ restaurant.name }}</h5>
               </div>
             </div>
-            <div class="restaurant-card-body">
-              <p><strong>Indirizzo:</strong> {{ restaurant.address }}</p>
-              <p><strong>Partita IVA:</strong> {{ restaurant.vat_number }}</p>
+            <div class="restaurant-card-body text-center">
+              <p>
+                Indirizzo: <strong>{{ restaurant.address }}</strong>
+              </p>
+              <!-- <p><strong>Partita IVA:</strong> {{ restaurant.vat_number }}</p> -->
             </div>
           </div>
         </div>
@@ -157,11 +159,12 @@ export default {
 </template>
 
 <style scoped>
+.container-fluid {
+  background-color: rgb(241, 233, 233);
+}
+
 .categories-container {
-  background-color: #f8f9fa;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .categories-list {
@@ -169,10 +172,16 @@ export default {
 }
 
 .categories-list button {
-  padding: 10px 20px;
+  padding: 1vh 2vh;
   font-size: 1rem;
   border-radius: 30px;
-  transition: all 0.3s ease;
+  transition: 0.2s ease;
+  &:hover {
+    scale: 1.1;
+  }
+  &:active {
+    scale: 0.9;
+  }
 }
 
 .categories-list button.active {
@@ -195,7 +204,7 @@ export default {
 }
 
 .restaurant-card-image {
-  height: 200px;
+  height: 35vh;
   background-size: cover;
   background-position: center;
   position: relative;
@@ -206,9 +215,9 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.473);
   color: #fff;
-  padding: 10px;
+  padding: 0.1rem;
   text-align: center;
 }
 

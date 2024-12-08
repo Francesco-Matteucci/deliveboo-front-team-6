@@ -28,12 +28,12 @@ export default {
   <section class="hero">
     <div class="hero-bg-left-clickable" @click="reloadPage"></div>
     <div class="hero-content text-center mt-5">
-      <h1 class="hero-title text-dark">Scopri i migliori ristoranti</h1>
-      <p class="hero-description text-dark">
+      <h1 class="hero-title text-dark fs-3">Scopri i migliori ristoranti</h1>
+      <p class="hero-description text-dark fs-5">
         Ordina il tuo cibo preferito dai migliori ristoranti vicino a te.
       </p>
-      <button class="btn btn-primary btn-lg mt-3" @click="scrollToRestaurants">
-        Esplora Ristoranti
+      <button class="btn btn-primary btn-lg mt-2" @click="scrollToRestaurants">
+        Iniziamo!
       </button>
     </div>
   </section>
@@ -96,5 +96,16 @@ export default {
   width: 15%;
   height: 15%;
   cursor: pointer;
+}
+
+.btn {
+  padding: 1vh 2vh;
+  border-radius: 1rem;
+  &:hover {
+    scale: 1.1;
+  }
+  &:active {
+    scale: 1;
+  }
 }
 </style>
