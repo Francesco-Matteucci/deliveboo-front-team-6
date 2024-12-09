@@ -8,13 +8,17 @@ export default {
   <section class="tracking-section py-5">
     <div class="container d-flex align-items-center flex-column flex-md-row">
       <div class="text-content text-center text-md-start">
-        <h2 class="fw-bold mb-3 fs-3">Segui gli ordini passo passo</h2>
-        <p class="mb-4 fs-6">
+        <h2 class="fw-bold text-white mb-3 fs-3">
+          Segui gli ordini passo passo
+        </h2>
+        <p class="mb-4 fs-6 text-white">
           I piatti e i prodotti che ami, consegnati in pochissimo tempo. Vedrai
           quando il rider ha ritirato l'ordine, potrai seguirlo passo passo, e
           riceverai una notifica quando sarà quasi da te.
         </p>
-        <div class="d-flex justify-content-center justify-content-md-start">
+        <div
+          class="badge-div d-flex justify-content-center justify-content-md-start"
+        >
           <img
             src="/src/assets/app-store.png"
             alt="Scarica su App Store"
@@ -40,8 +44,7 @@ export default {
 
 <style scoped>
 .tracking-section {
-  background-color: #f8f9fa;
-  border-radius: 10px;
+  background-color: black;
   padding: 40px 20px;
 }
 
@@ -49,17 +52,23 @@ export default {
   max-width: 500px;
 }
 
+.badge-div {
+  align-items: baseline;
+}
+
 .apple-badge {
   height: 5vh;
   cursor: pointer;
   transition: transform 0.3s ease;
   margin-top: 4px;
+  border: 1px solid white;
 }
 
 .google-badge {
-  height: 6.25vh;
+  height: 5.1vh;
   cursor: pointer;
   transition: transform 0.3s ease;
+  border: 1px solid white;
 }
 
 .apple-badge:hover,
