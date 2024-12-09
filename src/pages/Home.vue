@@ -103,16 +103,16 @@ export default {
     <Hero />
     <div class="container-fluid pt-5">
       <div v-if="categories.length" class="categories-container text-center">
-        <h1 class="text-center fs-4 mb-4">Filtra per categoria</h1>
+        <h1 class="text-center text-white fs-4 mb-4">Filtra per categoria</h1>
         <div
-          class="categories-list d-flex flex-wrap justify-content-center w-75"
+          class="categories-list d-flex flex-wrap justify-content-center w-50"
         >
           <!-- button delle categorie -->
           <button
             v-for="category in categories"
             :key="category.id"
             @click="toggleCategorySelection(category.id)"
-            class="btn btn-outline-primary mx-2 mb-1 fs-6"
+            class="btn-outline-primary mx-2 mb-1 fs-6 mt-1"
             :class="{ active: selectedCategories.includes(category.id) }"
           >
             {{ category.name }}
@@ -122,14 +122,14 @@ export default {
               selectedCategories = [];
               filterRestaurants();
             "
-            class="btn btn-outline-primary mx-1 mb-1"
+            class="btn-outline-primary mx-1 mb-1 fs-6 mt-1"
             :class="{ active: selectedCategories.length === 0 }"
           >
             Tutte le Categorie
           </button>
         </div>
         <!-- barra di ricerca -->
-        <div class="search-bar-container text-center mb-4">
+        <div class="search-bar-container text-center text-white mt-4">
           <input
             type="text"
             v-model="searchQuery"
@@ -167,15 +167,14 @@ export default {
               :style="{ backgroundImage: `url(${restaurant.image})` }"
             >
               <div class="restaurant-card-overlay">
-                <h5 class="restaurant-name fs-5">{{ restaurant.name }}</h5>
+                <h5 class="restaurant-name fs-6">
+                  <i class="bi bi-shop"></i> {{ restaurant.name }}
+                </h5>
+                <strong
+                  ><i class="bi bi-pin-map-fill"></i>
+                  {{ restaurant.address }}</strong
+                >
               </div>
-            </div>
-            <div class="restaurant-card-body text-center">
-              <p>
-                <i class="bi bi-pin-map-fill"></i> &nbsp;
-                <strong>{{ restaurant.address }}</strong>
-              </p>
-              <!-- <p><strong>Partita IVA:</strong> {{ restaurant.vat_number }}</p> -->
             </div>
           </div>
         </div>
@@ -188,7 +187,7 @@ export default {
 
 <style scoped>
 .container-fluid {
-  background-color: rgb(247 243 243);
+  background-color: rgb(14 14 14);
 }
 
 .categories-container {
@@ -201,9 +200,11 @@ export default {
 
 .categories-list button {
   padding: 1vh 2vh;
-  font-size: 1rem;
-  border-radius: 1rem;
+  border-radius: 13px;
   transition: 0.2s ease;
+  background-color: #ff6204;
+  border: none;
+  color: white;
 
   &:hover {
     scale: 1.1;
@@ -215,28 +216,24 @@ export default {
 }
 
 .categories-list button.active {
-  background-color: #007bff;
+  background-color: #252525;
   color: #fff;
-  border-color: #007bff;
+  border: 1px solid rgb(51, 48, 48);
 }
 
 .restaurant-card {
-  min-height: 40vh;
+  min-height: 35vh;
   border: none;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s ease;
   cursor: pointer;
-  background-color: white;
+  background-color: #b8aeae;
 
   &:active {
     scale: 1.1;
   }
-}
-
-.restaurant-card:hover {
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.329);
 }
 
 .restaurant-card-image {
@@ -251,7 +248,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.473);
+  background: rgba(0, 0, 0, 0.582);
   color: #fff;
   padding: 0.1rem;
   text-align: center;
@@ -263,17 +260,6 @@ export default {
   margin: 0;
 }
 
-.restaurant-card-body {
-  padding: 15px;
-  background-color: #fff;
-  border-top: 1px solid #f0f0f0;
-}
-
-.restaurant-card-body p {
-  margin: 0 0 5px;
-  font-size: 0.95rem;
-}
-
 .search-bar-container {
   max-width: 100%;
 }
@@ -281,16 +267,22 @@ export default {
 .search-bar-container input {
   padding: 10px;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 20px;
   transition: 0.3s ease;
   min-width: 60vw;
   max-width: 60vw;
+  background-color: #252525;
+  color: white;
 }
 
 .search-bar-container input:focus {
-  border-color: #007bff;
+  border-color: #ff6204;
   outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 5px #ff6204;
+}
+
+.search-bar-container input::placeholder {
+  color: rgb(122, 112, 112);
 }
 </style>
