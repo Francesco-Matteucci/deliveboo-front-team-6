@@ -8,21 +8,21 @@ export default {
           title: "Diventa nostro partner",
           description:
             "Raggiungi più clienti con la nostra piattaforma. Gestiamo noi la consegna, così tu puoi dedicarti a offrire i migliori piatti.",
-          buttonText: "Inizia ora",
+          buttonText: "Scopri di più",
           image: "/src/assets/service-partner.jpg",
         },
         {
           title: "Consegna con noi",
           description:
             "La libertà di consegnare dove e quando vuoi, con ottimi guadagni, convenzioni e sconti riservati a te.",
-          buttonText: "Inizia ora",
+          buttonText: "Scopri di più",
           image: "/src/assets/service-delivery.jpg",
         },
         {
           title: "Soluzioni aziendali",
           description:
             "Da pranzi aziendali a budget personalizzati per i dipendenti, offriamo la soluzione giusta per ogni esigenza.",
-          buttonText: "Inizia ora",
+          buttonText: "Scopri di più",
           image: "/src/assets/service-work.jpg",
         },
       ],
@@ -45,7 +45,7 @@ export default {
             <div class="card-body d-flex flex-column justify-content-between">
               <h5 class="card-title fw-bold fs-5">{{ service.title }}</h5>
               <p class="card-text fs-6 mb-3">{{ service.description }}</p>
-              <button class="btn btn-primary w-50">
+              <button class="w-50 text-white">
                 {{ service.buttonText }}
               </button>
             </div>
@@ -82,8 +82,15 @@ export default {
   font-size: 1.2rem;
 }
 
-.btn {
-  align-self: center;
+.card-body {
+  align-items: center;
+}
+
+button {
+  padding: 5px 5px;
+  border-radius: 10px;
+  background-color: #ff6204;
+  border: none;
   &:hover {
     scale: 1.1;
   }
