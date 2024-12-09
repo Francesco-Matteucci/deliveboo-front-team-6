@@ -3,6 +3,7 @@ import axios from "axios";
 import Hero from "../components/Hero.vue";
 import ServiceSection from "../components/ServiceSection.vue";
 import TrackingSection from "../components/TrackingSection.vue";
+import Footer from "../components/Footer.vue";
 
 export default {
   name: "Home",
@@ -22,6 +23,7 @@ export default {
     Hero,
     ServiceSection,
     TrackingSection,
+    Footer,
   },
   methods: {
     fetchRestaurants() {
@@ -183,6 +185,7 @@ export default {
   </div>
   <TrackingSection />
   <ServiceSection />
+  <Footer />
 </template>
 
 <style scoped>
