@@ -5,8 +5,10 @@ export default {
 </script>
 
 <template>
-  <section class="tracking-section py-5">
-    <div class="container d-flex align-items-center flex-column flex-md-row">
+  <section class="tracking-section py-4 d-flex">
+    <div
+      class="container d-flex align-items-center flex-column flex-md-row justify-content-center"
+    >
       <div class="text-content text-center text-md-start">
         <h2 class="fw-bold text-white mb-3 fs-3">
           Segui gli ordini passo passo
@@ -44,8 +46,7 @@ export default {
 
 <style scoped>
 .tracking-section {
-  background-color: black;
-  padding: 40px 20px;
+  background-color: #ff5f00;
 }
 
 .text-content {
@@ -61,14 +62,14 @@ export default {
   cursor: pointer;
   transition: transform 0.3s ease;
   margin-top: 4px;
-  border: 1px solid white;
+  border-radius: 6px;
 }
 
 .google-badge {
   height: 5.1vh;
   cursor: pointer;
   transition: transform 0.3s ease;
-  border: 1px solid white;
+  border-radius: 6px;
 }
 
 .apple-badge:hover,
@@ -77,9 +78,9 @@ export default {
 }
 
 .map-content img {
+  height: 35vh;
   max-height: 300px;
   object-fit: cover;
   border-radius: 10px;
-  box-shadow: 12px 15px 14px rgba(0, 0, 0, 0.1);
 }
 </style>
