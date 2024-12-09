@@ -36,15 +36,15 @@ export default {
     <div class="container">
       <div class="row text-center g-3">
         <div class="col-md-4" v-for="(service, index) in services" :key="index">
-          <div class="card h-100 border-0">
+          <div class="card h-100">
             <img
               :src="service.image"
               class="card-img-top"
               :alt="service.title"
             />
             <div class="card-body d-flex flex-column justify-content-between">
-              <h5 class="card-title fw-bold fs-4">{{ service.title }}</h5>
-              <p class="card-text fs-5 mb-3">{{ service.description }}</p>
+              <h5 class="card-title fw-bold fs-5">{{ service.title }}</h5>
+              <p class="card-text fs-6 mb-3">{{ service.description }}</p>
               <button class="btn btn-primary w-50">
                 {{ service.buttonText }}
               </button>
@@ -58,15 +58,14 @@ export default {
 
 <style scoped>
 .service-section {
-  background-color: rgb(247 243 243);
+  background-color: rgb(14 14 14);
 }
 
 .card {
   border-radius: 10px;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   &:hover {
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.329);
+    scale: 1.01;
   }
 }
 
