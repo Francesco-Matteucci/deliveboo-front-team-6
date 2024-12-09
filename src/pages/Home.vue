@@ -15,6 +15,7 @@ export default {
       categories: [],
       selectedCategories: [],
       errorCategories: null,
+      searchQuery: "",
     };
   },
   components: {
@@ -30,6 +31,7 @@ export default {
           console.log("Risposta API Ristoranti:", response.data);
           this.restaurants = response.data.results;
           this.filteredRestaurants = this.restaurants;
+          this.filterRestaurants();
         })
         .catch((error) => {
           console.error("Errore API Ristoranti:", error);
@@ -52,16 +54,29 @@ export default {
         });
     },
     filterRestaurants() {
+      // inizializzo una nuova variabile chiamata le assegno l'intera lista di ristoranti "this.restaurants"
+      // questa variabile sarà usata per applicare i filtri
+      let filtered = this.restaurants;
+
       if (this.selectedCategories.length > 0) {
-        this.filteredRestaurants = this.restaurants.filter((restaurant) =>
+        filtered = filtered.filter((restaurant) =>
           restaurant.categories.some((category) =>
             this.selectedCategories.includes(category.id)
           )
         );
-      } else {
-        this.filteredRestaurants = this.restaurants;
       }
+      // filtro barra di ricerca, filtra i ristoranti in base al testo inserito nella barra di ricerca
+      // converte il nome del ristorante e il termine di ricerca in minuscolo per evitare problemi di case sensitivity
+      if (this.searchQuery) {
+        const query = this.searchQuery.toLowerCase();
+        filtered = filtered.filter((restaurant) =>
+          restaurant.name.toLowerCase().includes(query)
+        );
+      }
+      // aggiorno la lista visibile dei ristoranti con quelli che soddisfano i criteri di ricerca e del filtro
+      this.filteredRestaurants = filtered;
     },
+
     toggleCategorySelection(categoryId) {
       const index = this.selectedCategories.indexOf(categoryId);
       if (index > -1) {
@@ -95,6 +110,7 @@ export default {
         <div
           class="categories-list d-flex flex-wrap justify-content-center w-75"
         >
+          <!-- button delle categorie -->
           <button
             v-for="category in categories"
             :key="category.id"
@@ -114,6 +130,16 @@ export default {
           >
             Tutte le Categorie
           </button>
+        </div>
+        <!-- barra di ricerca -->
+        <div class="search-bar-container text-center mb-4">
+          <input
+            type="text"
+            v-model="searchQuery"
+            @input="filterRestaurants"
+            placeholder="Cerca un ristorante..."
+            class="form-control w-50 mx-auto mt-2"
+          />
         </div>
       </div>
 
@@ -244,5 +270,19 @@ export default {
 .restaurant-card-body p {
   margin: 0 0 5px;
   font-size: 0.95rem;
+}
+
+.search-bar-container input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  transition: 0.3s ease;
+}
+
+.search-bar-container input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 </style>
