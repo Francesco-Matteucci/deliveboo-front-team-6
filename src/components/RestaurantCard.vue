@@ -97,8 +97,7 @@ export default {
                     <!--Card hoover-->
                     <div
                         class="dish-card-back justify-content-center text-white text-center align-items-center fw-semibold">
-                        <p class="fs-4 dish-title-description p-2 rounded-2 align-items-center p-0">Descrizione del
-                            piatto</p>
+                        <p class="fs-4 dish-title-description p-2 rounded-2 align-items-center p-0">{{ dish.name }}</p>
                         <div class="dish-description">
                             {{ dish.description }}
                         </div>
@@ -185,7 +184,7 @@ export default {
 /*Dishes*/
 
 .dish-list {
-    background-color: rgba(255, 166, 0, 0.400);
+    background-color: rgba(240, 240, 240, 0.404);
 }
 
 .dish-card {
