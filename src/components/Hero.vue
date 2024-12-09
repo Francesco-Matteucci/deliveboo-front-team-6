@@ -89,15 +89,16 @@ export default {
 }
 
 .hero-bg-left-clickable {
-  background-image: url("/src/assets/deliveroo-1.svg");
+  background-image: url("/src/assets/logo-deliveboo.webp");
   background-repeat: no-repeat;
+  background-position: center;
   background-size: 100%;
-  margin: 20px 30px;
+  margin-top: 1vw;
   position: absolute;
   top: 0;
   left: 0;
-  width: 15%;
-  height: 15%;
+  width: 15vw;
+  height: 20vh;
   cursor: pointer;
 }
 
