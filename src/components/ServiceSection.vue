@@ -34,7 +34,7 @@ export default {
 <template>
   <section class="service-section py-5">
     <div class="container">
-      <div class="row text-center">
+      <div class="row text-center g-3">
         <div class="col-md-4" v-for="(service, index) in services" :key="index">
           <div class="card h-100 border-0">
             <img
@@ -58,14 +58,16 @@ export default {
 
 <style scoped>
 .service-section {
-  background-color: #f8f9fa;
+  background-color: rgb(247 243 243);
 }
 
 .card {
   border-radius: 10px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 11px 11px 7px rgba(0, 0, 0, 0.103);
+  &:hover {
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.329);
+  }
 }
 
 .card-img-top {
