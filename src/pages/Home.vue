@@ -102,10 +102,7 @@ export default {
   <div>
     <Hero />
     <div class="container-fluid pt-5">
-      <div
-        v-if="categories.length"
-        class="categories-container text-center mb-4"
-      >
+      <div v-if="categories.length" class="categories-container text-center">
         <h1 class="text-center fs-4 mb-4">Filtra per categoria</h1>
         <div
           class="categories-list d-flex flex-wrap justify-content-center w-75"
@@ -138,7 +135,7 @@ export default {
             v-model="searchQuery"
             @input="filterRestaurants"
             placeholder="Cerca un ristorante..."
-            class="form-control w-50 mx-auto mt-2"
+            class="form-control mx-auto mt-2"
           />
         </div>
       </div>
@@ -158,7 +155,7 @@ export default {
         {{ errorCategories }}
       </p>
 
-      <div v-if="!loading && !error" class="row px-5">
+      <div v-if="!loading && !error" class="row px-5 pb-5">
         <div
           v-for="restaurant in filteredRestaurants"
           :key="restaurant.id"
@@ -175,7 +172,8 @@ export default {
             </div>
             <div class="restaurant-card-body text-center">
               <p>
-                Indirizzo: <strong>{{ restaurant.address }}</strong>
+                <i class="bi bi-pin-map-fill"></i> &nbsp;
+                <strong>{{ restaurant.address }}</strong>
               </p>
               <!-- <p><strong>Partita IVA:</strong> {{ restaurant.vat_number }}</p> -->
             </div>
@@ -190,7 +188,7 @@ export default {
 
 <style scoped>
 .container-fluid {
-  background-color: rgb(241, 233, 233);
+  background-color: rgb(247 243 243);
 }
 
 .categories-container {
@@ -204,7 +202,7 @@ export default {
 .categories-list button {
   padding: 1vh 2vh;
   font-size: 1rem;
-  border-radius: 30px;
+  border-radius: 1rem;
   transition: 0.2s ease;
 
   &:hover {
@@ -223,12 +221,14 @@ export default {
 }
 
 .restaurant-card {
+  min-height: 40vh;
   border: none;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s ease;
   cursor: pointer;
+  background-color: white;
 
   &:active {
     scale: 1.1;
@@ -236,8 +236,7 @@ export default {
 }
 
 .restaurant-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.329);
 }
 
 .restaurant-card-image {
@@ -275,12 +274,18 @@ export default {
   font-size: 0.95rem;
 }
 
+.search-bar-container {
+  max-width: 100%;
+}
+
 .search-bar-container input {
   padding: 10px;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 20px;
   transition: 0.3s ease;
+  min-width: 60vw;
+  max-width: 60vw;
 }
 
 .search-bar-container input:focus {
