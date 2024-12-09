@@ -71,6 +71,10 @@ export default {
       }
       this.filterRestaurants();
     },
+    goToRestaurant(id) {
+      // reindirizza verso la pagina del ristorante specifico cliccato attraverso la card
+      this.$router.push({ name: "RestaurantPage", params: { id } });
+    },
   },
   mounted() {
     this.fetchRestaurants();
@@ -134,7 +138,7 @@ export default {
           :key="restaurant.id"
           class="col-md-4 mb-4"
         >
-          <div class="restaurant-card">
+          <div @click="goToRestaurant(restaurant.id)" class="restaurant-card">
             <div
               class="restaurant-card-image"
               :style="{ backgroundImage: `url(${restaurant.image})` }"
@@ -195,7 +199,11 @@ export default {
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s, box-shadow 0.3s ease;
+  cursor: pointer;
+  &:active {
+    scale: 1.1;
+  }
 }
 
 .restaurant-card:hover {
