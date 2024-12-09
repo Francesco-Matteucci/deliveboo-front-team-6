@@ -43,7 +43,7 @@ export default {
       ><span>Termini d'uso</span>
     </div>
     <div class="credits text-center">
-      <span>Website Developed by <a href="">Team Six</a></span>
+      <span>Website Developed by <a href="#">Team Six</a></span>
       <span><p>Tutti i diritti riservati &#169; 2024</p></span>
     </div>
   </div>
@@ -64,6 +64,13 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: -30px;
+}
+
+.social a:hover {
+  scale: 1.1;
+  &:active {
+    scale: 1;
+  }
 }
 
 .social img {
