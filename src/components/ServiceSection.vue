@@ -64,8 +64,11 @@ export default {
 .card {
   border-radius: 10px;
   overflow: hidden;
+  border-color: black;
   &:hover {
     scale: 1.01;
+    border-color: black;
+    border: none;
   }
 }
 
