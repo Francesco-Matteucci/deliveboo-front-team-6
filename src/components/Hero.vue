@@ -32,7 +32,7 @@ export default {
       <p class="hero-description text-white fs-5">
         Ordina il tuo cibo preferito dai migliori ristoranti vicino a te.
       </p>
-      <button class="btn btn-primary btn-lg mt-2" @click="scrollToRestaurants">
+      <button class="btn-lg mt-2 text-white fs-5" @click="scrollToRestaurants">
         Iniziamo!
       </button>
     </div>
@@ -101,9 +101,11 @@ export default {
   cursor: pointer;
 }
 
-.btn {
-  padding: 1vh 2vh;
-  border-radius: 1rem;
+button {
+  padding: 3px 15px;
+  border-radius: 13px;
+  background-color: #ff6204;
+  border: none;
   &:hover {
     scale: 1.1;
   }
