@@ -28,15 +28,23 @@ export default {
   <section class="hero">
     <div class="hero-bg-left-clickable" @click="reloadPage"></div>
     <div class="hero-content text-center mt-5">
-      <h1 class="hero-title text-dark fs-3">Scopri i migliori ristoranti</h1>
-      <p class="hero-description text-dark fs-5">
+      <h1 class="hero-title text-white fs-3">Scopri i migliori ristoranti</h1>
+      <p class="hero-description text-white fs-5">
         Ordina il tuo cibo preferito dai migliori ristoranti vicino a te.
       </p>
       <button class="btn btn-primary btn-lg mt-2" @click="scrollToRestaurants">
         Iniziamo!
       </button>
     </div>
+    <div class="overlay"></div>
   </section>
+  <video
+    class="video-background"
+    src="/src/assets/video/3944332-uhd_4096_2160_25fps.mp4"
+    autoplay
+    muted
+    loop
+  ></video>
   <section>
     <RestaurantCard />
   </section>
@@ -45,23 +53,18 @@ export default {
 <style scoped>
 .hero {
   /* Logo in basso a destra */
-  background-image: url("/src/assets/hero-bg-left.png"),
-    url("/src/assets/hero-bg-right.png"), url("/src/assets/fries.png");
+  /* background-image: url("/src/assets/hero-bg-left.png"), */
+  /* url("/src/assets/hero-bg-right.png"), url("/src/assets/fries.png"); */
   /* Dimensione personalizzata per ogni immagine */
   background-size: 20%, 30%, 20%;
-
   object-fit: cover;
-  /* Posizioni delle immagini */
   background-position: right bottom, right top, left bottom;
-  /* Nessuna ripetizione */
   background-repeat: no-repeat;
-  /* Sfondo fisso rispetto al viewport */
   padding: 100px 20px;
   text-align: center;
   height: 100vh;
   align-items: center;
   display: flex;
-  background-color: rgb(241, 233, 233);
 }
 
 .hero-content {
@@ -107,5 +110,26 @@ export default {
   &:active {
     scale: 1;
   }
+}
+
+.video-background {
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -2;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.66);
+  z-index: -1;
 }
 </style>
