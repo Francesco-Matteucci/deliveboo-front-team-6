@@ -27,13 +27,16 @@
     },
     methods: {
       fetchRestaurants() {
+        const params = {
+          categories: this.selectedCategories,
+        };
+
         axios
-          .get("http://127.0.0.1:8000/api/restaurants")
+          .get("http://127.0.0.1:8000/api/restaurants", { params })
           .then((response) => {
             console.log("Risposta API Ristoranti:", response.data);
             this.restaurants = response.data.results;
             this.filteredRestaurants = this.restaurants;
-            this.filterRestaurants();
           })
           .catch((error) => {
             console.error("Errore API Ristoranti:", error);
@@ -55,30 +58,6 @@
             this.errorCategories = "Errore nel caricamento delle categorie.";
           });
       },
-      filterRestaurants() {
-        // inizializzo una nuova variabile chiamata le assegno l'intera lista di ristoranti "this.restaurants"
-        // questa variabile sarà usata per applicare i filtri
-        let filtered = this.restaurants;
-
-        if (this.selectedCategories.length > 0) {
-          filtered = filtered.filter((restaurant) =>
-            restaurant.categories.some((category) =>
-              this.selectedCategories.includes(category.id)
-            )
-          );
-        }
-        // filtro barra di ricerca, filtra i ristoranti in base al testo inserito nella barra di ricerca
-        // converte il nome del ristorante e il termine di ricerca in minuscolo per evitare problemi di case sensitivity
-        if (this.searchQuery) {
-          const query = this.searchQuery.toLowerCase();
-          filtered = filtered.filter((restaurant) =>
-            restaurant.name.toLowerCase().includes(query)
-          );
-        }
-        // aggiorno la lista visibile dei ristoranti con quelli che soddisfano i criteri di ricerca e del filtro
-        this.filteredRestaurants = filtered;
-      },
-
       toggleCategorySelection(categoryId) {
         const index = this.selectedCategories.indexOf(categoryId);
         if (index > -1) {
@@ -86,10 +65,15 @@
         } else {
           this.selectedCategories.push(categoryId);
         }
-        this.filterRestaurants();
+        this.fetchRestaurants();
+      },
+      filterBySearch() {
+        const query = this.searchQuery.toLowerCase();
+        this.filteredRestaurants = this.restaurants.filter((restaurant) =>
+          restaurant.name.toLowerCase().includes(query)
+        );
       },
       goToRestaurant(id) {
-        // reindirizza verso la pagina del ristorante specifico cliccato attraverso la card
         this.$router.push({ name: "RestaurantPage", params: { id } });
       },
     },
@@ -100,12 +84,15 @@
   };
 </script>
 
+
 <template>
   <div>
     <Hero />
+
     <div class="container-fluid pt-5">
       <div v-if="categories.length" class="categories-container text-center">
         <h1 class="text-center text-white fs-4 mb-4">Filtra per categoria</h1>
+
         <div class="categories-list d-flex flex-wrap justify-content-center w-50">
           <button v-for="category in categories" :key="category.id" @click="toggleCategorySelection(category.id)"
             class="btn-outline-primary mx-2 mb-1 fs-6 mt-1"
@@ -114,13 +101,14 @@
           </button>
           <button @click="
             selectedCategories = [];
-          filterRestaurants();
+          fetchRestaurants();
           " class="btn-outline-primary mx-1 mb-1 fs-6 mt-1" :class="{ active: selectedCategories.length === 0 }">
             Tutte le Categorie
           </button>
         </div>
+
         <div class="search-bar-container text-center text-white mt-4">
-          <input type="text" v-model="searchQuery" @input="filterRestaurants" placeholder="Cerca un ristorante..."
+          <input type="text" v-model="searchQuery" @input="filterBySearch" placeholder="Cerca un ristorante..."
             class="form-control mx-auto mt-2" />
         </div>
       </div>
@@ -131,19 +119,28 @@
           Caricamento in corso...
         </p>
       </div>
+
       <p v-if="error" class="text-danger text-center">{{ error }}</p>
       <p v-if="errorCategories" class="text-danger text-center">
         {{ errorCategories }}
       </p>
 
-      <div v-if="!loading && !error" class="row px-5 pb-5">
+      <p v-if="!loading && !filteredRestaurants.length" class="text-center text-warning fs-5">
+        Ops, sembra che non esistano ancora ristoranti con questi parametri ricercati :(
+      </p>
+
+      <div v-if="!loading && filteredRestaurants.length" class="row px-5 pb-5">
         <div v-for="restaurant in filteredRestaurants" :key="restaurant.id" class="col-lg-3 col-md-6 md-2 g-4">
           <div @click="goToRestaurant(restaurant.id)" class="restaurant-card">
             <div class="categories-overlay">
-              <span v-for="category in restaurant.categories" :key="category.id" class="badge bg-dark mx-1">
+              <span v-for="category in restaurant.categories" :key="category.id" class="badge me-1" :class="{
+                'bg-primary': selectedCategories.includes(category.id),
+                'bg-dark': !selectedCategories.includes(category.id),
+              }">
                 {{ category.name }}
               </span>
             </div>
+
             <div class="restaurant-card-image" :style="{ backgroundImage: `url(${restaurant.image})` }">
               <div class="restaurant-card-overlay">
                 <h5 class="restaurant-name fs-6">
@@ -157,11 +154,14 @@
         </div>
       </div>
     </div>
+
+    <TrackingSection />
+    <ServiceSection />
+    <Footer />
   </div>
-  <TrackingSection />
-  <ServiceSection />
-  <Footer />
 </template>
+
+
 
 <style scoped>
   .container-fluid {
