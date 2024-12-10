@@ -125,7 +125,7 @@
         {{ errorCategories }}
       </p>
 
-      <p v-if="!loading && !filteredRestaurants.length" class="text-center text-warning fs-5">
+      <p v-if="!loading && !filteredRestaurants.length" class="text-center text-warning fs-5 my-0 py-3">
         Ops, sembra che non esistano ancora ristoranti con questi parametri ricercati :(
       </p>
 
