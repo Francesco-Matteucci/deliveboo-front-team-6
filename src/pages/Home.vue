@@ -105,13 +105,18 @@ export default {
     <Hero />
     <div class="container-fluid pt-5">
       <div v-if="categories.length" class="categories-container text-center">
-        <div class="d-flex justify-content-center align-items-baseline">
-          <h1 class="text-center text-white fs-4 mb-4 mx-4">
+        <div
+          class="d-flex flex-column align-items-center justify-content-center"
+        >
+          <h1 class="text-center text-white fs-4 mb-2 mx-4">
             Filtra per categoria
           </h1>
-          <span class="counter text-white fs-4">{{
-            filteredRestaurants.length
-          }}</span>
+          <div class="mb-2">
+            <span class="mx-3 text-white fs-5">Risultati: </span>
+            <span class="counter text-white fs-4">{{
+              filteredRestaurants.length
+            }}</span>
+          </div>
         </div>
         <div
           class="categories-list d-flex flex-wrap justify-content-center w-50"
