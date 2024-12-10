@@ -61,7 +61,7 @@
 <template>
     <header class="d-flex flex-column flex-lg-row justify-content-around mt-4 mx-5 container-md-4">
         <!-- Banner Header -->
-        <div class="col-12 col-lg-6 row p-5 align-items-center rounded-5 mx-0 my-2 bg-header">
+        <div class="col-12 col-lg-6 row p-5 align-items-center rounded-2 mx-0 my-4 bg-header">
             <div class="col-md-6 text-center">
                 <img src="../assets/logo-deliveboo.webp" class="img-fluid rounded-circle" alt="">
             </div>
@@ -76,7 +76,7 @@
             </div>
         </div>
 
-        <!-- Ristorante -->
+        <!-- Restaurant card -->
         <div class="col-12 col-lg-4 p-5 d-flex align-items-center bg-header rounded-5 justify-content-center">
             <div v-for="restaurant in filteredRestaurants" :key="restaurant.id" class="restaurant-card">
                 <div class="restaurant-banner" :style="{ backgroundImage: `url(${restaurant.image})` }">
@@ -99,8 +99,8 @@
             </div>
         </div>
     </header>
-    <!--Dishes-->
     <main>
+        <!--Dishes-->
         <div class="container p-5 dish-container">
             <p v-if="loading" class="text-center">Caricamento in corso...</p>
             <p v-if="error" class="text-danger text-center">{{ error }}</p>
@@ -123,7 +123,7 @@
                             </div>
                         </div>
                     </div>
-                    <!--Card bottom-->
+                    <!--Card dishes-->
                     <div class="d-flex gap-2 mt-2 justify-content-center align-items-center">
                         <div>
                             <span v-if="dish.visible" class="text-success rounded-2 fw-semibold">
