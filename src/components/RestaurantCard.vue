@@ -59,7 +59,7 @@
 </script>
 
 <template>
-    <header class="d-flex flex-column flex-lg-row justify-content-center mt-4 mx-5 container-md-4">
+    <header class="d-flex flex-column flex-lg-row justify-content-around mt-4 mx-5 container-md-4">
         <!-- Banner Header -->
         <div class="col-12 col-lg-6 row p-5 align-items-center rounded-5 mx-0 bg-header">
             <div class="col-md-6 text-center">
