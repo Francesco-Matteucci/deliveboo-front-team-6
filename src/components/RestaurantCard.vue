@@ -59,37 +59,26 @@ export default {
 </script>
 
 <template>
-    <header class="d-flex w-100">
-        <!-- Restaurant card -->
-        <div class="d-flex align-items-center justify-content-center w-100">
-            <div v-for="restaurant in filteredRestaurants" :key="restaurant.id"
-                class="restaurant-card d-flex flex-column justify-content-between rounded-5 w-100"
-                style="min-height: 300px; height: 100%; background-color: #f8f9fa; overflow: hidden;">
-
-                <div class="restaurant-banner w-100"
-                    :style="{ backgroundImage: `url(${restaurant.image})`, backgroundSize: 'cover', backgroundPosition: 'center', height: '70%' }">
-                    <div class="restaurant-overlay d-flex justify-content-center align-items-center h-100">
-                        <h1 class="text-white text-center fw-bold">{{ restaurant.name }}</h1>
-                    </div>
-                </div>
-
-                <div class="restaurant-details p-4 bg-light" style="flex: 1;">
-                    <p class="mb-2">
-                        <i class="bi bi-geo-alt-fill text-danger me-2"></i>
-                        <strong>{{ restaurant.address }}</strong>
-                    </p>
-                    <p class="text-muted">
-                        <i class="bi bi-tags-fill text-secondary me-2"></i>
-                        Categorie:
-                        <span v-for="(category, index) in restaurant.categories" :key="category.id">
-                            <strong>{{ category.name }}</strong>
-                            <span v-if="index < restaurant.categories.length - 1">, </span>
-                        </span>
-                    </p>
-                </div>
-            </div>
+    <header class="hero-banner position-relative w-100" :style="{ backgroundImage: `url(${filteredRestaurants[0]?.image})` }">
+    <!-- Hero Content -->
+    <div class="hero-overlay position-absolute top-0 start-0 d-flex p-4">
+        <div class="info-box bg-dark bg-opacity-75 text-white p-4 rounded">
+            <h1 class="fw-bold">{{ filteredRestaurants[0]?.name }}</h1>
+            <p class="mb-2">
+                <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+                {{ filteredRestaurants[0]?.address }}
+            </p>
+            <p>
+                <i class="bi bi-tags-fill text-secondary me-2"></i>
+                Categorie:
+                <span v-for="(category, index) in filteredRestaurants[0]?.categories" :key="category.id">
+                    <strong>{{ category.name }}</strong>
+                    <span v-if="index < filteredRestaurants[0]?.categories.length - 1">, </span>
+                </span>
+            </p>
         </div>
-    </header>
+    </div>
+</header>
 
     <main>
         <!--Dishes-->
@@ -140,8 +129,21 @@ export default {
 
 
 <style scoped>
-header {
-    height: 100vh;
+.hero-banner {
+    height: 70vh;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: #fff;
+}
+
+.hero-overlay {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.info-box {
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /*Restaurants*/
