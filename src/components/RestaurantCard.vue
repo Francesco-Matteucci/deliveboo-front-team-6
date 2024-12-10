@@ -61,7 +61,7 @@
 <template>
     <header class="d-flex flex-column flex-lg-row justify-content-around mt-4 mx-5 container-md-4">
         <!-- Banner Header -->
-        <div class="col-12 col-lg-6 row p-5 align-items-center rounded-2 mx-0 my-4 bg-header">
+        <div class="col-12 col-lg-6 row p-5 align-items-center rounded-5 mx-0 bg-header">
             <div class="col-md-6 text-center">
                 <img src="../assets/logo-deliveboo.webp" class="img-fluid rounded-circle" alt="">
             </div>
