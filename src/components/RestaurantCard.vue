@@ -1,7 +1,12 @@
 <script>
 import axios from "axios";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import Footer from "../components/Footer.vue";
+
 export default {
+    components: {
+        Footer,
+    },
     data() {
         return {
             restaurants: [],
@@ -101,7 +106,7 @@ export default {
         <!--Cart-->
         <div class="cart ">
             <h4 class="text-center mb-4">
-                <i class="bi bi-cart4"></i> Il tuo Carrello
+                <i class="bi bi-cart4"></i> Carrello
             </h4>
 
             <ul class="list-unstyled">
@@ -210,6 +215,7 @@ export default {
             </div>
         </div>
     </main>
+    <Footer />
 </template>
 
 <style scoped>
