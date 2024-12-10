@@ -62,14 +62,14 @@ export default {
     <header class="d-flex flex-column flex-lg-row justify-content-around mt-4">
         <!-- Banner Header -->
         <div class="col-12 col-lg-6 row p-5 align-items-center rounded-5 mx-0 bg-header">
-            <div class="col-md-7 text-center">
+            <div class="col-md-6 text-center">
                 <img src="../assets/logo-deliveboo.webp" class="img-fluid rounded-circle" alt="">
             </div>
-            <div class="col-md-5">
+            <div class="col-md-6 text-center">
                 <h1>Ordina con un click!</h1>
                 <p>Ordina i tuoi piatti preferiti e ricevili comodamente a casa tua in pochi minuti: veloce, facile e
                     delizioso!</p>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 justify-content-center">
                     <a href="/" class="btn btn-dark">Home</a>
                     <a href="" class="btn btn-outline-dark">Assistenza</a>
                 </div>
