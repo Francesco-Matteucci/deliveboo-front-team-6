@@ -1,6 +1,6 @@
 <script>
 import axios from "axios";
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
 export default {
     data() {
         return {
@@ -12,6 +12,7 @@ export default {
             total: 0,
             loading: true,
             error: null,
+
         };
     },
     methods: {
@@ -22,7 +23,8 @@ export default {
                 .then((response) => {
                     console.log("Risposta API piatti:", response.data);
                     this.dishes = response.data.results;
-                    this.filteredDishes = this.dishes.filter((dish) => dish.restaurant_id === parseInt(restaurantId)
+                    this.filteredDishes = this.dishes.filter(
+                        (dish) => dish.restaurant_id === parseInt(restaurantId)
                     );
                 })
                 .catch((error) => {
@@ -72,7 +74,7 @@ export default {
 </script>
 
 <template>
-    <header class="hero-banner position-relative w-100"
+    <header class="hero-banner position-relative w-100 m-0"
         :style="{ backgroundImage: `url(${filteredRestaurants[0]?.image})` }">
         <!-- Hero Content -->
         <div class="hero-overlay position-absolute top-0 start-0 d-flex p-4">
@@ -87,16 +89,17 @@ export default {
                     Categorie:
                     <span v-for="(category, index) in filteredRestaurants[0]?.categories" :key="category.id">
                         <strong>{{ category.name }}</strong>
-                        <span v-if="index < filteredRestaurants[0]?.categories.length - 1">, </span>
+                        <span v-if="index < filteredRestaurants[0]?.categories.length - 1">,
+                        </span>
                     </span>
                 </p>
             </div>
         </div>
     </header>
 
-    <main>
+    <main class="pt-4">
         <!--Cart-->
-        <div class="cart mt-4">
+        <div class="cart ">
             <h4 class="text-center mb-4">
                 <i class="bi bi-cart4"></i> Il tuo Carrello
             </h4>
@@ -109,55 +112,99 @@ export default {
                     </div>
                     <div class="d-flex align-items-center">
                         <span class="me-3">{{ item.price }} €</span>
-                        <button @click="removeFromCart(index)" class="btn btn-sm btn-outline-danger">Rimuovi</button>
+                        <button @click="removeFromCart(index)" class="btn btn-sm btn-outline-danger">
+                            Rimuovi
+                        </button>
                     </div>
                 </li>
             </ul>
 
-            <p v-if="cart.length === 0" class="text-center text-muted">Il carrello è vuoto.</p>
+            <p v-if="cart.length === 0" class="text-center text-muted">
+                Il carrello è vuoto.
+            </p>
 
             <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
                 <h5 class="fw-semibold">Totale: {{ total }} €</h5>
-                <button class="btn btn-primary" @click="goToCheckout">Vai al Checkout</button>
+                <button class="btn btn-primary" @click="goToCheckout">
+                    Vai al Checkout
+                </button>
             </div>
         </div>
         <!--Dishes-->
-        <div class="container p-5 dish-container">
+        <div class="container dish-container">
             <p v-if="loading" class="text-center">Caricamento in corso...</p>
             <p v-if="error" class="text-danger text-center">{{ error }}</p>
             <div v-if="!loading && !error"
-                class="dish-list row p-5 align-items-center d-flex justify-content-center rounded-5">
-                <div v-for="dish in filteredDishes" :key="dish.id" class="col-md-4 mb-4">
-                    <div class="dish-card align-items-center">
-                        <div class="dish-card-image" :style="{ backgroundImage: `url(${dish.image})` }">
-                            <div class="dish-card-overlay">
-                                <h3 class="fw-semibold m-0">{{ dish.name }}</h3>
+                class="dish-list row align-items-center d-flex justify-content-center rounded-5">
+                <div class="container-fluid">
+                    <div id="fda_app" class="row">
+                        <!-- Start Section Header Bar -->
+                        <section id="fda_header_bar" class="col-12">
+                            <div class="row">
+                                <div class="col-12"><span>Ordina</span></div>
                             </div>
-                        </div>
-                        <!--Card hoover-->
-                        <div
-                            class="dish-card-back justify-content-center text-white text-center align-items-center fw-semibold">
-                            <p class="fs-4 dish-title-description p-2 rounded-2 align-items-center p-0">{{ dish.name }}
-                            </p>
-                            <div class="dish-description">
-                                {{ dish.description }}
+                            <div class="row fda_search_row">
+                                <div class="col-12">
+                                    <i class="fa fa-search"></i>
+                                    <input type="text" class="fda_ip_search" placeholder="Cerca un piatto..." />
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <!--Card dishes-->
-                    <div class="d-flex gap-2 mt-2 justify-content-center align-items-center">
-                        <div>
-                            <button v-if="dish.visible" type="button" class="badge add-to-cart-button"
-                                @click="addToCart(dish)">
-                                <span><i class="bi bi-cart-plus fs-5"></i>{{ dish.price }} €</span>
-                            </button>
-                            <span v-else class="text-danger rounded-2 fw-semibold">
-                                <i class="bi bi-bag-x-fill me-3"> Non disponibile</i>
-                                <button type="button" class="badge add-to-cart-button not-available">
-                                    {{ dish.price }} €
-                                </button>
-                            </span>
-                        </div>
+                        </section>
+                        <!-- End Section Header Bar -->
+
+                        <!-- Start Section Body Part 1 -->
+
+                        <section id="fda_product_tile" class="col-12 flex-wrap d-flex justify-content-center gap-5">
+                            <div v-for="dish in filteredDishes" :key="dish.id" class="row fda_food_row mb-5">
+                                <div class="col-9 w-100">
+                                    <div class="food_tile active h-100">
+                                        <img :src="dish.image" alt="" class="fda_product_img" />
+                                        <span class="food_name">{{ dish.name }}</span>
+                                        <span class="food_detail">{{ dish.description }}</span>
+                                        <ul id="food_meta" class="d-flex justify-content-center">
+                                            <li>
+                                                <div>
+                                                    <span v-if="dish.visible"
+                                                        class="text-success rounded-2 fw-semibold">
+                                                        <i class="bi bi-bag-check-fill mb-5">
+                                                            Disponibile</i>
+                                                        <span class="badge add-to-cart-button mt-2">
+                                                            <span><i class="bi bi-cart-plus fs-5"></i> {{ dish.price }}
+                                                                €</span>
+                                                        </span>
+                                                    </span>
+                                                    <span v-else class="info-span text-danger rounded-2 fw-semibold">
+                                                        <div>
+                                                            <i class="bi bi-bag-x-fill w-100 text-center">
+                                                            </i>
+                                                        </div>
+                                                        <div>Non disponibile</div>
+                                                        <span class="badge add-to-cart-button not-available">
+                                                            <i class="bi bi-cart-plus fs-5"></i>
+                                                            {{ dish.price }} €
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <span>
+                                            <span v-if="dish.visible">
+                                                <button type="button" @click="addToCart(dish)"
+                                                    class="btn btn-sm btn-default ">
+                                                    Ordina ora
+                                                </button>
+                                            </span>
+                                            <span v-else>
+                                                <button type="button" class=" btn btn-sm btn-default disabled">
+                                                    Ordina ora
+                                                </button>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <!-- End Section Body Part 1 -->
                     </div>
                 </div>
             </div>
@@ -165,8 +212,11 @@ export default {
     </main>
 </template>
 
-
 <style scoped>
+main {
+    background-color: #333;
+}
+
 .hero-banner {
     height: 70vh;
     background-size: cover;
@@ -238,115 +288,7 @@ export default {
     color: #6c757d;
 }
 
-/*Dishes*/
-
-.dish-list {
-    background-color: rgba(240, 240, 240, 0.404);
-}
-
-.dish-card {
-    position: relative;
-    border: none;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.dish-card:hover {
-
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5);
-}
-
-.dish-card-image {
-    height: 200px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    transition: opacity 0.3s ease;
-}
-
-.dish-card-back {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 15px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 10px;
-}
-
-.not-available {
-    color: #e2e2e2;
-    cursor: not-allowed;
-    pointer-events: none;
-    opacity: 1;
-}
-
-.dish-card-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.4);
-    color: #fff;
-    padding: 10px;
-    text-align: center;
-}
-
-.add-to-cart-button {
-    background-color: #ff6403;
-    border: #ff6403;
-}
-
-.add-to-cart-button:hover {
-    scale: 1.1;
-}
-
-.dish-view-description {
-    padding: 10px;
-}
-
-.dish-card:hover .dish-card-image {
-    opacity: 0;
-}
-
-.dish-card:hover .dish-card-back {
-    opacity: 1;
-}
-
-.dish-description {
-    max-height: 100px;
-    overflow-y: auto;
-    padding: 10px;
-    border-radius: 5px;
-    color: #fff;
-    text-align: left;
-}
-
-.dish-description::-webkit-scrollbar {
-    width: 8px;
-}
-
-.dish-description::-webkit-scrollbar-thumb {
-    background-color: #ff6403;
-    border-radius: 10px;
-}
-
-.dish-description::-webkit-scrollbar-thumb:hover {
-    background-color: #ff6403;
-}
-
-.dish-description::-webkit-scrollbar-track {
-    background: #2e2e2e;
-    border-radius: 10px;
-}
-
 /*Cart*/
-
 
 .cart {
     background-color: #f9f9f9;
@@ -405,4 +347,215 @@ export default {
     background-color: #e55b02;
 }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@òòò */
+body {
+    background-color: #fff;
+    font-family: "Poppins", sans-serif;
+}
+
+#fda_app {
+    overflow-x: hidden;
+}
+
+#fda_app>section {
+    padding-top: 20px;
+    padding-bottom: 0;
+}
+
+.menu {
+    transform-origin: top left;
+    transform: rotate(-90deg) translateX(-1150%);
+    margin-left: 18.5px;
+}
+
+.menu ul {
+    position: relative;
+    padding: 0;
+    width: 500px;
+    bottom: 0;
+}
+
+.menu li {
+    position: relative;
+    list-style: none;
+    float: left;
+    margin: 0 15px;
+    font-size: 10px;
+    color: rgba(38, 29, 86, 0.5);
+}
+
+.menu li.active {
+    font-weight: 600;
+    color: rgba(38, 29, 86, 1);
+}
+
+.menu li.active:before {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    display: block;
+    background-color: rgba(255, 0, 0, 0.6);
+    border-radius: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 20px;
+}
+
+/** Start Section Header Bar **/
+
+#fda_header_bar {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(38, 29, 86, 1);
+}
+
+#fda_header_bar span {
+    font-weight: 400;
+    color: rgba(38, 29, 86, 0.8);
+}
+
+.fda_search_row {
+    position: relative;
+    margin-top: 25px;
+}
+
+.fda_search_row .fda_ip_search {
+    border: none;
+    background-color: #f9f9f9;
+    font-size: 12px;
+    width: 100%;
+    padding: 15px 15px;
+    padding-left: 45px;
+    border-radius: 50px;
+}
+
+.fda_search_row .fa-search {
+    position: absolute;
+    font-size: 14px;
+    margin-top: 18px;
+    margin-left: 18px;
+}
+
+/** End Section Header Bar **/
+
+/** Start Section Body Part 1 **/
+.info-span {
+    width: 100%;
+}
+
+.fda_food_row {
+    flex-wrap: nowrap;
+    min-width: 200px;
+}
+
+.fda_food_row>.col-9 {
+    max-width: 245px;
+}
+
+.fda_food_row>div:not(:first-child) {
+    margin-left: -15px;
+}
+
+#fda_product_tile {
+    margin-top: 80px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#fda_product_tile span {
+    display: block;
+}
+
+.fda_food_row div.food_tile {
+    background-color: rgba(0, 0, 0, 0.05);
+    font-size: 11px;
+    padding: 0 25px;
+    border-radius: 25px;
+}
+
+.fda_food_row div.food_tile.active {
+    background-color: rgba(220, 230, 252, 1);
+}
+
+.fda_food_row div.food_tile img {
+    position: relative;
+    width: 150px;
+    border-radius: 100%;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.15),
+        inset 0 4px 0 rgba(0, 0, 0, 0.05), inset 0 -4px 0 rgba(0, 0, 0, 0.05),
+        inset 0 10px 10px rgba(0, 0, 0, 0.09), 0 1px 0px rgba(0, 0, 0, 0.1),
+        0 8px 7px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-top: -60px;
+    margin-bottom: 18px;
+}
+
+div.food_tile.active img {
+    background-color: rgba(220, 230, 252, 0.85);
+}
+
+.food_name {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(38, 29, 86, 1);
+    margin-bottom: 12px;
+}
+
+.food_detail {
+    font-size: 10px;
+    color: rgba(38, 29, 86, 0.4);
+    margin-bottom: 15px;
+}
+
+#food_meta {
+    margin: 0;
+    padding: 0;
+}
+
+#food_meta li {
+    list-style: none;
+    float: left;
+    width: 50%;
+    margin-bottom: 25px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(38, 29, 86, 1);
+}
+
+#food_meta li span {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(38, 29, 86, 0.5);
+}
+
+.btn-default {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    margin-bottom: 15px;
+    padding: 12px 40px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.active .btn-default {
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    background-color: #ff6403;
+    color: #fff;
+
+    &:hover {
+        scale: 1.1;
+    }
+
+    &:active {
+        scale: 1;
+    }
+}
+
+/** End Section Body Part 1 **/
 </style>
