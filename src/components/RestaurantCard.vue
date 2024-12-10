@@ -8,6 +8,8 @@ export default {
             filteredRestaurants: [],
             dishes: [],
             filteredDishes: [],
+            cart: [],
+            total: 0,
             loading: true,
             error: null,
         };
@@ -49,7 +51,18 @@ export default {
                 .finally(() => {
                     this.loading = false;
                 });
-        }
+        },
+        addToCart(dish) {
+            this.cart.push(dish);
+            this.total += parseFloat(dish.price);
+            this.total = parseFloat(this.total.toFixed(2));
+        },
+
+        removeFromCart(index) {
+            const removedDish = this.cart.splice(index, 1)[0];
+            this.total -= parseFloat(removedDish.price);
+            this.total = parseFloat(this.total.toFixed(2));
+        },
     },
     mounted() {
         this.fetchDishes();
@@ -59,28 +72,55 @@ export default {
 </script>
 
 <template>
-    <header class="hero-banner position-relative w-100" :style="{ backgroundImage: `url(${filteredRestaurants[0]?.image})` }">
-    <!-- Hero Content -->
-    <div class="hero-overlay position-absolute top-0 start-0 d-flex p-4">
-        <div class="info-box bg-dark bg-opacity-75 text-white p-4 rounded">
-            <h1 class="fw-bold">{{ filteredRestaurants[0]?.name }}</h1>
-            <p class="mb-2">
-                <i class="bi bi-geo-alt-fill text-danger me-2"></i>
-                {{ filteredRestaurants[0]?.address }}
-            </p>
-            <p>
-                <i class="bi bi-tags-fill text-secondary me-2"></i>
-                Categorie:
-                <span v-for="(category, index) in filteredRestaurants[0]?.categories" :key="category.id">
-                    <strong>{{ category.name }}</strong>
-                    <span v-if="index < filteredRestaurants[0]?.categories.length - 1">, </span>
-                </span>
-            </p>
+    <header class="hero-banner position-relative w-100"
+        :style="{ backgroundImage: `url(${filteredRestaurants[0]?.image})` }">
+        <!-- Hero Content -->
+        <div class="hero-overlay position-absolute top-0 start-0 d-flex p-4">
+            <div class="info-box bg-dark bg-opacity-75 text-white p-4 rounded">
+                <h1 class="fw-bold">{{ filteredRestaurants[0]?.name }}</h1>
+                <p class="mb-2">
+                    <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+                    {{ filteredRestaurants[0]?.address }}
+                </p>
+                <p>
+                    <i class="bi bi-tags-fill text-secondary me-2"></i>
+                    Categorie:
+                    <span v-for="(category, index) in filteredRestaurants[0]?.categories" :key="category.id">
+                        <strong>{{ category.name }}</strong>
+                        <span v-if="index < filteredRestaurants[0]?.categories.length - 1">, </span>
+                    </span>
+                </p>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
     <main>
+        <!--Cart-->
+        <div class="cart mt-4">
+            <h4 class="text-center mb-4">
+                <i class="bi bi-cart4"></i> Il tuo Carrello
+            </h4>
+
+            <ul class="list-unstyled">
+                <li v-for="(item, index) in cart" :key="index"
+                    class="cart-item d-flex justify-content-between align-items-center py-3 px-4 mb-3 rounded-3 shadow-sm bg-light">
+                    <div class="d-flex align-items-center">
+                        <span class="fw-semibold">{{ item.name }}</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="me-3">{{ item.price }} €</span>
+                        <button @click="removeFromCart(index)" class="btn btn-sm btn-outline-danger">Rimuovi</button>
+                    </div>
+                </li>
+            </ul>
+
+            <p v-if="cart.length === 0" class="text-center text-muted">Il carrello è vuoto.</p>
+
+            <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
+                <h5 class="fw-semibold">Totale: {{ total }} €</h5>
+                <button class="btn btn-primary" @click="goToCheckout">Vai al Checkout</button>
+            </div>
+        </div>
         <!--Dishes-->
         <div class="container p-5 dish-container">
             <p v-if="loading" class="text-center">Caricamento in corso...</p>
@@ -107,12 +147,10 @@ export default {
                     <!--Card dishes-->
                     <div class="d-flex gap-2 mt-2 justify-content-center align-items-center">
                         <div>
-                            <span v-if="dish.visible" class="text-success rounded-2 fw-semibold">
-                                <i class="bi bi-bag-check-fill me-3"> Disponibile</i>
-                                <button type="button" class="badge add-to-cart-button">
-                                    <span><i class="bi bi-cart-plus fs-5"></i>{{ dish.price }} €</span>
-                                </button>
-                            </span>
+                            <button v-if="dish.visible" type="button" class="badge add-to-cart-button"
+                                @click="addToCart(dish)">
+                                <span><i class="bi bi-cart-plus fs-5"></i>{{ dish.price }} €</span>
+                            </button>
                             <span v-else class="text-danger rounded-2 fw-semibold">
                                 <i class="bi bi-bag-x-fill me-3"> Non disponibile</i>
                                 <button type="button" class="badge add-to-cart-button not-available">
@@ -306,4 +344,65 @@ export default {
     background: #2e2e2e;
     border-radius: 10px;
 }
+
+/*Cart*/
+
+
+.cart {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 500px;
+    margin: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cart h4 {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.cart-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.cart-item button {
+    font-size: 0.875rem;
+}
+
+.cart-item span {
+    font-size: 1rem;
+}
+
+.cart ul {
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.cart h5 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.cart button {
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #ff6403;
+    border: none;
+    color: white;
+}
+
+.cart button:hover {
+    background-color: #e55b02;
+}
+
 </style>
