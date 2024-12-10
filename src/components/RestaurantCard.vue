@@ -61,8 +61,7 @@ export default {
 <template>
     <header class="d-flex flex-column flex-lg-row justify-content-around mt-4">
         <!-- Banner Header -->
-        <div class="col-12 col-lg-6 row p-5 align-items-center rounded-5 mx-0"
-            style="background-image:url(https://images.pexels.com/photos/7130560/pexels-photo-7130560.jpeg);background-size:cover">
+        <div class="col-12 col-lg-6 row p-5 align-items-center rounded-5 mx-0 bg-header">
             <div class="col-md-7 text-center">
                 <img src="../assets/logo-deliveboo.webp" class="img-fluid rounded-circle" alt="">
             </div>
@@ -78,7 +77,7 @@ export default {
         </div>
 
         <!-- Ristorante -->
-        <div class="col-12 col-lg-4 p-5 d-flex align-items-center bg-header-left rounded-5 justify-content-center">
+        <div class="col-12 col-lg-4 p-5 d-flex align-items-center bg-header rounded-5 justify-content-center">
             <div v-for="restaurant in filteredRestaurants" :key="restaurant.id" class="restaurant-card">
                 <div class="restaurant-banner" :style="{ backgroundImage: `url(${restaurant.image})` }">
                     <div class="restaurant-overlay justify-content-center">
@@ -151,7 +150,7 @@ export default {
 <style scoped>
 /*Restaurants*/
 
-.bg-header-left {
+.bg-header {
     background: rgb(238, 174, 202);
     background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
 }
