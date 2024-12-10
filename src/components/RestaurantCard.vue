@@ -145,8 +145,8 @@ export default {
                     <div id="fda_app" class="row">
                         <!-- Start Section Header Bar -->
                         <section id="fda_header_bar" class="col-12">
-                            <div class="row">
-                                <div class="col-12"><span>Ordina</span></div>
+                            <div class="row text-center">
+                                <h2 class="text-white">Ordina ora</h2>
                             </div>
                             <div class="row fda_search_row">
                                 <div class="col-12">
@@ -180,10 +180,8 @@ export default {
                                                     </span>
                                                     <span v-else class="info-span text-danger rounded-2 fw-semibold">
                                                         <div>
-                                                            <i class="bi bi-bag-x-fill w-100 text-center">
-                                                            </i>
+                                                            <i class="bi bi-bag-x-fill w-100 text-center"></i> Non disponibile
                                                         </div>
-                                                        <div>Non disponibile</div>
                                                         <span class="badge add-to-cart-button not-available">
                                                             <i class="bi bi-cart-plus fs-5"></i>
                                                             {{ dish.price }} €
@@ -219,9 +217,6 @@ export default {
 </template>
 
 <style scoped>
-main {
-    background-color: #333;
-}
 
 .hero-banner {
     height: 70vh;
@@ -353,7 +348,11 @@ main {
     background-color: #e55b02;
 }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@òòò */
+/* main */
+main {
+    background-color: #333;
+}
+
 body {
     background-color: #fff;
     font-family: "Poppins", sans-serif;
@@ -408,8 +407,6 @@ body {
     margin-top: 20px;
 }
 
-/** Start Section Header Bar **/
-
 #fda_header_bar {
     font-size: 18px;
     font-weight: 600;
@@ -443,9 +440,6 @@ body {
     margin-left: 18px;
 }
 
-/** End Section Header Bar **/
-
-/** Start Section Body Part 1 **/
 .info-span {
     width: 100%;
 }
@@ -487,8 +481,9 @@ body {
 .fda_food_row div.food_tile img {
     position: relative;
     width: 150px;
+    height: 150px;
+    object-fit: cover;
     border-radius: 100%;
-    padding: 20px;
     background-color: rgba(0, 0, 0, 0.05);
     box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.15),
         inset 0 4px 0 rgba(0, 0, 0, 0.05), inset 0 -4px 0 rgba(0, 0, 0, 0.05),
@@ -499,8 +494,17 @@ body {
     margin-bottom: 18px;
 }
 
-div.food_tile.active img {
-    background-color: rgba(220, 230, 252, 0.85);
+.fda_food_row div.food_tile {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribuisce gli elementi verticalmente */
+    align-items: center; /* Centra gli elementi orizzontalmente */
+    height: 100%; /* Assicura che tutte le schede abbiano la stessa altezza */
+    padding: 20px 25px; /* Spazio interno uniforme */
+    border-radius: 25px;
+    text-align: center; /* Centra il testo */
+    background-color: rgba(0, 0, 0, 0.05);
+    font-size: 11px;
 }
 
 .food_name {
@@ -508,37 +512,45 @@ div.food_tile.active img {
     font-weight: 600;
     color: rgba(38, 29, 86, 1);
     margin-bottom: 12px;
+    min-height: 20px; /* Garantisce altezza uniforme */
 }
 
 .food_detail {
-    font-size: 10px;
+    font-weight: 600;
     color: rgba(38, 29, 86, 0.4);
     margin-bottom: 15px;
+    min-height: 40px; /* Altezza minima per evitare sfalsamenti */
+    line-height: 1.5; /* Migliora la leggibilità */
 }
 
 #food_meta {
-    margin: 0;
+    display: flex;
+    justify-content: center; /* Centra i meta dati */
+    margin-top: auto; /* Spinge verso il basso */
+    margin-bottom: 15px;
     padding: 0;
 }
 
 #food_meta li {
     list-style: none;
-    float: left;
-    width: 50%;
-    margin-bottom: 25px;
+    margin: 0 10px;
     font-size: 12px;
     font-weight: 500;
     color: rgba(38, 29, 86, 1);
 }
 
-#food_meta li span {
+.add-to-cart-button {
+    margin-top: 10px;
+    display: inline-block;
+    padding: 5px 10px;
     font-size: 12px;
-    font-weight: 500;
-    color: rgba(38, 29, 86, 0.5);
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    user-select: none;
+    color: #ff6403;
 }
 
 .btn-default {
-    border: 1px solid rgba(0, 0, 0, 0.5);
     margin-bottom: 15px;
     padding: 12px 40px;
     border-radius: 20px;
@@ -547,21 +559,17 @@ div.food_tile.active img {
     letter-spacing: 0.5px;
     background-color: transparent;
     color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease;
 }
 
 .active .btn-default {
-    border: 1px solid rgba(0, 0, 0, 0.04);
     background-color: #ff6403;
     color: #fff;
-
-    &:hover {
-        scale: 1.1;
-    }
-
-    &:active {
-        scale: 1;
-    }
+    border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
-/** End Section Body Part 1 **/
+.active .btn-default:hover {
+    transform: scale(1.1);
+}
 </style>
