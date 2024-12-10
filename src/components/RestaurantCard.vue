@@ -266,8 +266,8 @@
     }
 
     .add-to-cart-button {
-        background-color: rgb(197, 148, 57);
-        border: rgb(197, 148, 57);
+        background-color: #ff6403;
+        border: #ff6403;
     }
 
     .add-to-cart-button:hover {
@@ -276,7 +276,6 @@
 
     .dish-view-description {
         padding: 10px;
-        background-color: rgb(197, 148, 57);
     }
 
     .dish-card:hover .dish-card-image {
@@ -301,12 +300,12 @@
     }
 
     .dish-description::-webkit-scrollbar-thumb {
-        background-color: #c59439;
+        background-color: #ff6403;
         border-radius: 10px;
     }
 
     .dish-description::-webkit-scrollbar-thumb:hover {
-        background-color: #e3b15e;
+        background-color: #ff6403;
     }
 
     .dish-description::-webkit-scrollbar-track {
