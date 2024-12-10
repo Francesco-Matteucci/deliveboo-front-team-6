@@ -155,10 +155,6 @@ export default {
                                 </div>
                             </div>
                         </section>
-                        <!-- End Section Header Bar -->
-
-                        <!-- Start Section Body Part 1 -->
-
                         <section id="fda_product_tile" class="col-12 flex-wrap d-flex justify-content-center gap-5">
                             <div v-for="dish in filteredDishes" :key="dish.id" class="row fda_food_row mb-5">
                                 <div class="col-9 w-100">
@@ -207,7 +203,6 @@ export default {
                                 </div>
                             </div>
                         </section>
-                        <!-- End Section Body Part 1 -->
                     </div>
                 </div>
             </div>
