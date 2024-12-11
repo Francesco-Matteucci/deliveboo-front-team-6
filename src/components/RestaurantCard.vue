@@ -90,8 +90,8 @@
             },
             goToCheckout() {
                 this.$router.push({
-                    name: "checkout",
-                    state: {
+                    name: "Checkout",
+                    params: {
                         cart: this.cart,
                         total: this.total,
                     },

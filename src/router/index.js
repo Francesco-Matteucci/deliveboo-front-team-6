@@ -5,7 +5,7 @@ import Checkout from '../components/Checkout.vue';
 const routes = [
     { path: '/', name: 'Home', component: Home },
     { path: '/restaurants/:slug', name: 'RestaurantPage', component: RestaurantPage },
-    { path: '/checkout', name: 'Checkout', component: Checkout, props: true},
+    { path: '/checkout', name: 'Checkout', component: Checkout, props: route => ({ cart: route.params.cart || [], total: route.params.total || 0 })},
 ];
 
 const router = createRouter({
