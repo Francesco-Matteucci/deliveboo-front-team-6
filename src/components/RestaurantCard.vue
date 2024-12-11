@@ -206,7 +206,7 @@ export default {
             </p>
 
             <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
-                <h5 class="fw-semibold m-0 fs-5 mx-2">Totale: {{ total }} €</h5>
+                <h5 class="fw-semibold m-0 fs-6 mx-2">Totale: <br> {{ total }} €</h5>
                 <button class="btn btn-outline-success" @click="showCheckout = true" id="checkout-btn">Procedi al
                     pagamento</button>
             </div>
@@ -221,10 +221,7 @@ export default {
             <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"
                 @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
         </div>
-        <!-- Mobile Cart -->
-        <div v-if="cart.length === 1" class="mobile-cart">
-            <button>ciao</button>
-        </div>
+
         <!--Dishes-->
         <div class="container dish-container">
             <p v-if="loading" class="text-center">Caricamento in corso...</p>
@@ -277,6 +274,12 @@ export default {
                                                 </button>
                                             </span>
                                         </span>
+                                        <div v-if="(itemInCart = cart.find(cartItem => cartItem.id === dish.id))"
+                                            class="mobile-dishes-counter">
+                                            <span class="me-2 fs-6">
+                                                Selezionati: {{ itemInCart.quantity }}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -412,9 +415,15 @@ export default {
 }
 
 /*Cart*/
+.mobile-dishes-counter span {
+    color: rgb(116, 113, 113);
+}
 
-.mobile-cart {
-    display: none;
+#show-cart-btn {
+    border: none;
+    border-radius: 1rem;
+    background-color: #ee5f07;
+    color: white;
 }
 
 .cart {
@@ -693,6 +702,10 @@ body {
     color: #000000;
 }
 
+.mobile-dishes-counter {
+    display: none;
+}
+
 .btn-default {
     margin-bottom: 15px;
     padding: 12px 40px;
@@ -807,11 +820,7 @@ body {
         margin-left: 5px;
     }
 
-    .cart {
-        display: none;
-    }
-
-    .mobile-cart {
+    .mobile-dishes-counter {
         display: block;
     }
 }
