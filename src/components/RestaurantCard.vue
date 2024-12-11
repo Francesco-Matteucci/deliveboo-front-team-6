@@ -79,28 +79,28 @@ export default {
 </script>
 
 <template>
-    <header class="hero-banner position-relative w-100 m-0"
+    <header class="hero-banner position-relative m-0"
         :style="{ backgroundImage: `url(${filteredRestaurants[0]?.image})` }">
         <!-- Hero Content -->
-        <div class="hero-overlay position-absolute top-0 start-0 d-flex p-4">
-            <div class="info-box bg-dark bg-opacity-75 text-white p-4 rounded">
-                <h1 class="fw-bold">{{ filteredRestaurants[0]?.name }}</h1>
-                <p class="mb-2">
-                    <i class="bi bi-geo-alt-fill text-danger me-2"></i>
-                    {{ filteredRestaurants[0]?.address }}
-                </p>
-                <p>
-                    <i class="bi bi-tags-fill text-secondary me-2"></i>
-                    Categorie:
-                    <span v-for="(category, index) in filteredRestaurants[0]?.categories" :key="category.id">
-                        <strong>{{ category.name }}</strong>
-                        <span v-if="index < filteredRestaurants[0]?.categories.length - 1">,
-                        </span>
-                    </span>
-                </p>
-            </div>
-        </div>
     </header>
+    <div class="hero-overlay position-absolute top-0 start-0 d-flex">
+        <div class="info-box bg-dark bg-opacity-75 text-white p-4 rounded">
+            <h1 class="fw-bold fs-6">{{ filteredRestaurants[0]?.name }}</h1>
+            <p class="mb-2 fs-6">
+                <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+                <span class="fs-6">{{ filteredRestaurants[0]?.address }}</span>
+            </p>
+            <p>
+                <i class="bi bi-tags-fill text-secondary me-2"></i>
+                <span class="fs-6">Categorie:</span>
+                <span v-for="(category, index) in filteredRestaurants[0]?.categories" :key="category.id">
+                    <strong>{{ category.name }}</strong>
+                    <span v-if="index < filteredRestaurants[0]?.categories.length - 1">,
+                    </span>
+                </span>
+            </p>
+        </div>
+    </div>
 
     <main class="pt-4">
         <!--Cart-->
@@ -176,7 +176,8 @@ export default {
                                                     </span>
                                                     <span v-else class="info-span text-danger rounded-2 fw-semibold">
                                                         <div>
-                                                            <i class="bi bi-bag-x-fill w-100 text-center"></i> Non disponibile
+                                                            <i class="bi bi-bag-x-fill w-100 text-center"></i> Non
+                                                            disponibile
                                                         </div>
                                                         <span class="badge add-to-cart-button not-available">
                                                             <i class="bi bi-cart-plus fs-5"></i>
@@ -212,9 +213,11 @@ export default {
 </template>
 
 <style scoped>
-
 .hero-banner {
-    height: 70vh;
+    height: 40vh;
+    width: 80vw;
+    display: flex;
+    justify-self: flex-end;
     background-size: cover;
     background-position: center;
     position: relative;
@@ -222,12 +225,17 @@ export default {
 }
 
 .hero-overlay {
+    height: 40vh;
+    width: 20vw;
     background: rgba(0, 0, 0, 0.5);
 }
 
 .info-box {
-    max-width: 400px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 20vw;
 }
 
 /*Restaurants*/
@@ -345,7 +353,12 @@ export default {
 
 /* main */
 main {
-    background-color: #333;
+    background: radial-gradient(circle at top left, rgba(0, 0, 0, 0.616), transparent 50%),
+        radial-gradient(circle at top right, black, transparent 50%),
+        radial-gradient(circle at bottom left, black, transparent 50%),
+        radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.616), transparent 50%),
+        #752f02;
+    background-size: 100% 100%;
 }
 
 body {
@@ -470,7 +483,7 @@ body {
 }
 
 .fda_food_row div.food_tile.active {
-    background-color: rgba(220, 230, 252, 1);
+    background-color: #F9F9F9;
 }
 
 .fda_food_row div.food_tile img {
@@ -492,12 +505,17 @@ body {
 .fda_food_row div.food_tile {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Distribuisce gli elementi verticalmente */
-    align-items: center; /* Centra gli elementi orizzontalmente */
-    height: 100%; /* Assicura che tutte le schede abbiano la stessa altezza */
-    padding: 20px 25px; /* Spazio interno uniforme */
+    justify-content: space-between;
+    /* Distribuisce gli elementi verticalmente */
+    align-items: center;
+    /* Centra gli elementi orizzontalmente */
+    height: 100%;
+    /* Assicura che tutte le schede abbiano la stessa altezza */
+    padding: 20px 25px;
+    /* Spazio interno uniforme */
     border-radius: 25px;
-    text-align: center; /* Centra il testo */
+    text-align: center;
+    /* Centra il testo */
     background-color: rgba(0, 0, 0, 0.05);
     font-size: 11px;
 }
@@ -507,21 +525,26 @@ body {
     font-weight: 600;
     color: rgba(38, 29, 86, 1);
     margin-bottom: 12px;
-    min-height: 20px; /* Garantisce altezza uniforme */
+    min-height: 20px;
+    /* Garantisce altezza uniforme */
 }
 
 .food_detail {
     font-weight: 600;
     color: rgba(38, 29, 86, 0.4);
     margin-bottom: 15px;
-    min-height: 40px; /* Altezza minima per evitare sfalsamenti */
-    line-height: 1.5; /* Migliora la leggibilità */
+    min-height: 40px;
+    /* Altezza minima per evitare sfalsamenti */
+    line-height: 1.5;
+    /* Migliora la leggibilità */
 }
 
 #food_meta {
     display: flex;
-    justify-content: center; /* Centra i meta dati */
-    margin-top: auto; /* Spinge verso il basso */
+    justify-content: center;
+    /* Centra i meta dati */
+    margin-top: auto;
+    /* Spinge verso il basso */
     margin-bottom: 15px;
     padding: 0;
 }
@@ -542,7 +565,7 @@ body {
     border-radius: 5px;
     transition: all 0.3s ease-in-out;
     user-select: none;
-    color: #ff6403;
+    color: #000000;
 }
 
 .btn-default {
@@ -559,12 +582,20 @@ body {
 }
 
 .active .btn-default {
-    background-color: #ff6403;
+    background: #ee5f07;
+    background-size: 100%;
     color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.04);
-}
 
-.active .btn-default:hover {
-    transform: scale(1.1);
+    &:hover {
+        scale: 1.1;
+    }
+
+    &:active {
+        color: white;
+        background-color: #ee5f07;
+        scale: 1;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+    }
 }
 </style>
