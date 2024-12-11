@@ -8,7 +8,7 @@
         },
         data() {
             return {
-                restaurantId: this.$route.params.id,
+                restaurantSlug: this.$route.params.slug,
             };
         },
     };
@@ -16,6 +16,7 @@
 
 <template>
     <div>
+        <RestaurantCard :slug="restaurantSlug" />
         <RestaurantCard :slug="restaurantId" />
     </div>
 </template>

@@ -75,6 +75,8 @@
       },
       goToRestaurant(slug) {
         this.$router.push({ name: "RestaurantPage", params: { slug } });
+      goToRestaurant(slug) {
+        this.$router.push({ name: "RestaurantPage", params: { slug } });
       },
     },
     mounted() {
@@ -125,12 +127,13 @@
         {{ errorCategories }}
       </p>
 
-      <p v-if="!loading && !filteredRestaurants.length" class="text-center text-warning fs-5 my-0 py-3">
-        Ops, sembra che non esistano ancora ristoranti con questi parametri ricercati :(
+      <p v-if="!loading && !filteredRestaurants.length" class="text-center text-warning fs-5 m-0 py-3">
+        <i class="bi bi-emoji-frown-fill "></i> Ooops! Sembra che non esistano ancora ristoranti con questi parametri
+        <i class="bi bi-emoji-frown-fill"></i>
       </p>
 
       <div v-if="!loading && filteredRestaurants.length" class="row px-5 pb-5">
-        <div v-for="restaurant in filteredRestaurants" :key="restaurant.slug" class="col-lg-3 col-md-6 md-2 g-4">
+        <div v-for="restaurant in filteredRestaurants" :key="restaurant.id" class="col-lg-3 col-md-6 md-2 g-4">
           <div @click="goToRestaurant(restaurant.slug)" class="restaurant-card">
             <div class="categories-overlay">
               <span v-for="category in restaurant.categories" :key="category.id" class="badge me-1" :class="{
