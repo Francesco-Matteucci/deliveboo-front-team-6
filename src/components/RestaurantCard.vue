@@ -7,10 +7,15 @@
         components: {
             Footer,
         },
+        props: {
+            slug: {
+                type: String,
+                required: true,
+            },
+        },
         data() {
             return {
-                restaurants: [],
-                filteredRestaurants: [],
+                restaurant: null,
                 dishes: [],
                 filteredDishes: [],
                 cart: [],
@@ -21,35 +26,31 @@
         },
         methods: {
             fetchDishes() {
-                const restaurantSlug = this.$route.params.slug;
                 axios
-                    .get(`http://127.0.0.1:8000/api/dishes?restaurant_slug=${restaurantSlug}`)
+                    .get("http://127.0.0.1:8000/api/dishes")
                     .then((response) => {
                         console.log("Risposta API piatti:", response.data);
                         this.dishes = response.data.results;
-                        this.filteredDishes = this.dishes;
+                        this.filteredDishes = this.dishes.filter(
+                            (dish) => dish.restaurant_id === this.restaurant.id
+                        );
                     })
                     .catch((error) => {
                         console.error("Errore API piatti:", error);
                         this.error = "Errore nel caricamento dei dati.";
-                    })
-                    .finally(() => {
-                        this.loading = false;
                     });
             },
-            fetchRestaurants() {
-                const restaurantSlug = this.$route.params.slug;
+            fetchRestaurant() {
+                const slug = this.$route.params.slug;
                 axios
-                    .get(`http://127.0.0.1:8000/api/restaurants/${restaurantSlug}`)
+                    .get(`http://127.0.0.1:8000/api/restaurants/${slug}`)
                     .then((response) => {
-                        console.log("Risposta API Ristoranti:", response.data);
-                        this.restaurants = [response.data.result];
-                        this.filteredRestaurants = this.restaurants;
-
+                        console.log("Dettagli ristorante:", response.data);
+                        this.restaurant = response.data.results;
                     })
                     .catch((error) => {
-                        console.error("Errore API Ristoranti:", error);
-                        this.error = "Errore nel caricamento dei dati.";
+                        console.error("Errore API ristorante:", error);
+                        this.error = "Errore nel caricamento del ristorante.";
                     })
                     .finally(() => {
                         this.loading = false;
@@ -67,29 +68,28 @@
             },
         },
         mounted() {
+            this.fetchRestaurant();
             this.fetchDishes();
-            this.fetchRestaurants();
         },
     };
 </script>
 
 <template>
-    <header class="hero-banner position-relative w-100 m-0"
-        :style="{ backgroundImage: `url(${filteredRestaurants[0]?.image})` }">
+    <header class="hero-banner position-relative w-100 m-0" :style="{ backgroundImage: `url(${restaurant?.image})` }">
         <!-- Hero Content -->
         <div class="hero-overlay position-absolute top-0 start-0 d-flex p-4">
             <div class="info-box bg-dark bg-opacity-75 text-white p-4 rounded">
-                <h1 class="fw-bold">{{ filteredRestaurants[0]?.name }}</h1>
+                <h1 class="fw-bold">{{ restaurant?.name }}</h1>
                 <p class="mb-2">
                     <i class="bi bi-geo-alt-fill text-danger me-2"></i>
-                    {{ filteredRestaurants[0]?.address }}
+                    {{ restaurant?.address }}
                 </p>
                 <p>
                     <i class="bi bi-tags-fill text-secondary me-2"></i>
                     Categorie:
-                    <span v-for="(category, index) in filteredRestaurants[0]?.categories" :key="category.id">
+                    <span v-for="(category, index) in restaurant?.categories" :key="category.id">
                         <strong>{{ category.name }}</strong>
-                        <span v-if="index < filteredRestaurants[0]?.categories.length - 1">,</span>
+                        <span v-if="index < restaurant?.categories.length - 1">,</span>
                     </span>
                 </p>
             </div>
@@ -205,6 +205,7 @@
     </main>
     <Footer />
 </template>
+
 
 <style scoped>
 
