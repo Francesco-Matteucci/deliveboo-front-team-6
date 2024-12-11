@@ -3,12 +3,14 @@
     import "bootstrap-icons/font/bootstrap-icons.css";
     import Footer from "../components/Footer.vue";
     import CheckoutModal from "../components/CheckoutModal.vue";
+    import SuccessModal from "../components/SuccessModal.vue";
     import ClearCartModal from "../components/ClearCartModal.vue";
 
     export default {
         components: {
             Footer,
             CheckoutModal,
+            SuccessModal,
             ClearCartModal,
         },
         data() {
@@ -21,6 +23,7 @@
                 loading: true,
                 error: null,
                 showCheckout: false,
+                showSuccessModal: false,
                 showClearCartModal: false,
                 nextRoute: null
             };
@@ -113,11 +116,13 @@
                 localStorage.removeItem('total');
             },
             orderCompleted() {
-                // L'ordine è stato completato nella CheckoutModal
+                console.log("Order completed rilevato in RestaurantCard.vue!");
                 this.cart = [];
                 this.total = 0;
                 localStorage.removeItem('cart');
                 localStorage.removeItem('total');
+                this.showSuccessModal = true;
+                console.log("showSuccessModal impostato a true");
             }
         },
         mounted() {
@@ -203,9 +208,12 @@
                         <button class="btn btn-primary" @click="showCheckout = true">Vai al Checkout</button>
                     </div>
 
-                    <!-- Modale Checkout -->
                     <CheckoutModal v-if="showCheckout" :cart="cart" :total="total" :showModal="showCheckout"
                         @close="showCheckout = false" @order-completed="orderCompleted" />
+
+                    <SuccessModal v-if="showSuccessModal" :showModal="showSuccessModal"
+                        @close="showSuccessModal = false" />
+
 
                     <!-- Modale cambio ristorante -->
                     <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"

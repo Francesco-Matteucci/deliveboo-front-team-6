@@ -19,7 +19,13 @@
         data() {
             return {
                 email: "",
+                firstname: "",
+                lastname: "",
+                address: "",
+                phone_number: "",
+                note: "",
                 paymentInstance: null,
+                primaryColor: '#ff6403'
             };
         },
         methods: {
@@ -42,20 +48,26 @@
             async processPayment() {
                 try {
                     const payload = await this.paymentInstance.requestPaymentMethod();
-                    console.log("Pagamento in corso...");
-                    console.log("Nonce generato:", payload.nonce);
-
-                    alert("Pagamento simulato con successo!");
+                    console.log("Pagamento simulato con successo, nonce:", payload.nonce);
 
                     await axios.post('http://127.0.0.1:8000/api/orders', {
                         cart: this.cart,
-                        total: this.total,
-                        email: this.email
+                        total_price: this.total,
+                        firstname: this.firstname,
+                        lastname: this.lastname,
+                        address: this.address,
+                        phone_number: this.phone_number,
+                        note: this.note,
+                        restaurant_id: this.cart.length > 0 ? this.cart[0].restaurant_id : 1,
                     });
+                    console.log("Ordine inviato con successo al back-end");
 
                     this.$emit('order-completed');
+                    console.log("Evento order-completed emesso");
 
                     this.closeModal();
+                    console.log("closeModal() chiamato");
+
                 } catch (error) {
                     console.error("Errore durante il pagamento:", error);
                 }
@@ -74,13 +86,14 @@
     <div class="modal fade" :class="{ show: showModal }" tabindex="-1" style="display: block;" role="dialog"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content rounded-4 shadow">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Riepilogo Ordine</h1>
-                    <button type="button" class="btn-close" aria-label="Close" @click="closeModal"></button>
+            <div class="modal-content custom-modal-content rounded-4 shadow">
+                <div class="modal-header custom-modal-header">
+                    <h1 class="modal-title fs-5 text-white">Riepilogo Ordine</h1>
+                    <button type="button" class="btn-close btn-close-white" aria-label="Close"
+                        @click="closeModal"></button>
                 </div>
-                <div class="modal-body">
-                    <ul class="list-unstyled">
+                <div class="modal-body bg-light">
+                    <ul class="list-unstyled mb-4">
                         <li v-for="(item, index) in cart" :key="index" class="d-flex justify-content-between mb-2">
                             <span>{{ item.name }} x{{ item.quantity }}</span>
                             <span>{{ (item.price * item.quantity).toFixed(2) }} €</span>
@@ -90,11 +103,41 @@
 
                     <form @submit.prevent="processPayment">
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email:</label>
+                            <label for="email" class="form-label fw-semibold">Email:</label>
                             <input type="email" id="email" v-model="email" class="form-control" required>
                         </div>
-                        <div id="payment-form"></div>
-                        <button type="submit" class="btn btn-primary mt-3 w-100">Paga</button>
+                        <div class="mb-3">
+                            <label for="firstname" class="form-label fw-semibold">Nome:</label>
+                            <input type="text" id="firstname" v-model="firstname" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastname" class="form-label fw-semibold">Cognome:</label>
+                            <input type="text" id="lastname" v-model="lastname" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label fw-semibold">Indirizzo di consegna:</label>
+                            <input type="text" id="address" v-model="address" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone_number" class="form-label fw-semibold">Numero di telefono:</label>
+                            <input type="text" id="phone_number" v-model="phone_number" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="note" class="form-label fw-semibold">Note (opzionali):</label>
+                            <textarea id="note" v-model="note" class="form-control"
+                                placeholder="Ad es. Suonare al campanello rosso"></textarea>
+                        </div>
+
+                        <div id="payment-form" class="mb-3"></div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary me-3" @click="closeModal">
+                                Annulla Pagamento
+                            </button>
+                            <button type="submit" class="btn text-white" :style="{ backgroundColor: primaryColor }">
+                                Paga
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -104,29 +147,34 @@
 </template>
 
 <style scoped>
-
-    .modal[role="dialog"] {
-        display: block;
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, .5);
     }
 
-    :global(body) {
-        transition: filter 0.3s ease;
+    .custom-modal-header {
+        background: linear-gradient(to right, #000000, #752f02);
+        border-bottom: none;
     }
 
-    :global(body.modal-open) {
-        filter: blur(2px);
+    .custom-modal-content {
+        border: none;
+        overflow: hidden;
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .modal-content {
-        border-radius: 15px;
-    }
-
-    .btn-close {
-        background: none;
-        border: none;
-    }
-
-    .modal-backdrop {
-        background-color: rgba(0, 0, 0, .5);
+        border-radius: 20px;
     }
 </style>
