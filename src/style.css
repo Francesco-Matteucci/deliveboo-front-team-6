@@ -16,3 +16,7 @@ html::-webkit-scrollbar-thumb:hover {
   background: #f58122; /* Colore quando si passa sopra */
   cursor: pointer;
 }
+
+html {
+  overflow-x: hidden;
+}
