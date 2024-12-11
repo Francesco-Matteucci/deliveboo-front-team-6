@@ -16,7 +16,7 @@
 
 <template>
     <div>
-        <RestaurantCard :id="restaurantId" />
+        <RestaurantCard :slug="restaurantId" />
     </div>
 </template>
 

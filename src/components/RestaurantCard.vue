@@ -14,13 +14,13 @@ export default {
     },
     methods: {
         fetchDishes() {
-            const restaurantId = this.$route.params.id;
+            const restaurantId = this.$route.params.slug;
             axios
                 .get("http://127.0.0.1:8000/api/dishes")
                 .then((response) => {
                     console.log("Risposta API piatti:", response.data);
                     this.dishes = response.data.results;
-                    this.filteredDishes = this.dishes.filter((dish) => dish.restaurant_id === parseInt(restaurantId)
+                    this.filteredDishes = this.dishes.filter((dish) => dish.restaurant_slug === parseInt(restaurantId)
                     );
                 })
                 .catch((error) => {
@@ -32,14 +32,14 @@ export default {
                 });
         },
         fetchRestaurants() {
-            const restaurantId = this.$route.params.id;
+            const restaurantId = this.$route.params.slug;
             axios
                 .get("http://127.0.0.1:8000/api/restaurants")
                 .then((response) => {
                     console.log("Risposta API Ristoranti:", response.data);
                     this.restaurants = response.data.results;
                     this.filteredRestaurants = this.restaurants.filter(
-                        (restaurant) => restaurant.id === parseInt(restaurantId)
+                        (restaurant) => restaurant.slug === parseInt(restaurantId)
                     );
                 })
                 .catch((error) => {
@@ -62,7 +62,7 @@ export default {
     <header class="d-flex w-100">
         <!-- Restaurant card -->
         <div class="d-flex align-items-center justify-content-center w-100">
-            <div v-for="restaurant in filteredRestaurants" :key="restaurant.id"
+            <div v-for="restaurant in filteredRestaurants" :key="restaurant.slug"
                 class="restaurant-card d-flex flex-column justify-content-between rounded-5 w-100"
                 style="min-height: 300px; height: 100%; background-color: #f8f9fa; overflow: hidden;">
 

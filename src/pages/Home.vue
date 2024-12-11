@@ -73,8 +73,8 @@
           restaurant.name.toLowerCase().includes(query)
         );
       },
-      goToRestaurant(id) {
-        this.$router.push({ name: "RestaurantPage", params: { id } });
+      goToRestaurant(slug) {
+        this.$router.push({ name: "RestaurantPage", params: { slug } });
       },
     },
     mounted() {
@@ -130,8 +130,8 @@
       </p>
 
       <div v-if="!loading && filteredRestaurants.length" class="row px-5 pb-5">
-        <div v-for="restaurant in filteredRestaurants" :key="restaurant.id" class="col-lg-3 col-md-6 md-2 g-4">
-          <div @click="goToRestaurant(restaurant.id)" class="restaurant-card">
+        <div v-for="restaurant in filteredRestaurants" :key="restaurant.slug" class="col-lg-3 col-md-6 md-2 g-4">
+          <div @click="goToRestaurant(restaurant.slug)" class="restaurant-card">
             <div class="categories-overlay">
               <span v-for="category in restaurant.categories" :key="category.id" class="badge me-1" :class="{
                 'bg-primary': selectedCategories.includes(category.id),
