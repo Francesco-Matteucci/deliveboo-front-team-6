@@ -200,7 +200,7 @@
                     </ul>
 
                     <p v-if="cart.length === 0" class="text-center text-muted">
-                        Il carrello è vuoto.
+                        Il carrello è vuoto.a
                     </p>
 
                     <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
