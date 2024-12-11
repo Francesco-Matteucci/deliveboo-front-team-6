@@ -1,87 +1,87 @@
 <script>
-import axios from "axios";
-import Hero from "../components/Hero.vue";
-import ServiceSection from "../components/ServiceSection.vue";
-import TrackingSection from "../components/TrackingSection.vue";
-import Footer from "../components/Footer.vue";
+  import axios from "axios";
+  import Hero from "../components/Hero.vue";
+  import ServiceSection from "../components/ServiceSection.vue";
+  import TrackingSection from "../components/TrackingSection.vue";
+  import Footer from "../components/Footer.vue";
 
-export default {
-  name: "Home",
-  data() {
-    return {
-      restaurants: [],
-      filteredRestaurants: [],
-      loading: true,
-      error: null,
-      categories: [],
-      selectedCategories: [],
-      errorCategories: null,
-      searchQuery: "",
-    };
-  },
-  components: {
-    Hero,
-    ServiceSection,
-    TrackingSection,
-    Footer,
-  },
-  methods: {
-    fetchRestaurants() {
-      const params = {
-        categories: this.selectedCategories,
+  export default {
+    name: "Home",
+    data() {
+      return {
+        restaurants: [],
+        filteredRestaurants: [],
+        loading: true,
+        error: null,
+        categories: [],
+        selectedCategories: [],
+        errorCategories: null,
+        searchQuery: "",
       };
+    },
+    components: {
+      Hero,
+      ServiceSection,
+      TrackingSection,
+      Footer,
+    },
+    methods: {
+      fetchRestaurants() {
+        const params = {
+          categories: this.selectedCategories,
+        };
 
-      axios
-        .get("http://127.0.0.1:8000/api/restaurants", { params })
-        .then((response) => {
-          console.log("Risposta API Ristoranti:", response.data);
-          this.restaurants = response.data.results;
-          this.filteredRestaurants = this.restaurants;
-        })
-        .catch((error) => {
-          console.error("Errore API Ristoranti:", error);
-          this.error = "Errore nel caricamento dei dati.";
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+        axios
+          .get("http://127.0.0.1:8000/api/restaurants", { params })
+          .then((response) => {
+            console.log("Risposta API Ristoranti:", response.data);
+            this.restaurants = response.data.results;
+            this.filteredRestaurants = this.restaurants;
+          })
+          .catch((error) => {
+            console.error("Errore API Ristoranti:", error);
+            this.error = "Errore nel caricamento dei dati.";
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+      },
+      fetchCategories() {
+        axios
+          .get("http://127.0.0.1:8000/api/category")
+          .then((response) => {
+            console.log("Risposta API Categorie:", response.data);
+            this.categories = response.data.results;
+          })
+          .catch((error) => {
+            console.error("Errore API Categorie:", error);
+            this.errorCategories = "Errore nel caricamento delle categorie.";
+          });
+      },
+      toggleCategorySelection(categoryId) {
+        const index = this.selectedCategories.indexOf(categoryId);
+        if (index > -1) {
+          this.selectedCategories.splice(index, 1);
+        } else {
+          this.selectedCategories.push(categoryId);
+        }
+        this.fetchRestaurants();
+      },
+      filterBySearch() {
+        const query = this.searchQuery.toLowerCase();
+        this.filteredRestaurants = this.restaurants.filter((restaurant) =>
+          restaurant.name.toLowerCase().includes(query)
+        );
+      },
+      goToRestaurant(slug) {
+        this.$router.push({ name: "RestaurantPage", params: { slug } });
+      },
     },
-    fetchCategories() {
-      axios
-        .get("http://127.0.0.1:8000/api/category")
-        .then((response) => {
-          console.log("Risposta API Categorie:", response.data);
-          this.categories = response.data.results;
-        })
-        .catch((error) => {
-          console.error("Errore API Categorie:", error);
-          this.errorCategories = "Errore nel caricamento delle categorie.";
-        });
-    },
-    toggleCategorySelection(categoryId) {
-      const index = this.selectedCategories.indexOf(categoryId);
-      if (index > -1) {
-        this.selectedCategories.splice(index, 1);
-      } else {
-        this.selectedCategories.push(categoryId);
-      }
+    mounted() {
       this.fetchRestaurants();
+      this.fetchCategories();
     },
-    filterBySearch() {
-      const query = this.searchQuery.toLowerCase();
-      this.filteredRestaurants = this.restaurants.filter((restaurant) =>
-        restaurant.name.toLowerCase().includes(query)
-      );
-    },
-    goToRestaurant(id) {
-      this.$router.push({ name: "RestaurantPage", params: { id } });
-    },
-  },
-  mounted() {
-    this.fetchRestaurants();
-    this.fetchCategories();
-  },
-};
+  };
 </script>
 
 
@@ -132,7 +132,7 @@ export default {
 
       <div v-if="!loading && filteredRestaurants.length" class="row px-5 pb-5">
         <div v-for="restaurant in filteredRestaurants" :key="restaurant.id" class="col-lg-3 col-md-6 md-2 g-4">
-          <div @click="goToRestaurant(restaurant.id)" class="restaurant-card">
+          <div @click="goToRestaurant(restaurant.slug)" class="restaurant-card">
             <div class="categories-overlay">
               <span v-for="category in restaurant.categories" :key="category.id" class="badge me-1" :class="{
                 'bg-primary': selectedCategories.includes(category.id),
@@ -165,122 +165,122 @@ export default {
 
 
 <style scoped>
-.container-fluid {
-  background-color: rgb(14 14 14);
-}
-
-.categories-container {
-  padding: 20px;
-}
-
-.categories-list {
-  justify-self: center;
-}
-
-.categories-list button {
-  padding: 1vh 2vh;
-  border-radius: 13px;
-  transition: 0.2s ease;
-  background-color: #ff6204;
-  border: none;
-  color: white;
-
-  &:hover {
-    scale: 1.1;
+  .container-fluid {
+    background-color: rgb(14 14 14);
   }
 
-  &:active {
-    scale: 0.9;
+  .categories-container {
+    padding: 20px;
   }
-}
 
-.categories-list button.active {
-  background-color: #252525;
-  color: #fff;
-  border: 1px solid rgb(51, 48, 48);
-}
-
-.restaurant-card {
-  min-height: 35vh;
-  border: none;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s ease;
-  cursor: pointer;
-  background-color: #b8aeae;
-
-  &:active {
-    scale: 1.1;
+  .categories-list {
+    justify-self: center;
   }
-}
 
-.restaurant-card-image {
-  height: 35vh;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-}
+  .categories-list button {
+    padding: 1vh 2vh;
+    border-radius: 13px;
+    transition: 0.2s ease;
+    background-color: #ff6204;
+    border: none;
+    color: white;
 
-.restaurant-card-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.582);
-  color: #fff;
-  padding: 0.1rem;
-  text-align: center;
-}
+    &:hover {
+      scale: 1.1;
+    }
 
-.restaurant-name {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0;
-}
+    &:active {
+      scale: 0.9;
+    }
+  }
 
-.search-bar-container {
-  max-width: 100%;
-}
+  .categories-list button.active {
+    background-color: #252525;
+    color: #fff;
+    border: 1px solid rgb(51, 48, 48);
+  }
 
-.search-bar-container input {
-  padding: 10px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 20px;
-  transition: 0.3s ease;
-  min-width: 60vw;
-  max-width: 60vw;
-  background-color: #252525;
-  color: white;
-}
+  .restaurant-card {
+    min-height: 35vh;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s ease;
+    cursor: pointer;
+    background-color: #b8aeae;
 
-.search-bar-container input:focus {
-  border-color: #ff6204;
-  outline: none;
-  box-shadow: 0 0 5px #ff6204;
-}
+    &:active {
+      scale: 1.1;
+    }
+  }
 
-.search-bar-container input::placeholder {
-  color: rgb(122, 112, 112);
-}
+  .restaurant-card-image {
+    height: 35vh;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
 
-.categories-overlay {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1;
-}
+  .restaurant-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.582);
+    color: #fff;
+    padding: 0.1rem;
+    text-align: center;
+  }
 
-.restaurant-card {
-  position: relative;
-  min-height: 35vh;
-  border: none;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s ease;
-  cursor: pointer;
-  background-color: #b8aeae;
-}
+  .restaurant-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .search-bar-container {
+    max-width: 100%;
+  }
+
+  .search-bar-container input {
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 20px;
+    transition: 0.3s ease;
+    min-width: 60vw;
+    max-width: 60vw;
+    background-color: #252525;
+    color: white;
+  }
+
+  .search-bar-container input:focus {
+    border-color: #ff6204;
+    outline: none;
+    box-shadow: 0 0 5px #ff6204;
+  }
+
+  .search-bar-container input::placeholder {
+    color: rgb(122, 112, 112);
+  }
+
+  .categories-overlay {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+  }
+
+  .restaurant-card {
+    position: relative;
+    min-height: 35vh;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s ease;
+    cursor: pointer;
+    background-color: #b8aeae;
+  }
 </style>
