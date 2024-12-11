@@ -2,16 +2,12 @@
     import axios from "axios";
     import "bootstrap-icons/font/bootstrap-icons.css";
     import Footer from "../components/Footer.vue";
+    import CheckoutModal from "../components/CheckoutModal.vue";
 
     export default {
         components: {
             Footer,
-        },
-        props: {
-            slug: {
-                type: String,
-                required: true,
-            },
+            CheckoutModal,
         },
         data() {
             return {
@@ -22,6 +18,7 @@
                 total: 0,
                 loading: true,
                 error: null,
+                showCheckout: false,
             };
         },
         methods: {
@@ -29,7 +26,6 @@
                 axios
                     .get("http://127.0.0.1:8000/api/dishes")
                     .then((response) => {
-                        console.log("Risposta API piatti:", response.data);
                         this.dishes = response.data.results;
                         this.filteredDishes = this.dishes.filter(
                             (dish) => dish.restaurant_id === this.restaurant.id
@@ -45,7 +41,6 @@
                 axios
                     .get(`http://127.0.0.1:8000/api/restaurants/${slug}`)
                     .then((response) => {
-                        console.log("Dettagli ristorante:", response.data);
                         this.restaurant = response.data.results;
                     })
                     .catch((error) => {
@@ -87,16 +82,7 @@
             },
             goToHome() {
                 this.$router.push({ name: "Home" });
-            },
-            goToCheckout() {
-                this.$router.push({
-                    name: "Checkout",
-                    params: {
-                        cart: this.cart,
-                        total: this.total,
-                    },
-                });
-            },
+            }
         },
         mounted() {
             this.fetchRestaurant();
@@ -172,10 +158,10 @@
 
                     <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
                         <h5 class="fw-semibold">Totale: {{ total }} €</h5>
-                        <button class="btn btn-primary" @click="goToCheckout">
-                            Vai al Checkout
-                        </button>
+                        <button class="btn btn-primary" @click="showCheckout = true">Vai al Checkout</button>
                     </div>
+                    <CheckoutModal v-if="showCheckout" :cart="cart" :total="total" :showModal="showCheckout"
+                        @close="showCheckout = false" />
                 </div>
                 <!--Dishes-->
                 <div class="container dish-container">
