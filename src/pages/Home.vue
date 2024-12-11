@@ -75,9 +75,6 @@
       },
       goToRestaurant(slug) {
         this.$router.push({ name: "RestaurantPage", params: { slug } });
-      goToRestaurant(slug) {
-        this.$router.push({ name: "RestaurantPage", params: { slug } });
-      },
     },
     mounted() {
       this.fetchRestaurants();
