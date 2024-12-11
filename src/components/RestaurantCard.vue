@@ -3,11 +3,13 @@
     import "bootstrap-icons/font/bootstrap-icons.css";
     import Footer from "../components/Footer.vue";
     import CheckoutModal from "../components/CheckoutModal.vue";
+    import ClearCartModal from "../components/ClearCartModal.vue";
 
     export default {
         components: {
             Footer,
             CheckoutModal,
+            ClearCartModal,
         },
         data() {
             return {
@@ -19,6 +21,8 @@
                 loading: true,
                 error: null,
                 showCheckout: false,
+                showClearCartModal: false,
+                nextRoute: null
             };
         },
         methods: {
@@ -79,17 +83,56 @@
             updateTotal() {
                 this.total = this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
                 this.total = parseFloat(this.total.toFixed(2));
+                // Salviamo il carrello aggiornato nel localStorage
+                localStorage.setItem('cart', JSON.stringify(this.cart));
+                localStorage.setItem('total', this.total.toString());
             },
             goToHome() {
-                this.$router.push({ name: "Home" });
+                // Se il carrello non è vuoto, chiediamo conferma all'utente
+                if (this.cart.length > 0) {
+                    this.nextRoute = { name: "Home" };
+                    this.showClearCartModal = true;
+                } else {
+                    this.$router.push({ name: "Home" });
+                }
+            },
+            tryChangeRestaurant(newSlug) {
+                // Metodo da usare se vuoi cambiare ristorante da questo componente
+                if (this.cart.length > 0) {
+                    this.nextRoute = { name: 'RestaurantPage', params: { slug: newSlug } };
+                    this.showClearCartModal = true;
+                } else {
+                    this.$router.push({ name: 'RestaurantPage', params: { slug: newSlug } });
+                }
+            },
+            clearCartBeforeChange() {
+                // Svuotiamo il carrello
+                this.cart = [];
+                this.total = 0;
+                localStorage.removeItem('cart');
+                localStorage.removeItem('total');
+            },
+            orderCompleted() {
+                // L'ordine è stato completato nella CheckoutModal
+                this.cart = [];
+                this.total = 0;
+                localStorage.removeItem('cart');
+                localStorage.removeItem('total');
             }
         },
         mounted() {
+            // Carichiamo il carrello e il totale dal localStorage
+            const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+            const savedTotal = parseFloat(localStorage.getItem('total')) || 0;
+            this.cart = savedCart;
+            this.total = savedTotal;
+
             this.fetchRestaurant();
             this.fetchDishes();
         },
     };
 </script>
+
 
 <template>
     <div class="header-top d-flex w-100 bg-black">
@@ -103,7 +146,6 @@
     <button class="" @click="goToHome"><-- Torna alla home</button>
             <header class="hero-banner position-relative w-100 m-0"
                 :style="{ backgroundImage: `url(${restaurant?.image})` }">
-                <!-- Hero Content -->
                 <div class="hero-overlay position-absolute top-0 start-0 d-flex p-4">
                     <div class="info-box bg-dark bg-opacity-75 text-white p-4 rounded">
                         <h1 class="fw-bold">{{ restaurant?.name }}</h1>
@@ -160,8 +202,14 @@
                         <h5 class="fw-semibold">Totale: {{ total }} €</h5>
                         <button class="btn btn-primary" @click="showCheckout = true">Vai al Checkout</button>
                     </div>
+
+                    <!-- Modale Checkout -->
                     <CheckoutModal v-if="showCheckout" :cart="cart" :total="total" :showModal="showCheckout"
-                        @close="showCheckout = false" />
+                        @close="showCheckout = false" @order-completed="orderCompleted" />
+
+                    <!-- Modale cambio ristorante -->
+                    <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"
+                        @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
                 </div>
                 <!--Dishes-->
                 <div class="container dish-container">
@@ -171,7 +219,6 @@
                         class="dish-list row align-items-center d-flex justify-content-center rounded-5">
                         <div class="container-fluid">
                             <div id="fda_app" class="row">
-                                <!-- Start Section Header Bar -->
                                 <section id="fda_header_bar" class="col-12">
                                     <div class="row text-center">
                                         <h2 class="text-white">Ordina ora</h2>
@@ -194,16 +241,14 @@
                                                                     Disponibile</i>
                                                                 <span class="badge add-to-cart-button mt-2">
                                                                     <span><i class="bi bi-cart-plus fs-5"></i> {{
-                                                                        dish.price }}
-                                                                        €</span>
+                                                                        dish.price }} €</span>
                                                                 </span>
                                                             </span>
                                                             <span v-else
                                                                 class="info-span text-danger rounded-2 fw-semibold">
                                                                 <div>
                                                                     <i class="bi bi-bag-x-fill w-100 text-center"></i>
-                                                                    Non
-                                                                    disponibile
+                                                                    Non disponibile
                                                                 </div>
                                                                 <span class="badge add-to-cart-button not-available">
                                                                     <i class="bi bi-cart-plus fs-5"></i>

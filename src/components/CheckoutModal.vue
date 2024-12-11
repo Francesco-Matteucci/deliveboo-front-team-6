@@ -1,4 +1,6 @@
 <script>
+    import axios from 'axios';
+
     export default {
         props: {
             cart: {
@@ -42,8 +44,18 @@
                     const payload = await this.paymentInstance.requestPaymentMethod();
                     console.log("Pagamento in corso...");
                     console.log("Nonce generato:", payload.nonce);
+
                     alert("Pagamento simulato con successo!");
-                    this.$emit('close');
+
+                    await axios.post('http://127.0.0.1:8000/api/orders', {
+                        cart: this.cart,
+                        total: this.total,
+                        email: this.email
+                    });
+
+                    this.$emit('order-completed');
+
+                    this.closeModal();
                 } catch (error) {
                     console.error("Errore durante il pagamento:", error);
                 }
@@ -112,5 +124,9 @@
     .btn-close {
         background: none;
         border: none;
+    }
+
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, .5);
     }
 </style>
