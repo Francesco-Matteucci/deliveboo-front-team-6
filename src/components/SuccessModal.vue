@@ -1,22 +1,22 @@
 <script>
-    export default {
-        props: {
-            showModal: {
-                type: Boolean,
-                required: true
-            }
-        },
-        data() {
-            return {
-                primaryColor: '#ff6403'
-            };
-        },
-        methods: {
-            closeModal() {
-                this.$emit('close');
-            }
+export default {
+    props: {
+        showModal: {
+            type: Boolean,
+            required: true
         }
-    };
+    },
+    data() {
+        return {
+            primaryColor: '#ff6403'
+        };
+    },
+    methods: {
+        closeModal() {
+            this.$emit('close');
+        }
+    }
+};
 </script>
 
 <template>
@@ -27,10 +27,12 @@
                     <h5 class="modal-title fs-5 text-white">Ordine Completato!</h5>
                 </div>
                 <div class="modal-body bg-light">
-                    <p class="fw-semibold mb-4">Il tuo pagamento è andato a buon fine. Grazie per aver ordinato con noi!
+                    <p class="fw-semibold mb-4">Il tuo pagamento è andato a buon fine. <br>Il tuo ordine verrà presto
+                        consegnato, buon appetito!
+                        <i class="bi bi-emoji-smile"></i>
                     </p>
                     <button class="btn text-white w-100" :style="{ backgroundColor: primaryColor }" @click="closeModal">
-                        Ok
+                        Chiudi
                     </button>
                 </div>
             </div>
@@ -40,34 +42,34 @@
 </template>
 
 <style scoped>
-    .modal-backdrop {
-        background-color: rgba(0, 0, 0, .5);
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.custom-modal-header {
+    background: linear-gradient(to right, #000000, #752f02);
+    border-bottom: none;
+}
+
+.custom-modal-content {
+    border: none;
+    overflow: hidden;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
 
-    .custom-modal-header {
-        background: linear-gradient(to right, #000000, #752f02);
-        border-bottom: none;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
+}
 
-    .custom-modal-content {
-        border: none;
-        overflow: hidden;
-        animation: fadeInUp 0.3s ease-out;
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .modal-content {
-        border-radius: 20px;
-    }
+.modal-content {
+    border-radius: 20px;
+}
 </style>
