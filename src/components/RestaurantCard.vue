@@ -7,217 +7,275 @@ export default {
     components: {
         Footer,
     },
+    props: {
+        slug: {
+            type: String,
+            required: true,
+        },
+    },
     data() {
         return {
-            restaurants: [],
-            filteredRestaurants: [],
+            restaurant: null,
             dishes: [],
             filteredDishes: [],
             cart: [],
             total: 0,
             loading: true,
             error: null,
-
         };
     },
     methods: {
         fetchDishes() {
-            const restaurantId = this.$route.params.id;
             axios
                 .get("http://127.0.0.1:8000/api/dishes")
                 .then((response) => {
                     console.log("Risposta API piatti:", response.data);
                     this.dishes = response.data.results;
                     this.filteredDishes = this.dishes.filter(
-                        (dish) => dish.restaurant_id === parseInt(restaurantId)
+                        (dish) => dish.restaurant_id === this.restaurant.id
                     );
                 })
                 .catch((error) => {
                     console.error("Errore API piatti:", error);
                     this.error = "Errore nel caricamento dei dati.";
-                })
-                .finally(() => {
-                    this.loading = false;
                 });
         },
-        fetchRestaurants() {
-            const restaurantId = this.$route.params.id;
+        fetchRestaurant() {
+            const slug = this.$route.params.slug;
             axios
-                .get("http://127.0.0.1:8000/api/restaurants")
+                .get(`http://127.0.0.1:8000/api/restaurants/${slug}`)
                 .then((response) => {
-                    console.log("Risposta API Ristoranti:", response.data);
-                    this.restaurants = response.data.results;
-                    this.filteredRestaurants = this.restaurants.filter(
-                        (restaurant) => restaurant.id === parseInt(restaurantId)
-                    );
+                    console.log("Dettagli ristorante:", response.data);
+                    this.restaurant = response.data.results;
                 })
                 .catch((error) => {
-                    console.error("Errore API Ristoranti:", error);
-                    this.error = "Errore nel caricamento dei dati.";
+                    console.error("Errore API ristorante:", error);
+                    this.error = "Errore nel caricamento del ristorante.";
                 })
                 .finally(() => {
                     this.loading = false;
                 });
         },
         addToCart(dish) {
-            this.cart.push(dish);
-            this.total += parseFloat(dish.price);
+            const existingDish = this.cart.find((item) => item.id === dish.id);
+            if (existingDish) {
+                existingDish.quantity++;
+            } else {
+                this.cart.push({ ...dish, quantity: 1 });
+            }
+            this.updateTotal();
+        },
+        removeFromCart(index) {
+            this.cart.splice(index, 1);
+            this.updateTotal();
+        },
+        increaseQuantity(index) {
+            this.cart[index].quantity++;
+            this.updateTotal();
+        },
+        decreaseQuantity(index) {
+            if (this.cart[index].quantity > 1) {
+                this.cart[index].quantity--;
+            } else {
+                this.removeFromCart(index);
+            }
+            this.updateTotal();
+        },
+        updateTotal() {
+            this.total = this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
             this.total = parseFloat(this.total.toFixed(2));
         },
-
-        removeFromCart(index) {
-            const removedDish = this.cart.splice(index, 1)[0];
-            this.total -= parseFloat(removedDish.price);
-            this.total = parseFloat(this.total.toFixed(2));
+        goToHome() {
+            this.$router.push({ name: "Home" });
         },
     },
     mounted() {
+        this.fetchRestaurant();
         this.fetchDishes();
-        this.fetchRestaurants();
     },
 };
 </script>
 
 <template>
-    <header class="hero-banner position-relative m-0"
-        :style="{ backgroundImage: `url(${filteredRestaurants[0]?.image})` }">
-        <!-- Hero Content -->
-    </header>
-    <div class="hero-overlay position-absolute top-0 start-0 d-flex">
-        <div class="info-box bg-dark bg-opacity-75 text-white p-4 rounded">
-            <h1 class="fw-bold fs-6">{{ filteredRestaurants[0]?.name }}</h1>
-            <p class="mb-2 fs-6">
-                <i class="bi bi-geo-alt-fill text-danger me-2"></i>
-                <span class="fs-6">{{ filteredRestaurants[0]?.address }}</span>
-            </p>
-            <p>
-                <i class="bi bi-tags-fill text-secondary me-2"></i>
-                <span class="fs-6">Categorie:</span>
-                <span v-for="(category, index) in filteredRestaurants[0]?.categories" :key="category.id">
-                    <strong>{{ category.name }}</strong>
-                    <span v-if="index < filteredRestaurants[0]?.categories.length - 1">,
-                    </span>
-                </span>
-            </p>
+    <div class="header-top d-flex w-100 bg-black">
+        <div class="hero-bg-left-clickable" @click="goToHome"></div>
+        <div class="row fda_search_row d-flex justify-content-center w-75">
+            <div class="search-bar-container col-6 mt-5">
+                <input type="text" class="fda_ip_search" placeholder="Cerca un piatto..." />
+            </div>
         </div>
     </div>
-
-    <main class="pt-4">
-        <!--Cart-->
-        <div class="cart ">
-            <h4 class="text-center mb-4">
-                <i class="bi bi-cart4"></i> Carrello
-            </h4>
-
-            <ul class="list-unstyled">
-                <li v-for="(item, index) in cart" :key="index"
-                    class="cart-item d-flex justify-content-between align-items-center py-3 px-4 mb-3 rounded-3 shadow-sm bg-light">
-                    <div class="d-flex align-items-center">
-                        <span class="fw-semibold">{{ item.name }}</span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <span class="me-3">{{ item.price }} €</span>
-                        <button @click="removeFromCart(index)" class="btn btn-sm btn-outline-danger">
-                            Rimuovi
-                        </button>
-                    </div>
-                </li>
-            </ul>
-
-            <p v-if="cart.length === 0" class="text-center text-muted">
-                Il carrello è vuoto.
-            </p>
-
-            <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
-                <h5 class="fw-semibold">Totale: {{ total }} €</h5>
-                <button class="btn btn-primary" @click="goToCheckout">
-                    Vai al Checkout
-                </button>
-            </div>
-        </div>
-        <!--Dishes-->
-        <div class="container dish-container">
-            <p v-if="loading" class="text-center">Caricamento in corso...</p>
-            <p v-if="error" class="text-danger text-center">{{ error }}</p>
-            <div v-if="!loading && !error"
-                class="dish-list row align-items-center d-flex justify-content-center rounded-5">
-                <div class="container-fluid">
-                    <div id="fda_app" class="row">
-                        <!-- Start Section Header Bar -->
-                        <section id="fda_header_bar" class="col-12">
-                            <div class="row text-center">
-                                <h2 class="text-white">Ordina ora</h2>
-                            </div>
-                            <div class="row fda_search_row">
-                                <div class="col-12">
-                                    <i class="fa fa-search"></i>
-                                    <input type="text" class="fda_ip_search" placeholder="Cerca un piatto..." />
-                                </div>
-                            </div>
-                        </section>
-                        <section id="fda_product_tile" class="col-12 flex-wrap d-flex justify-content-center gap-5">
-                            <div v-for="dish in filteredDishes" :key="dish.id" class="row fda_food_row mb-5">
-                                <div class="col-9 w-100">
-                                    <div class="food_tile active h-100">
-                                        <img :src="dish.image" alt="" class="fda_product_img" />
-                                        <span class="food_name">{{ dish.name }}</span>
-                                        <span class="food_detail">{{ dish.description }}</span>
-                                        <ul id="food_meta" class="d-flex justify-content-center">
-                                            <li>
-                                                <div>
-                                                    <span v-if="dish.visible"
-                                                        class="text-success rounded-2 fw-semibold">
-                                                        <i class="bi bi-bag-check-fill mb-5">
-                                                            Disponibile</i>
-                                                        <span class="badge add-to-cart-button mt-2">
-                                                            <span><i class="bi bi-cart-plus fs-5"></i> {{ dish.price }}
-                                                                €</span>
-                                                        </span>
-                                                    </span>
-                                                    <span v-else class="info-span text-danger rounded-2 fw-semibold">
-                                                        <div>
-                                                            <i class="bi bi-bag-x-fill w-100 text-center"></i> Non
-                                                            disponibile
-                                                        </div>
-                                                        <span class="badge add-to-cart-button not-available">
-                                                            <i class="bi bi-cart-plus fs-5"></i>
-                                                            {{ dish.price }} €
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <span>
-                                            <span v-if="dish.visible">
-                                                <button type="button" @click="addToCart(dish)"
-                                                    class="btn btn-sm btn-default ">
-                                                    Ordina ora
-                                                </button>
-                                            </span>
-                                            <span v-else>
-                                                <button type="button" class=" btn btn-sm btn-default disabled">
-                                                    Ordina ora
-                                                </button>
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+    <button class="" @click="goToHome"><-- Torna alla home</button>
+            <header class="hero-banner position-relative w-100 m-0"
+                :style="{ backgroundImage: `url(${restaurant?.image})` }">
+                <!-- Hero Content -->
+                <div class="hero-overlay position-absolute top-0 start-0 d-flex p-4">
+                    <div class="info-box bg-dark bg-opacity-75 text-white p-4 rounded">
+                        <h1 class="fw-bold">{{ restaurant?.name }}</h1>
+                        <p class="mb-2">
+                            <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+                            {{ restaurant?.address }}
+                        </p>
+                        <p>
+                            <i class="bi bi-tags-fill text-secondary me-2"></i>
+                            Categorie:
+                            <span v-for="(category, index) in restaurant?.categories" :key="category.id">
+                                <strong>{{ category.name }}</strong>
+                                <span v-if="index < restaurant?.categories.length - 1">,</span>
+                            </span>
+                        </p>
                     </div>
                 </div>
-            </div>
-        </div>
-    </main>
-    <Footer />
+            </header>
+
+            <main class="pt-4">
+                <!--Cart-->
+                <div class="cart">
+                    <h4 class="text-center mb-4">
+                        <i class="bi bi-cart4"></i> Carrello
+                    </h4>
+
+                    <ul class="list-unstyled">
+                        <li v-for="(item, index) in cart" :key="index"
+                            class="cart-item d-flex justify-content-between align-items-center py-3 px-4 mb-3 rounded-3 shadow-sm bg-light">
+                            <div class="d-flex align-items-center">
+                                <span class="fw-semibold">{{ item.name }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button @click="decreaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <span class="me-3">{{ item.quantity }}</span>
+                                <button @click="increaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                                <span class="me-3">{{ (item.price * item.quantity).toFixed(2) }} €</span>
+                                <button @click="removeFromCart(index)" class="btn btn-sm btn-outline-danger">
+                                    Rimuovi
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <p v-if="cart.length === 0" class="text-center text-muted">
+                        Il carrello è vuoto.
+                    </p>
+
+                    <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-semibold">Totale: {{ total }} €</h5>
+                        <button class="btn btn-primary" @click="goToCheckout">
+                            Vai al Checkout
+                        </button>
+                    </div>
+                </div>
+                <!--Dishes-->
+                <div class="container dish-container">
+                    <p v-if="loading" class="text-center">Caricamento in corso...</p>
+                    <p v-if="error" class="text-danger text-center">{{ error }}</p>
+                    <div v-if="!loading && !error"
+                        class="dish-list row align-items-center d-flex justify-content-center rounded-5">
+                        <div class="container-fluid">
+                            <div id="fda_app" class="row">
+                                <!-- Start Section Header Bar -->
+                                <section id="fda_header_bar" class="col-12">
+                                    <div class="row text-center">
+                                        <h2 class="text-white">Ordina ora</h2>
+                                    </div>
+                                </section>
+                                <section id="fda_product_tile"
+                                    class="col-12 flex-wrap d-flex justify-content-center gap-5">
+                                    <div v-for="dish in filteredDishes" :key="dish.id" class="row fda_food_row mb-5">
+                                        <div class="col-9 w-100">
+                                            <div class="food_tile active h-100">
+                                                <img :src="dish.image" alt="" class="fda_product_img" />
+                                                <span class="food_name">{{ dish.name }}</span>
+                                                <span class="food_detail">{{ dish.description }}</span>
+                                                <ul id="food_meta" class="d-flex justify-content-center">
+                                                    <li>
+                                                        <div>
+                                                            <span v-if="dish.visible"
+                                                                class="text-success rounded-2 fw-semibold">
+                                                                <i class="bi bi-bag-check-fill mb-5">
+                                                                    Disponibile</i>
+                                                                <span class="badge add-to-cart-button mt-2">
+                                                                    <span><i class="bi bi-cart-plus fs-5"></i> {{
+                                                                        dish.price }}
+                                                                        €</span>
+                                                                </span>
+                                                            </span>
+                                                            <span v-else
+                                                                class="info-span text-danger rounded-2 fw-semibold">
+                                                                <div>
+                                                                    <i class="bi bi-bag-x-fill w-100 text-center"></i>
+                                                                    Non
+                                                                    disponibile
+                                                                </div>
+                                                                <span class="badge add-to-cart-button not-available">
+                                                                    <i class="bi bi-cart-plus fs-5"></i>
+                                                                    {{ dish.price }} €
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <span>
+                                                    <span v-if="dish.visible">
+                                                        <button type="button" @click="addToCart(dish)"
+                                                            class="btn btn-sm btn-default ">
+                                                            Ordina ora
+                                                        </button>
+                                                    </span>
+                                                    <span v-else>
+                                                        <button type="button" class=" btn btn-sm btn-default disabled">
+                                                            Ordina ora
+                                                        </button>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <Footer />
 </template>
 
+
 <style scoped>
+.search-bar-container {
+    max-width: 100%;
+}
+
+.search-bar-container input {
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 20px;
+    transition: 0.3s ease;
+    min-width: 35vw;
+    max-width: 60vw;
+    background-color: #252525;
+    color: white;
+}
+
+.search-bar-container input:focus {
+    border-color: #ff6204;
+    outline: none;
+    box-shadow: 0 0 5px #ff6204;
+}
+
+.search-bar-container input::placeholder {
+    color: rgb(122, 112, 112);
+}
+
 .hero-banner {
     height: 40vh;
-    width: 80vw;
+    width: 30vw;
     display: flex;
-    justify-self: flex-end;
+    justify-self: flex-start;
     background-size: cover;
     background-position: center;
     position: relative;
@@ -426,28 +484,6 @@ body {
     color: rgba(38, 29, 86, 0.8);
 }
 
-.fda_search_row {
-    position: relative;
-    margin-top: 25px;
-}
-
-.fda_search_row .fda_ip_search {
-    border: none;
-    background-color: #f9f9f9;
-    font-size: 12px;
-    width: 100%;
-    padding: 15px 15px;
-    padding-left: 45px;
-    border-radius: 50px;
-}
-
-.fda_search_row .fa-search {
-    position: absolute;
-    font-size: 14px;
-    margin-top: 18px;
-    margin-left: 18px;
-}
-
 .info-span {
     width: 100%;
 }
@@ -596,6 +632,24 @@ body {
         background-color: #ee5f07;
         scale: 1;
         border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+}
+
+.hero-bg-left-clickable {
+    background-image: url("/src/assets/logo-deliveboo.webp");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    margin-top: 1vw;
+    width: 15vw;
+    height: 20vh;
+    cursor: pointer;
+}
+
+@media (max-width: 375px) {
+    .hero-bg-left-clickable {
+        width: 30vw;
+        height: 15vh;
     }
 }
 </style>
