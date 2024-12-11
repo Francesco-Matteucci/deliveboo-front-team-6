@@ -57,13 +57,32 @@ export default {
                 });
         },
         addToCart(dish) {
-            this.cart.push(dish);
-            this.total += parseFloat(dish.price);
-            this.total = parseFloat(this.total.toFixed(2));
+            const existingDish = this.cart.find((item) => item.id === dish.id);
+            if (existingDish) {
+                existingDish.quantity++;
+            } else {
+                this.cart.push({ ...dish, quantity: 1 });
+            }
+            this.updateTotal();
         },
         removeFromCart(index) {
-            const removedDish = this.cart.splice(index, 1)[0];
-            this.total -= parseFloat(removedDish.price);
+            this.cart.splice(index, 1);
+            this.updateTotal();
+        },
+        increaseQuantity(index) {
+            this.cart[index].quantity++;
+            this.updateTotal();
+        },
+        decreaseQuantity(index) {
+            if (this.cart[index].quantity > 1) {
+                this.cart[index].quantity--;
+            } else {
+                this.removeFromCart(index);
+            }
+            this.updateTotal();
+        },
+        updateTotal() {
+            this.total = this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
             this.total = parseFloat(this.total.toFixed(2));
         },
         goToHome() {
@@ -111,7 +130,7 @@ export default {
 
             <main class="pt-4">
                 <!--Cart-->
-                <div class="cart ">
+                <div class="cart">
                     <h4 class="text-center mb-4">
                         <i class="bi bi-cart4"></i> Carrello
                     </h4>
@@ -123,7 +142,14 @@ export default {
                                 <span class="fw-semibold">{{ item.name }}</span>
                             </div>
                             <div class="d-flex align-items-center">
-                                <span class="me-3">{{ item.price }} €</span>
+                                <button @click="decreaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <span class="me-3">{{ item.quantity }}</span>
+                                <button @click="increaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                                <span class="me-3">{{ (item.price * item.quantity).toFixed(2) }} €</span>
                                 <button @click="removeFromCart(index)" class="btn btn-sm btn-outline-danger">
                                     Rimuovi
                                 </button>
