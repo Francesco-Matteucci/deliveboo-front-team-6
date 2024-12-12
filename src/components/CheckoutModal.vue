@@ -1,85 +1,102 @@
 <script>
-import axios from 'axios';
+    import axios from 'axios';
 
-export default {
-    props: {
-        cart: {
-            type: Array,
-            required: true,
+    export default {
+        props: {
+            cart: {
+                type: Array,
+                required: true,
+            },
+            total: {
+                type: Number,
+                required: true,
+            },
+            showModal: {
+                type: Boolean,
+                required: true,
+            },
         },
-        total: {
-            type: Number,
-            required: true,
+        data() {
+            return {
+                email: "",
+                firstname: "",
+                lastname: "",
+                address: "",
+                phone_number: "",
+                note: "",
+                paymentInstance: null,
+                primaryColor: '#ff6403',
+                emailTouched: false,
+                phoneTouched: false
+            };
         },
-        showModal: {
-            type: Boolean,
-            required: true,
-        },
-    },
-    data() {
-        return {
-            email: "",
-            firstname: "",
-            lastname: "",
-            address: "",
-            phone_number: "",
-            note: "",
-            paymentInstance: null,
-            primaryColor: '#ff6403'
-        };
-    },
-    methods: {
-        initializeDropIn() {
-            const dropin = document.querySelector("#payment-form");
-            braintree.dropin.create(
-                {
-                    authorization: 'sandbox_5rzg4db5_n2tdvskp75wvh2g3',
-                    container: dropin,
-                },
-                (err, instance) => {
-                    if (err) {
-                        console.error("Errore nell'inizializzazione del drop-in:", err);
-                    } else {
-                        this.paymentInstance = instance;
-                    }
-                }
-            );
-        },
-        async processPayment() {
-            try {
-                const payload = await this.paymentInstance.requestPaymentMethod();
-                console.log("Pagamento simulato con successo, nonce:", payload.nonce);
-
-                await axios.post('http://127.0.0.1:8000/api/orders', {
-                    cart: this.cart,
-                    total_price: this.total,
-                    firstname: this.firstname,
-                    lastname: this.lastname,
-                    address: this.address,
-                    phone_number: this.phone_number,
-                    note: this.note,
-                    restaurant_id: this.cart.length > 0 ? this.cart[0].restaurant_id : 1,
-                });
-                console.log("Ordine inviato con successo al back-end");
-
-                this.$emit('order-completed');
-                console.log("Evento order-completed emesso");
-
-                this.closeModal();
-                console.log("closeModal() chiamato");
-
-            } catch (error) {
-                console.error("Errore durante il pagamento:", error);
+        computed: {
+            emailInvalid() {
+                // Regex molto semplice: 
+                // - Prima della @: qualsiasi cosa (no spazi)
+                // - Dopo la @: qualsiasi cosa (no spazi)
+                // - Dominio finale: .com .it .net
+                const pattern = /^[^\s@]+@[^\s@]+\.(com|it|net)$/i;
+                return this.emailTouched && !pattern.test(this.email);
+            },
+            phoneInvalid() {
+                // Controllo che ci siano solo cifre e almeno 7 cifre
+                const pattern = /^[0-9]+$/;
+                return this.phoneTouched && (!pattern.test(this.phone_number) || this.phone_number.length < 7);
             }
         },
-        closeModal() {
-            this.$emit('close');
-        }
-    },
-    mounted() {
-        this.initializeDropIn();
-    },
-};
+        methods: {
+            initializeDropIn() {
+                const dropin = document.querySelector("#payment-form");
+                braintree.dropin.create(
+                    {
+                        authorization: 'sandbox_5rzg4db5_n2tdvskp75wvh2g3',
+                        container: dropin,
+                    },
+                    (err, instance) => {
+                        if (err) {
+                            console.error("Errore nell'inizializzazione del drop-in:", err);
+                        } else {
+                            this.paymentInstance = instance;
+                        }
+                    }
+                );
+            },
+            async processPayment() {
+                try {
+                    const payload = await this.paymentInstance.requestPaymentMethod();
+                    console.log("Pagamento simulato con successo, nonce:", payload.nonce);
+
+                    await axios.post('http://127.0.0.1:8000/api/orders', {
+                        cart: this.cart,
+                        total_price: this.total,
+                        firstname: this.firstname,
+                        lastname: this.lastname,
+                        address: this.address,
+                        phone_number: this.phone_number,
+                        note: this.note,
+                        restaurant_id: this.cart.length > 0 ? this.cart[0].restaurant_id : 1,
+                    });
+                    console.log("Ordine inviato con successo al back-end");
+
+                    this.$emit('order-completed');
+                    console.log("Evento order-completed emesso");
+
+                    this.closeModal();
+                    console.log("closeModal() chiamato");
+
+                } catch (error) {
+                    console.error("Errore durante il pagamento:", error);
+                }
+            },
+            closeModal() {
+                this.$emit('close');
+            }
+        },
+        mounted() {
+            this.initializeDropIn();
+        },
+    };
 </script>
 
 <template>
@@ -88,7 +105,7 @@ export default {
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content custom-modal-content rounded-4 shadow">
                 <div class="modal-header custom-modal-header">
-                    <h1 class="modal-title fs-5 text-white  text-center">Riepilogo Ordine</h1>
+                    <h1 class="modal-title fs-5 text-white text-center">Riepilogo Ordine</h1>
                     <button type="button" class="btn-close btn-close-white" aria-label="Close"
                         @click="closeModal"></button>
                 </div>
@@ -104,28 +121,46 @@ export default {
                         <h3 class="fw-semibold mt-4 mb-4 text-end fs-6"><strong>{{ total }}</strong> €</h3>
                     </div>
 
-
                     <form @submit.prevent="processPayment">
+                        <!-- Campo Email -->
                         <div class="mb-3">
                             <label for="email" class="form-label fw-semibold">Email</label>
-                            <input type="email" id="email" v-model="email" class="form-control" required>
+                            <input type="email" id="email" v-model="email" class="form-control" required
+                                @blur="emailTouched = true">
+                            <small v-if="emailInvalid" class="text-danger">
+                                Inserisci un'email valida con dominio .com, .it o .net (es: esempio@mail.com).
+                            </small>
                         </div>
+
+                        <!-- Campo Nome -->
                         <div class="mb-3">
                             <label for="firstname" class="form-label fw-semibold">Nome</label>
                             <input type="text" id="firstname" v-model="firstname" class="form-control" required>
                         </div>
+
+                        <!-- Campo Cognome -->
                         <div class="mb-3">
                             <label for="lastname" class="form-label fw-semibold">Cognome</label>
                             <input type="text" id="lastname" v-model="lastname" class="form-control" required>
                         </div>
+
+                        <!-- Campo Indirizzo -->
                         <div class="mb-3">
                             <label for="address" class="form-label fw-semibold">Indirizzo di consegna</label>
                             <input type="text" id="address" v-model="address" class="form-control" required>
                         </div>
+
+                        <!-- Campo Numero di telefono -->
                         <div class="mb-3">
                             <label for="phone_number" class="form-label fw-semibold">Numero di telefono</label>
-                            <input type="text" id="phone_number" v-model="phone_number" class="form-control" required>
+                            <input type="text" id="phone_number" v-model="phone_number" class="form-control" required
+                                @blur="phoneTouched = true">
+                            <small v-if="phoneInvalid" class="text-danger">
+                                Inserisci un numero di telefono valido (solo cifre).
+                            </small>
                         </div>
+
+                        <!-- Campo Note -->
                         <div class="mb-3">
                             <label for="note" class="form-label fw-semibold">Note (opzionali)</label>
                             <textarea id="note" v-model="note" class="form-control"
@@ -138,7 +173,8 @@ export default {
                             <button type="button" class="btn btn-outline-secondary me-3" @click="closeModal">
                                 Annulla
                             </button>
-                            <button type="submit" class="btn text-white" :style="{ backgroundColor: primaryColor }">
+                            <button type="submit" class="btn text-white" :style="{ backgroundColor: primaryColor }"
+                                :disabled="emailInvalid || phoneInvalid">
                                 Paga
                             </button>
                         </div>
@@ -151,34 +187,34 @@ export default {
 </template>
 
 <style scoped>
-.modal-backdrop {
-    background-color: rgba(0, 0, 0, .5);
-}
-
-.custom-modal-header {
-    background: linear-gradient(to right, #000000, #752f02);
-    border-bottom: none;
-}
-
-.custom-modal-content {
-    border: none;
-    overflow: hidden;
-    animation: fadeInUp 0.3s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, .5);
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .custom-modal-header {
+        background: linear-gradient(to right, #000000, #752f02);
+        border-bottom: none;
     }
-}
 
-.modal-content {
-    border-radius: 20px;
-}
+    .custom-modal-content {
+        border: none;
+        overflow: hidden;
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-content {
+        border-radius: 20px;
+    }
 </style>

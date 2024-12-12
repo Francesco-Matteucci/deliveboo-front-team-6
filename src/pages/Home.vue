@@ -25,6 +25,11 @@
       TrackingSection,
       Footer,
     },
+    computed: {
+      restaurantCount() {
+        return this.filteredRestaurants.length;
+      }
+    },
     methods: {
       fetchRestaurants() {
         const params = {
@@ -66,6 +71,9 @@
           this.selectedCategories.push(categoryId);
         }
         this.fetchRestaurants();
+        if (this.searchQuery.trim() !== "") {
+          this.filterBySearch();
+        }
       },
       filterBySearch() {
         const query = this.searchQuery.toLowerCase();
@@ -84,7 +92,6 @@
   };
 </script>
 
-
 <template>
   <div>
     <Hero />
@@ -102,6 +109,7 @@
           <button @click="
             selectedCategories = [];
           fetchRestaurants();
+          if (searchQuery.trim() !== '') { filterBySearch(); }
           " class="btn-outline-primary mx-1 mb-1 fs-6 mt-1" :class="{ active: selectedCategories.length === 0 }">
             Tutte le Categorie
           </button>
@@ -124,6 +132,11 @@
       <p v-if="errorCategories" class="text-danger text-center">
         {{ errorCategories }}
       </p>
+
+      <div v-if="!loading && (searchQuery.trim() !== '' || selectedCategories.length > 0) && restaurantCount > 0"
+        class="text-center text-white mt-3">
+        <h2 class="fs-6">Trovati: {{ restaurantCount }} ristoranti</h2>
+      </div>
 
       <p v-if="!loading && !filteredRestaurants.length" class="text-center text-warning fs-5 m-0 py-3">
         <i class="bi bi-emoji-frown-fill "></i> Ooops! Sembra che non esistano ancora ristoranti con questi parametri
@@ -162,8 +175,6 @@
   </div>
 </template>
 
-
-
 <style scoped>
   .container-fluid {
     background-color: rgb(14 14 14);
@@ -184,14 +195,14 @@
     background-color: #ff6204;
     border: none;
     color: white;
+  }
 
-    &:hover {
-      scale: 1.1;
-    }
+  .categories-list button:hover {
+    scale: 1.1;
+  }
 
-    &:active {
-      scale: 0.9;
-    }
+  .categories-list button:active {
+    scale: 0.9;
   }
 
   .categories-list button.active {
@@ -209,10 +220,10 @@
     transition: transform 0.3s, box-shadow 0.3s ease;
     cursor: pointer;
     background-color: #b8aeae;
+  }
 
-    &:active {
-      scale: 1.1;
-    }
+  .restaurant-card:active {
+    scale: 1.1;
   }
 
   .restaurant-card-image {
