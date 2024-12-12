@@ -1,31 +1,31 @@
 <script>
-export default {
-    props: {
-        showModal: {
-            type: Boolean,
-            required: true
+    export default {
+        props: {
+            showModal: {
+                type: Boolean,
+                required: true
+            },
+            nextRoute: {
+                type: Object,
+                required: true
+            }
         },
-        nextRoute: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            primaryColor: '#ff6403'
-        };
-    },
-    methods: {
-        cancel() {
-            this.$emit('close');
+        data() {
+            return {
+                primaryColor: '#ff6403'
+            };
         },
-        confirmChange() {
-            this.$emit('clear-cart');
-            this.$router.push(this.nextRoute);
-            this.$emit('close');
+        methods: {
+            cancel() {
+                this.$emit('close');
+            },
+            confirmChange() {
+                this.$emit('clear-cart');
+                this.$router.push(this.nextRoute);
+                this.$emit('close');
+            }
         }
-    }
-};
+    };
 </script>
 <template>
     <div class="modal fade show d-block" tabindex="-1" role="dialog">
@@ -36,8 +36,9 @@ export default {
                     <button type="button" class="btn-close btn-close-white" @click="cancel"></button>
                 </div>
                 <div class="modal-body bg-light text-center">
-                    <p class="fw-semibold mb-4 fs-6">Stai per abbandonare questa pagina. <br>Il tuo carrello verrà
-                        cestinato.
+                    <p class="fw-semibold mb-4 fs-6">Non è possibile effettuare
+                        un ordine da più ristoranti simultaneamente. <br> Se procedi, i piatti che hai aggiunto
+                        precedentemente verranno rimossi.
                         <br>
                         Vuoi
                         procedere?
@@ -55,34 +56,34 @@ export default {
 </template>
 
 <style scoped>
-.modal-backdrop {
-    background-color: rgba(0, 0, 0, .5);
-}
-
-.custom-modal-header {
-    background: linear-gradient(to right, #000000, #752f02);
-    border-bottom: none;
-}
-
-.custom-modal-content {
-    border: none;
-    overflow: hidden;
-    animation: fadeInUp 0.3s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, .5);
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .custom-modal-header {
+        background: linear-gradient(to right, #000000, #752f02);
+        border-bottom: none;
     }
-}
 
-.modal-content {
-    border-radius: 20px
-}
+    .custom-modal-content {
+        border: none;
+        overflow: hidden;
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-content {
+        border-radius: 20px
+    }
 </style>
