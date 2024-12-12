@@ -36,8 +36,9 @@
                     <button type="button" class="btn-close btn-close-white" @click="cancel"></button>
                 </div>
                 <div class="modal-body bg-light text-center">
-                    <p class="fw-semibold mb-4 fs-6">Stai per abbandonare questa pagina. <br>Non è possibile effettuare
-                        un ordine da più ristoranti simultaneamente. Il tuo carrello verrà rimosso.
+                    <p class="fw-semibold mb-4 fs-6">Non è possibile effettuare
+                        un ordine da più ristoranti simultaneamente. <br> Se procedi, i piatti che hai aggiunto
+                        precedentemente verranno rimossi.
                         <br>
                         Vuoi
                         procedere?
