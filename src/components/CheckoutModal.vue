@@ -24,8 +24,9 @@ export default {
             address: "",
             phone_number: "",
             note: "",
+            errors: {},
             paymentInstance: null,
-            primaryColor: '#ff6403'
+            primaryColor: '#ff6403',
         };
     },
     methods: {
@@ -60,16 +61,15 @@ export default {
                     note: this.note,
                     restaurant_id: this.cart.length > 0 ? this.cart[0].restaurant_id : 1,
                 });
+
                 console.log("Ordine inviato con successo al back-end");
-
                 this.$emit('order-completed');
-                console.log("Evento order-completed emesso");
-
                 this.closeModal();
-                console.log("closeModal() chiamato");
-
             } catch (error) {
                 console.error("Errore durante il pagamento:", error);
+                if (error.response && error.response.data.errors) {
+                    this.errors = error.response.data.errors; // Salva gli errori dal back-end
+                }
             }
         },
         closeModal() {
@@ -109,27 +109,47 @@ export default {
                         <div class="mb-3">
                             <label for="email" class="form-label fw-semibold">Email</label>
                             <input type="email" id="email" v-model="email" class="form-control" required>
+                            <div v-if="errors.email" class="text-danger">
+                                {{ errors.email[0] }}
+                            </div>
                         </div>
+
                         <div class="mb-3">
                             <label for="firstname" class="form-label fw-semibold">Nome</label>
                             <input type="text" id="firstname" v-model="firstname" class="form-control" required>
+                            <div v-if="errors.firstname" class="text-danger">
+                                {{ errors.firstname[0] }}
+                            </div>
                         </div>
+
                         <div class="mb-3">
                             <label for="lastname" class="form-label fw-semibold">Cognome</label>
                             <input type="text" id="lastname" v-model="lastname" class="form-control" required>
+                            <div v-if="errors.lastname" class="text-danger">
+                                {{ errors.lastname[0] }}
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="address" class="form-label fw-semibold">Indirizzo di consegna</label>
                             <input type="text" id="address" v-model="address" class="form-control" required>
+                            <div v-if="errors.address" class="text-danger">
+                                {{ errors.address[0] }}
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="phone_number" class="form-label fw-semibold">Numero di telefono</label>
                             <input type="text" id="phone_number" v-model="phone_number" class="form-control" required>
+                            <div v-if="errors.address" class="text-danger">
+                                {{ errors.phone_number[0] }}
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="note" class="form-label fw-semibold">Note (opzionali)</label>
                             <textarea id="note" v-model="note" class="form-control"
                                 placeholder="Appartamento, casa, hotel..."></textarea>
+                                <div v-if="errors.address" class="text-danger">
+                                {{ errors.note[0] }}
+                            </div>
                         </div>
 
                         <div id="payment-form" class="mb-3"></div>
