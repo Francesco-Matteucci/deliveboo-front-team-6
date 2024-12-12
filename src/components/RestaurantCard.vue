@@ -26,8 +26,8 @@
                 showSuccessModal: false,
                 showClearCartModal: false,
                 nextRoute: null,
-                pendingDish: null, // piatto in attesa di conferma per cambio ristorante
-                cartRestaurantName: null // nome del ristorante da cui si sta ordinando
+                pendingDish: null,
+                cartRestaurantName: null
             };
         },
         methods: {
@@ -62,15 +62,12 @@
             },
             addToCart(dish) {
                 if (this.cart.length === 0) {
-                    // Carrello vuoto: aggiungo subito e setto il nome del ristorante
                     this.addDishDirectly(dish, true);
                 } else {
                     const firstDishInCart = this.cart[0];
                     if (firstDishInCart.restaurant_id === dish.restaurant_id) {
-                        // Stesso ristorante: aggiungo direttamente
                         this.addDishDirectly(dish, false);
                     } else {
-                        // Ristorante diverso: mostra modale per confermare lo svuotamento
                         this.pendingDish = dish;
                         this.showClearCartModal = true;
                     }
@@ -82,27 +79,16 @@
                     existingDish.quantity++;
                 } else {
                     this.cart.push({ ...dish, quantity: 1 });
-                    // Se è il primo piatto aggiunto e setName = true, aggiorno il cartRestaurantName
-                    if (setName) {
-                        this.setCartRestaurantName(dish.restaurant_id);
+                    if (setName && this.restaurant) {
+                        this.cartRestaurantName = this.restaurant.name;
                     }
                 }
                 this.updateTotal();
-            },
-            setCartRestaurantName(restaurantId) {
-                // Recupero il nome del ristorante dal suo ID
-                axios.get(`http://127.0.0.1:8000/api/restaurants/${restaurantId}`)
-                    .then(response => {
-                        const newRestaurant = response.data.results;
-                        this.cartRestaurantName = newRestaurant.name;
-                    })
-                    .catch(err => console.error("Errore nel recupero nome ristorante:", err));
             },
             removeFromCart(index) {
                 this.cart.splice(index, 1);
                 this.updateTotal();
                 if (this.cart.length === 0) {
-                    // Se il carrello si svuota, resetto il nome del ristorante
                     this.cartRestaurantName = null;
                 }
             },
@@ -121,33 +107,30 @@
             updateTotal() {
                 this.total = this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
                 this.total = parseFloat(this.total.toFixed(2));
-                // Salviamo il carrello aggiornato nel localStorage
                 localStorage.setItem('cart', JSON.stringify(this.cart));
                 localStorage.setItem('total', this.total.toString());
             },
             goToHome() {
-                // Ora tornare alla home non mostra più la modale
                 this.$router.push({ name: "Home" });
             },
             tryChangeRestaurant(newSlug) {
-                // Se vuoi cambiare ristorante da codice, puoi farlo direttamente
                 this.$router.push({ name: 'RestaurantPage', params: { slug: newSlug } });
             },
             clearCartBeforeChange() {
-                // Svuoto il carrello
                 this.cart = [];
                 this.total = 0;
                 localStorage.removeItem('cart');
                 localStorage.removeItem('total');
 
-                // Dopo svuotamento, se c'è pendingDish, recupero il suo ristorante e aggiungo il piatto
                 if (this.pendingDish) {
-                    this.setCartRestaurantName(this.pendingDish.restaurant_id);
+                    if (this.restaurant) {
+                        this.cartRestaurantName = this.restaurant.name;
+                    }
                     this.addDishDirectly(this.pendingDish, false);
                     this.pendingDish = null;
                 }
 
-                this.showClearCartModal = false; // chiudo la modale dopo aver svuotato
+                this.showClearCartModal = false;
             },
             orderCompleted() {
                 console.log("Order completed rilevato in RestaurantCard.vue!");
@@ -161,21 +144,28 @@
             }
         },
         mounted() {
-            // Carichiamo il carrello e il totale dal localStorage
             const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
             const savedTotal = parseFloat(localStorage.getItem('total')) || 0;
             this.cart = savedCart;
             this.total = savedTotal;
 
-            // Se il carrello non è vuoto, potremmo recuperare il nome del ristorante del primo piatto
-            if (this.cart.length > 0) {
-                const firstDish = this.cart[0];
-                this.setCartRestaurantName(firstDish.restaurant_id);
+            const savedName = localStorage.getItem('cartRestaurantName');
+            if (savedName) {
+                this.cartRestaurantName = savedName;
             }
 
             this.fetchRestaurant();
             this.fetchDishes();
         },
+        watch: {
+            cartRestaurantName(newVal) {
+                if (newVal) {
+                    localStorage.setItem('cartRestaurantName', newVal);
+                } else {
+                    localStorage.removeItem('cartRestaurantName');
+                }
+            }
+        }
     };
 </script>
 
@@ -211,14 +201,12 @@
     </header>
 
     <main class="pt-4">
-        <!--Cart-->
         <div class="cart">
             <h4 class="text-center mb-2 fs-6">
                 <i class="bi bi-cart4"></i> Carrello
             </h4>
-            <!-- Mostriamo il nome del ristorante se il carrello non è vuoto -->
             <p v-if="cart.length > 0" class="text-center text-dark mb-3 fs-6">
-                Stai ordinando presso il Ristorante: {{ restaurant?.name }}
+                Stai ordinando presso il Ristorante: {{ cartRestaurantName }}
             </p>
 
             <ul class="list-unstyled">
@@ -249,7 +237,7 @@
             </p>
 
             <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
-                <h5 class="fw-semibold m-0 fs-6 mx-2">Totale: <br> {{ total }} €</h5>
+                <h5 class="fw-semibold m-0 fs-6 mx-2">Totale: <br> {{ total.toFixed(2) }} €</h5>
                 <button class="btn btn-outline-success" @click="showCheckout = true" id="checkout-btn">Procedi al
                     pagamento</button>
             </div>
@@ -331,6 +319,7 @@
     </main>
     <Footer />
 </template>
+
 
 <style scoped>
     .home-btn {
