@@ -155,143 +155,150 @@ export default {
         <div class="hero-banner m-0" :style="{ backgroundImage: `url(${restaurant?.image})` }">
         </div>
         <div class="info-box text-white p-3 text-center">
-            <h1 class="fw-bold fs-5 mb-3">{{ restaurant?.name }}</h1>
+            <h1 class="fw-semibold fs-5 mb-3">{{ restaurant?.name }}</h1>
             <p class="mb-2 fs-6">
                 <i class="bi bi-geo-alt-fill text-danger me-2"></i>Indirizzo <br>
-                {{ restaurant?.address }}
+                <span class="fw-semibold">{{ restaurant?.address }}</span>
             </p>
-            <p class="fs-6">
+            <p class="fs-6 mt-2">
                 <i class="bi bi-tags-fill text-secondary me-2"></i>Categorie
-                <span v-for="(category, index) in restaurant?.categories" :key="category.id">
-                    <strong>{{ category.name }}</strong>
-                    <span v-if="index < restaurant?.categories.length - 1">,</span>
+            <div class="category-span d-flex flex-wrap justify-content-center">
+                <span class="fw-semibold" v-for="(category, index) in restaurant?.categories" :key="category.id">
+                    {{ category.name }}&nbsp;
+                    <!-- <span v-if="index < restaurant?.categories.length - 1">,</span> -->
                 </span>
+            </div>
             </p>
         </div>
     </header>
 
     <main class="pt-4 container-fluid">
-    <div class="row">
-        <!-- Dishes -->
-        <div class="col-lg-8 col-12">
-            <div class="container dish-container">
-                <p v-if="loading" class="text-center">Caricamento in corso...</p>
-                <p v-if="error" class="text-danger text-center">{{ error }}</p>
-                <div v-if="!loading && !error" class="dish-list row align-items-center d-flex justify-content-center">
-                    <div class="container-fluid">
-                        <div id="fda_app" class="row">
-                            <section id="fda_product_tile" class="col-12 flex-wrap d-flex justify-content-center gap-5">
-                                <div v-for="dish in filteredDishes" :key="dish.id" class="row fda_food_row mb-5">
-                                    <div class="col-9 w-100">
-                                        <div class="food_tile active h-100">
-                                            <img :src="dish.image" alt="" class="fda_product_img" />
-                                            <span class="food_name">{{ dish.name }}</span>
-                                            <span class="food_detail">{{ dish.description }}</span>
-                                            <ul id="food_meta" class="d-flex justify-content-center">
-                                                <li>
-                                                    <div>
-                                                        <span v-if="dish.visible"
-                                                            class="text-success rounded-2 fw-semibold">
-                                                            <i class="bi bi-bag-check-fill mb-5">
-                                                                Disponibile</i>
+        <div class="row">
+            <!-- Dishes -->
+            <div :class="cart.length > 0 ? 'col-lg-8 col-12' : 'col-lg-12 col-12'">
+                <div class="container dish-container">
+                    <p v-if="loading" class="text-center">Caricamento in corso...</p>
+                    <p v-if="error" class="text-danger text-center">{{ error }}</p>
+                    <div v-if="!loading && !error"
+                        class="dish-list row align-items-center d-flex justify-content-center">
+                        <div class="container-fluid">
+                            <div id="fda_app" class="row">
+                                <section id="fda_product_tile"
+                                    class="col-12 flex-wrap d-flex justify-content-center gap-5">
+                                    <div v-for="dish in filteredDishes" :key="dish.id" class="row fda_food_row mb-5">
+                                        <div class="col-9 w-100">
+                                            <div class="food_tile active h-100">
+                                                <img :src="dish.image" alt="" class="fda_product_img" />
+                                                <span class="food_name fs-5">{{ dish.name }}</span>
+                                                <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
+                                                    dish.description
+                                                    }}</span>
+                                                <ul id="food_meta" class="d-flex justify-content-center">
+                                                    <li>
+                                                        <div>
+                                                            <span v-if="dish.visible"
+                                                                class="text-success rounded-2 fw-semibold">
+                                                                <i class="bi bi-bag-check-fill mb-5 fs-6">
+                                                                    Disponibile</i>
+
+                                                            </span>
+                                                            <span v-else
+                                                                class="info-span text-danger rounded-2 fw-semibold">
+                                                                <div>
+                                                                    <i class="bi bi-bag-x-fill w-100 text-center"></i>
+                                                                    Non disponibile
+                                                                </div>
+
+                                                            </span>
                                                             <span class="badge add-to-cart-button mt-2">
-                                                                <span>{{ dish.price }} €</span>
+                                                                <span class="fs-6">{{ dish.price }} €</span>
                                                             </span>
-                                                        </span>
-                                                        <span v-else
-                                                            class="info-span text-danger rounded-2 fw-semibold">
-                                                            <div>
-                                                                <i class="bi bi-bag-x-fill w-100 text-center"></i>
-                                                                Non disponibile
-                                                            </div>
-                                                            <span class="badge add-to-cart-button not-available">
-                                                                {{ dish.price }} €
-                                                            </span>
-                                                        </span>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                            <span>
-                                                <span v-if="dish.visible">
-                                                    <button type="button" @click="addToCart(dish)"
-                                                        class="btn btn-sm btn-default ">
-                                                        Ordina ora
-                                                    </button>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <span>
+                                                    <span v-if="dish.visible">
+                                                        <button type="button" @click="addToCart(dish)"
+                                                            class="btn btn-sm btn-default fs-6">
+                                                            Ordina ora
+                                                        </button>
+                                                    </span>
+                                                    <span v-else>
+                                                        <button type="button" class=" btn btn-sm btn-default disabled">
+                                                            Ordina ora
+                                                        </button>
+                                                    </span>
                                                 </span>
-                                                <span v-else>
-                                                    <button type="button" class=" btn btn-sm btn-default disabled">
-                                                        Ordina ora
-                                                    </button>
-                                                </span>
-                                            </span>
-                                            <div v-if="(itemInCart = cart.find(cartItem => cartItem.id === dish.id))"
-                                                class="mobile-dishes-counter">
-                                                <span class="me-2 fs-6">
-                                                    Selezionati: {{ itemInCart.quantity }}
-                                                </span>
+                                                <div v-if="(itemInCart = cart.find(cartItem => cartItem.id === dish.id))"
+                                                    class="mobile-dishes-counter">
+                                                    <span class="me-2 fs-6">
+                                                        Selezionati: {{ itemInCart.quantity }}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </section>
+                                </section>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Cart -->
-        <div class="col-lg-4 col-12">
-            <div class="cart sticky-top">
-                <h4 class="text-center mb-2 fs-6">
-                    <i class="bi bi-cart4"></i> Carrello
-                </h4>
+            <!-- Cart -->
+            <div :class="cart.length > 0 ? 'col-lg-4 col-12' : 'd-none'">
+                <div class="cart sticky-top">
+                    <h4 class="text-center mb-2 fs-6">
+                        <i class="bi bi-cart4"></i> Carrello
+                    </h4>
 
-                <ul class="list-unstyled">
-                    <li v-for="(item, index) in cart" :key="index"
-                        class="cart-item d-flex justify-content-between align-items-center py-3 px-2 mb-1">
-                        <div class="d-flex align-items-center">
-                            <span class="fw-semibold" id="item-name">{{ item.name }}</span>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <button @click="decreaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
-                                <i class="bi bi-dash"></i>
-                            </button>
-                            <span class="me-2 fs-6">{{ item.quantity }}</span>
-                            <button @click="increaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
-                                <i class="bi bi-plus"></i>
-                            </button>
-                        </div>
-                        <div class="align-self-center d-flex flex-column align-items-center">
-                            <span class="fw-semibold" id="item-price">{{ (item.price * item.quantity).toFixed(2) }} €</span>
-                            <button @click="removeFromCart(index)" class=" btn btn-sm btn-danger" id="remove-btn">Rimuovi
-                            </button>
-                        </div>
-                    </li>
-                </ul>
+                    <ul class="list-unstyled">
+                        <li v-for="(item, index) in cart" :key="index"
+                            class="cart-item d-flex justify-content-between align-items-center py-3 px-2 mb-1">
+                            <div class="d-flex align-items-center">
+                                <span class="fw-semibold" id="item-name">{{ item.name }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button @click="decreaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <span class="me-2 fs-6">{{ item.quantity }}</span>
+                                <button @click="increaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                            <div class="align-self-center d-flex flex-column align-items-center">
+                                <span class="fw-semibold" id="item-price">{{ (item.price * item.quantity).toFixed(2) }}
+                                    €</span>
+                                <button @click="removeFromCart(index)" class=" btn btn-sm btn-danger"
+                                    id="remove-btn">Rimuovi
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
 
-                <p v-if="cart.length === 0" class="text-center text-muted">
-                    Il carrello è vuoto
-                </p>
 
-                <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
-                    <h5 class="fw-semibold m-0 fs-6 mx-2">Totale: <br> {{ total }} €</h5>
-                    <button class="btn btn-outline-success" @click="showCheckout = true" id="checkout-btn">Procedi al
-                        pagamento</button>
+
+                    <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-semibold m-0 fs-6 mx-2">Totale <br> {{ total.toFixed(2) }} €</h5>
+                        <button class="btn btn-outline-success" @click="showCheckout = true" id="checkout-btn">Procedi
+                            al
+                            pagamento</button>
+                    </div>
+
+                    <CheckoutModal v-if="showCheckout" :cart="cart" :total="total" :showModal="showCheckout"
+                        @close="showCheckout = false" @order-completed="orderCompleted" />
+
+                    <SuccessModal v-if="showSuccessModal" :showModal="showSuccessModal"
+                        @close="showSuccessModal = false" />
+
+                    <!-- Modale cambio ristorante -->
+                    <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"
+                        @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
                 </div>
-
-                <CheckoutModal v-if="showCheckout" :cart="cart" :total="total" :showModal="showCheckout"
-                    @close="showCheckout = false" @order-completed="orderCompleted" />
-
-                <SuccessModal v-if="showSuccessModal" :showModal="showSuccessModal" @close="showSuccessModal = false" />
-
-                <!-- Modale cambio ristorante -->
-                <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"
-                    @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
             </div>
         </div>
-    </div>
-</main>
+    </main>
 
     <Footer />
 </template>
@@ -341,10 +348,11 @@ export default {
 }
 
 .hero-banner {
+    background: no-repeat;
     height: 40vh;
     width: 70vw;
     display: flex;
-    background-size: cover;
+    background-size: 100% 100%;
     background-position: center;
     color: #fff;
 }
@@ -361,8 +369,10 @@ export default {
     justify-content: center;
     align-items: center;
     width: 30vw;
-    background-color: #000000;
+    background-color: #2f2e2e;
 }
+
+.category-span {}
 
 /*Restaurants*/
 
@@ -423,15 +433,7 @@ export default {
     color: rgb(116, 113, 113);
 }
 
-#show-cart-btn {
-    border: none;
-    border-radius: 1rem;
-    background-color: #ee5f07;
-    color: white;
-}
-
 .cart {
-    margin-top: 50px;
     background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -684,12 +686,10 @@ body {
 }
 
 .food_name {
-    font-size: 15px;
     font-weight: 600;
     color: rgba(38, 29, 86, 1);
     margin-bottom: 12px;
     min-height: 20px;
-    /* Garantisce altezza uniforme */
 }
 
 .food_detail {
@@ -697,17 +697,15 @@ body {
     color: rgba(38, 29, 86, 0.4);
     margin-bottom: 15px;
     min-height: 40px;
-    /* Altezza minima per evitare sfalsamenti */
+    max-height: 150px;
+    max-width: 171px;
     line-height: 1.5;
-    /* Migliora la leggibilità */
 }
 
 #food_meta {
     display: flex;
     justify-content: center;
-    /* Centra i meta dati */
     margin-top: auto;
-    /* Spinge verso il basso */
     margin-bottom: 15px;
     padding: 0;
 }
