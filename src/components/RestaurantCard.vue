@@ -164,8 +164,8 @@ export default {
                 <i class="bi bi-tags-fill text-secondary me-2"></i>Categorie
             <div class="category-span d-flex flex-wrap justify-content-center">
                 <span class="fw-semibold" v-for="(category, index) in restaurant?.categories" :key="category.id">
-                    {{ category.name }}&nbsp;
-                    <!-- <span v-if="index < restaurant?.categories.length - 1">,</span> -->
+                    {{ category.name }}
+                    <span v-if="index < restaurant?.categories.length - 1">,&nbsp;</span>
                 </span>
             </div>
             </p>
@@ -371,8 +371,6 @@ export default {
     width: 30vw;
     background-color: #2f2e2e;
 }
-
-.category-span {}
 
 /*Restaurants*/
 
