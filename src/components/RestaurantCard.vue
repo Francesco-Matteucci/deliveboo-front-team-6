@@ -74,15 +74,20 @@
                 }
             },
             addDishDirectly(dish, setName = false) {
-                const existingDish = this.cart.find((item) => item.id === dish.id);
-                if (existingDish) {
-                    existingDish.quantity++;
+                const existingIndex = this.cart.findIndex((item) => item.id === dish.id);
+                if (existingIndex !== -1) {
+                    this.cart[existingIndex].quantity++;
+                    const [existingItem] = this.cart.splice(existingIndex, 1);
+                    this.cart.unshift(existingItem);
                 } else {
-                    this.cart.push({ ...dish, quantity: 1 });
-                    if (setName && this.restaurant) {
-                        this.cartRestaurantName = this.restaurant.name;
+                    const newItem = { ...dish, quantity: 1 };
+                    this.cart.unshift(newItem);
+
+                    if (setName) {
+                        this.setCartRestaurantName(dish.restaurant_id);
                     }
                 }
+
                 this.updateTotal();
             },
             removeFromCart(index) {

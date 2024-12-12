@@ -52,6 +52,8 @@
                     {
                         authorization: 'sandbox_5rzg4db5_n2tdvskp75wvh2g3',
                         container: dropin,
+                        locale: 'it_IT',
+                        paymentOptionPriority: ['card'],
                     },
                     (err, instance) => {
                         if (err) {
