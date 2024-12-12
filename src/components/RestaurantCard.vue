@@ -25,8 +25,15 @@ export default {
             showCheckout: false,
             showSuccessModal: false,
             showClearCartModal: false,
-            nextRoute: null
+            nextRoute: null,
+            isMobileCartVisible: false,
         };
+    },
+    computed: {
+        // rileva se siamo su un tablet o su smartphone attraverso la viewport
+        isMobile() {
+            return window.innerWidth <= 768;
+        },
     },
     methods: {
         fetchDishes() {
@@ -244,8 +251,53 @@ export default {
                     </div>
                 </div>
             </div>
+            <!-- BOTTONE PER MOSTRARE IL CARRELLO SU TABLET E SMARTPHONE -->
+            <button class="position-sticky col-md-2 col-2" id="cart-button" @click="isMobileCartVisible = true">
+                Mostra Carrello
+            </button>
+            <!-- CARRELLO TABLET E MOBILE -->
+            <div v-if="isMobile && isMobileCartVisible" class="modal d-flex justify-content-center align-items-center">
+                <div class="modal-content w-100 h-100 bg-white position-relative">
+                    <!-- pulsante per chiudere il modal -->
+                    <button class="btn-close position-absolute top-0 end-0 m-3"
+                        @click="isMobileCartVisible = false"></button>
 
-            <!-- Cart -->
+                    <h4 class="text-center mb-2 fs-6">
+                        <i class="bi bi-cart4"></i> Carrello
+                    </h4>
+                    <ul class="list-unstyled">
+                        <li v-for="(item, index) in cart" :key="index"
+                            class="cart-item d-flex justify-content-between align-items-center py-3 px-2 mb-1">
+                            <div class="d-flex align-items-center">
+                                <span class="fw-semibold" id="item-name">{{ item.name }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button @click="decreaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <span class="me-2 fs-6">{{ item.quantity }}</span>
+                                <button @click="increaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                            <div class="align-self-center d-flex flex-column align-items-center">
+                                <span class="fw-semibold" id="item-price">{{ (item.price * item.quantity).toFixed(2) }}
+                                    €</span>
+                                <button @click="removeFromCart(index)" class="btn btn-sm btn-danger"
+                                    id="remove-btn">Rimuovi</button>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-semibold m-0 fs-6 mx-2">Totale <br> {{ total.toFixed(2) }} €</h5>
+                        <button class="btn btn-outline-success" @click="showCheckout = true" id="checkout-btn">
+                            Procedi al pagamento
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Cart DESKTOP-->
             <div :class="cart.length > 0 ? 'col-lg-4 col-12' : 'd-none'">
                 <div class="cart sticky-top">
                     <h4 class="text-center mb-2 fs-6">
@@ -297,6 +349,8 @@ export default {
                         @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
                 </div>
             </div>
+
+
         </div>
     </main>
 
@@ -669,16 +723,11 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    /* Distribuisce gli elementi verticalmente */
     align-items: center;
-    /* Centra gli elementi orizzontalmente */
     height: 100%;
-    /* Assicura che tutte le schede abbiano la stessa altezza */
     padding: 20px 25px;
-    /* Spazio interno uniforme */
     border-radius: 25px;
     text-align: center;
-    /* Centra il testo */
     background-color: rgba(0, 0, 0, 0.05);
     font-size: 11px;
 }
@@ -774,6 +823,15 @@ body {
 }
 
 
+
+/* DESKTOP S-M-L */
+@media (min-width: 768px) {
+    #cart-button {
+        display: none;
+    }
+}
+
+
 /* TABLET */
 @media (max-width: 768px) {
     .hero-bg-left-clickable {
@@ -812,6 +870,10 @@ body {
     .info-box {
         width: 100vw;
     }
+
+    .cart {
+        display: none;
+    }
 }
 
 /* MOBILE */
@@ -847,6 +909,10 @@ body {
 
     .mobile-dishes-counter {
         display: block;
+    }
+
+    .cart {
+        display: none;
     }
 }
 </style>
