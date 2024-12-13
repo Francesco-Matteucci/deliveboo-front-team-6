@@ -3,18 +3,21 @@ export default {
   name: "Footer",
   methods: {
     scrollToRestaurants() {
+      this.$router.push({ name: "Home" });
       const section = document.querySelector(".categories-container");
       if (section) {
         section.scrollIntoView({ behavior: "smooth" });
       }
     },
     scrollToDownload() {
+      this.$router.push({ name: "Home" });
       const section = document.querySelector(".tracking-section");
       if (section) {
         section.scrollIntoView({ behavior: "smooth" });
       }
     },
     scrollToService() {
+      this.$router.push({ name: "Home" });
       const section = document.querySelector(".service-section");
       if (section) {
         section.scrollIntoView({ behavior: "smooth" });
@@ -26,25 +29,21 @@ export default {
 
 <template>
   <div class="container-fluid">
-    <div class="social fs-1">
-      <a href="#"><i class="bi bi-instagram"></i></a>
-      <a href="#"><i class="bi bi-youtube"></i></a>
-      <a href="#"><i class="bi bi-facebook"></i></a
-      ><a href="#"
-        ><img src="/src/assets/tiktok.webp" alt="" id="tiktok-icon"
-      /></a>
+    <div class="social fs-4">
+      <a><i class="bi bi-instagram"></i></a>
+      <a><i class="bi bi-youtube"></i></a>
+      <a><i class="bi bi-facebook"></i></a>
+      <a><img src="/src/assets/tiktok.webp" alt="" id="tiktok-icon" /></a>
     </div>
-    <div
-      class="link fs-5 flex-wrap d-flex fw-bold text-center justify-content-center my-2"
-    >
-      <span @click="scrollToRestaurants">Ristoranti</span
-      ><span @click="scrollToDownload">Download</span
-      ><span @click="scrollToService">Servizi</span><span>Privacy</span
-      ><span>Termini d'uso</span>
+    <div class="link fs-6 flex-wrap d-flex fw-bold text-center justify-content-center my-2">
+      <span @click="scrollToRestaurants">Ristoranti</span><span @click="scrollToDownload">Download</span><span
+        @click="scrollToService">Servizi</span><span>Privacy</span><span>Termini d'uso</span>
     </div>
     <div class="credits text-center">
-      <span>Website Developed by <a href="#">Team Six</a></span>
-      <span><p>Tutti i diritti riservati &#169; 2024</p></span>
+      <span>Website Developed by <a href="">Team Six</a></span>
+      <span>
+        <p>Tutti i diritti riservati &#169; 2024</p>
+      </span>
     </div>
   </div>
 </template>
@@ -68,18 +67,19 @@ export default {
 
 .social a:hover {
   scale: 1.1;
+
   &:active {
     scale: 1;
   }
 }
 
 .social img {
-  height: 42px;
+  height: 25px;
 }
 
 .link span,
 .social a {
-  margin: 2rem;
+  margin: 1rem;
   text-decoration: none;
   cursor: pointer;
 }
@@ -90,10 +90,10 @@ export default {
 
 .bi-instagram {
   background: linear-gradient(45deg, #833ab4, #fd1d1d, #f56040, #ffc837);
-  -webkit-background-clip: text; /* Per WebKit (Chrome, Safari, Edge) */
-  background-clip: text; /* Standard */
-  -webkit-text-fill-color: transparent; /* Rende il testo trasparente per mostrare il gradiente */
-  display: inline-block; /* Garantisce il corretto funzionamento */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
 .bi-youtube {
@@ -107,10 +107,12 @@ export default {
 .link span {
   text-decoration: none;
   color: #353434;
+
   &:hover {
     color: #ff6204;
     scale: 1.1;
   }
+
   &:active {
     scale: 1;
   }
