@@ -120,22 +120,24 @@ export default {
                     <button type="button" class="btn-close btn-close-white" aria-label="Close"
                         @click="closeModal"></button>
                 </div>
-                <div class="modal-body bg-light">
+                <div class="modal-body">
                     <ul class="list-unstyled mb-0">
                         <li v-for="(item, index) in cart" :key="index" class="d-flex justify-content-between mb-2">
                             <span class="fw-semibold">{{ item.name }} x{{ item.quantity }}</span>
                             <span class="fw-semibold">{{ (item.price * item.quantity).toFixed(2) }} €</span>
                         </li>
                     </ul>
-                    <div class="d-flex align-items-center justify-content-between">
+                    <div class="separatore"></div>
+                    <div class="d-flex align-items-center justify-content-between mb-5">
                         <span class="fw-semibold">Totale </span>
                         <h3 class="fw-semibold mt-4 mb-4 text-end fs-6"><strong>{{ total.toFixed(2) }}</strong> €</h3>
                     </div>
-
+                    <div class="w-100 text-center mb-3"><span class="fs-6 fw-semibold">Dati per la spedizione</span>
+                    </div>
                     <form @submit.prevent="processPayment">
                         <!-- Campo Email -->
                         <div class="mb-3">
-                            <label for="email" class="form-label fw-semibold">Email</label>
+                            <label for="email" class="form-label fw-semibold fs-6">Email *</label>
                             <input type="email" id="email" v-model="email" class="form-control" required
                                 @blur="emailTouched = true">
                             <small v-if="emailInvalid" class="text-danger">
@@ -145,25 +147,25 @@ export default {
 
                         <!-- Campo Nome -->
                         <div class="mb-3">
-                            <label for="firstname" class="form-label fw-semibold">Nome</label>
+                            <label for="firstname" class="form-label fw-semibold fs-6">Nome *</label>
                             <input type="text" id="firstname" v-model="firstname" class="form-control" required>
                         </div>
 
                         <!-- Campo Cognome -->
                         <div class="mb-3">
-                            <label for="lastname" class="form-label fw-semibold">Cognome</label>
+                            <label for="lastname" class="form-label fw-semibold fs-6">Cognome *</label>
                             <input type="text" id="lastname" v-model="lastname" class="form-control" required>
                         </div>
 
                         <!-- Campo Indirizzo -->
                         <div class="mb-3">
-                            <label for="address" class="form-label fw-semibold">Indirizzo di consegna</label>
+                            <label for="address" class="form-label fw-semibold fs-6">Indirizzo di consegna *</label>
                             <input type="text" id="address" v-model="address" class="form-control" required>
                         </div>
 
                         <!-- Campo Numero di telefono -->
                         <div class="mb-3">
-                            <label for="phone_number" class="form-label fw-semibold">Numero di telefono</label>
+                            <label for="phone_number" class="form-label fw-semibold fs-6">Numero di telefono *</label>
                             <input type="text" id="phone_number" v-model="phone_number" class="form-control" required
                                 @blur="phoneTouched = true">
                             <small v-if="phoneInvalid" class="text-danger">
@@ -173,11 +175,13 @@ export default {
 
                         <!-- Campo Note -->
                         <div class="mb-3">
-                            <label for="note" class="form-label fw-semibold">Note (opzionali)</label>
+                            <label for="note" class="form-label fw-semibold fs-6">Note (opzionali)</label>
                             <textarea id="note" v-model="note" class="form-control"
                                 placeholder="Appartamento, casa, hotel..."></textarea>
+                            <div class="separatore mt-5"></div>
+                            <div class="w-100 text-center mt-3"><span class="fs-6 fw-semibold">Dati per il
+                                    pagamento</span></div>
                         </div>
-
                         <div id="payment-form" ref="paymentForm" class="mb-3"></div>
 
                         <div class="d-flex justify-content-between mt-4">
@@ -227,5 +231,21 @@ export default {
 
 .modal-content {
     border-radius: 20px;
+}
+
+.separatore {
+    width: 100%;
+    height: 1px;
+    background-color: black
+}
+
+form input,
+.form-control {
+    border: 1px solid#a7a7a7;
+}
+
+.form-control:focus {
+    background-color: #f5f5f5;
+    box-shadow: 1px 1px 5px 1px black;
 }
 </style>
