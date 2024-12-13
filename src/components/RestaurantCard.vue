@@ -258,7 +258,7 @@
                                                     <span class="food_name fs-5">{{ dish.name }}</span>
                                                     <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
                                                         dish.description
-                                                    }}</span>
+                                                        }}</span>
                                                     <ul id="food_meta" class="d-flex justify-content-center">
                                                         <li>
                                                             <div>
@@ -332,7 +332,7 @@
                                                     <span class="food_name fs-5">{{ dish.name }}</span>
                                                     <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
                                                         dish.description
-                                                    }}</span>
+                                                        }}</span>
                                                     <ul id="food_meta" class="d-flex justify-content-center">
                                                         <li>
                                                             <div>
@@ -460,8 +460,7 @@
 
     <!-- MODALE MOBILE/TABLET FUORI DAL CONTENT-CONTAINER -->
     <div v-if="isMobileCartVisible" class="modal">
-        <div class="modal-content p-4 bg-white position-relative"
-            style="max-height:80vh; max-width:90vw; overflow-y:auto; z-index:10000;">
+        <div class="modal-content p-4 bg-white position-relative">
             <button class="btn-close position-absolute top-0 end-0 m-3" @click="isMobileCartVisible = false"></button>
             <h4 class="text-center mb-2 fs-6">
                 <i class="bi bi-cart4"></i> Carrello
@@ -605,6 +604,11 @@
         z-index: 3;
         background: white;
         border-radius: 10px;
+        max-height: 90vh;
+        max-width: 95vw;
+        overflow-y: auto;
+        padding: 20px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     /*Restaurants*/
@@ -1046,6 +1050,21 @@
 
     /* DESKTOP S-M-L */
     @media (min-width: 768px) {
+        .modal-content {
+            padding: 15px;
+            max-height: 85vh;
+        }
+
+        .modal-content form {
+            width: 100%;
+        }
+
+        input,
+        select,
+        button {
+            font-size: 0.9rem;
+        }
+
         #cart-button {
             display: none;
         }
