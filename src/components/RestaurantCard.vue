@@ -91,8 +91,9 @@ export default {
         removeFromCart(index) {
             this.cart.splice(index, 1);
             this.updateTotal();
+            // chiude il carrello quando è vuoto dopo la rimozione dell'ultimo piatto selezionato
             if (this.cart.length === 0) {
-                this.cartRestaurantName = null;
+                this.isMobileCartVisible = false;
             }
         },
         increaseQuantity(index) {
@@ -141,9 +142,9 @@ export default {
             this.total = 0;
             localStorage.removeItem('cart');
             localStorage.removeItem('total');
-            this.cartRestaurantName = null;
             this.showSuccessModal = true;
             console.log("showSuccessModal impostato a true");
+            this.isMobileCartVisible = false;
         },
         handleResize() {
 
@@ -1170,7 +1171,7 @@ body {
 /* MOBILE */
 @media (max-width: 375px) {
     .hero-bg-left-clickable {
-        width: 25vw;
+        width: 30vw;
         height: 15vh;
     }
 
@@ -1183,6 +1184,8 @@ body {
         display: flex;
         align-items: center;
         min-width: 60vw;
+        padding-left: 0px;
+
     }
 
     .search-bar-container input {
