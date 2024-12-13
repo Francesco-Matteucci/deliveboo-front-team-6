@@ -582,7 +582,7 @@
         left: 0;
         width: 100vw;
         height: 100vh;
-        z-index: 9999;
+        z-index: 2;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -597,12 +597,12 @@
         bottom: 0;
         backdrop-filter: blur(5px);
         background: rgba(0, 0, 0, 0.1);
-        z-index: 9998;
+        z-index: 1;
     }
 
     .modal-content {
         position: relative;
-        z-index: 10000;
+        z-index: 3;
         background: white;
         border-radius: 10px;
     }
