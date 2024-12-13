@@ -38,13 +38,7 @@ export default {
     </div>
     <div class="overlay"></div>
   </section>
-  <video
-    class="video-background"
-    src="/src/assets/video/3944332-uhd_4096_2160_25fps.mp4"
-    autoplay
-    muted
-    loop
-  ></video>
+  <video class="video-background" src="/src/assets/video/3944332-uhd_4096_2160_25fps.mp4" autoplay muted loop></video>
   <section>
     <RestaurantCard />
   </section>
@@ -107,9 +101,11 @@ button {
   border-radius: 13px;
   background-color: #ff6204;
   border: none;
+
   &:hover {
     scale: 1.1;
   }
+
   &:active {
     scale: 1;
   }
@@ -134,5 +130,21 @@ button {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.66);
   z-index: -1;
+}
+
+/* TABLET */
+@media (max-width: 768px) {
+  .hero-bg-left-clickable {
+    width: 22vw;
+    height: 15vh;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 375px) {
+  .hero-bg-left-clickable {
+    width: 30vw;
+    height: 15vh;
+  }
 }
 </style>
