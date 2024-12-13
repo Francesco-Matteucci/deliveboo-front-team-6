@@ -192,12 +192,12 @@
         <div class="hero-banner m-0" :style="{ backgroundImage: `url(${restaurant?.image})` }">
         </div>
         <div class="info-box text-white p-3 text-center">
-            <h1 class="fw-semibold fs-5 mb-3">{{ restaurant?.name }}</h1>
-            <p class="mb-2 fs-6">
+            <h1 class="fw-semibold fs-5 mb-3 hero-title">{{ restaurant?.name }}</h1>
+            <p class="mb-2 fs-6 hero-p">
                 <i class="bi bi-geo-alt-fill text-danger me-2"></i>Indirizzo <br>
                 <span class="fw-semibold">{{ restaurant?.address }}</span>
             </p>
-            <p class="fs-6 mt-2">
+            <p class="fs-6 mt-2 hero-p">
                 <i class="bi bi-tags-fill text-secondary me-2"></i>Categorie
             <div class="category-span d-flex flex-wrap justify-content-center">
                 <span class="fw-semibold" v-for="(category, index) in restaurant?.categories" :key="category.id">
@@ -473,6 +473,24 @@
 
 
 <style scoped>
+
+.hero-title {
+    font-weight: 400;
+    font-size: 3em;
+    background: linear-gradient(0.25turn, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+    padding: 10px 10px 15px 10px;
+    letter-spacing: .3em;
+}
+
+.hero-p {
+    font-size: 1em;
+    letter-spacing: .3em;
+    padding: 10px;
+    max-width: 550px;
+    background: linear-gradient(0.25turn, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+
+}
+
     .home-btn {
         min-width: 80px;
         max-width: 80px;
@@ -517,7 +535,7 @@
 
     .hero-banner {
         background: no-repeat;
-        height: 40vh;
+        height: 60vh;
         width: 70vw;
         display: flex;
         background-size: 100% 100%;
