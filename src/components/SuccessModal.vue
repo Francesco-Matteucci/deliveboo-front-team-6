@@ -26,10 +26,16 @@ export default {
                 <div class="modal-header custom-modal-header justify-content-center">
                     <h5 class="modal-title fs-5 text-white">Ordine Completato!</h5>
                 </div>
-                <div class="modal-body bg-light">
-                    <p class="fw-semibold mb-4">Il tuo pagamento è andato a buon fine. <br>Il tuo ordine verrà presto
+                <div class="modal-body bg-light justify-content-center d-flex flex-column">
+                    <p class="fw-semibold mb-4 d-flex flex-column align-items-center">Il tuo pagamento è andato a buon
+                        fine. <br>Il tuo ordine verrà presto
                         consegnato, buon appetito!
-                        <i class="bi bi-emoji-smile"></i>
+                    <div class="d-flex justify-content-center gif-container mt-2"
+                        style="width:100%; height:200px;position:relative;">
+                        <iframe src="https://giphy.com/embed/W1qFmIKMYG3zQRHfXw" width="100%" height="100%"
+                            style="position:absolute;" frameBorder="0" class="giphy-embed" allowFullScreen>
+                        </iframe>
+                    </div>
                     </p>
                     <button class="btn text-white w-100" :style="{ backgroundColor: primaryColor }" @click="closeModal">
                         Chiudi
@@ -71,5 +77,14 @@ export default {
 
 .modal-content {
     border-radius: 20px;
+}
+
+.gif-container {
+    pointer-events: none;
+    border-radius: 1rem;
+}
+
+.gif-container iframe {
+    border-radius: 1rem;
 }
 </style>
