@@ -17,6 +17,13 @@ html::-webkit-scrollbar-thumb:hover {
   cursor: pointer;
 }
 
-html {
+body {
   overflow-x: hidden;
+  font-family: 'CustomFont', sans-serif !important;
 }
+
+@font-face {
+  font-family: 'CustomFont'; /* Nome del font */
+  src: url('@/assets/font/CaramelVanilla.ttf') format('truetype'); /* Percorso del font */
+}
+
