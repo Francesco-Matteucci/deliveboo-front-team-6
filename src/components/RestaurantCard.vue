@@ -148,6 +148,17 @@
                 this.cartRestaurantName = null;
                 this.showSuccessModal = true;
                 console.log("showSuccessModal impostato a true");
+            },
+            handleResize() {
+
+                if (window.innerWidth >= 768 && this.isMobileCartVisible) {
+                    this.isMobileCartVisible = false;
+                }
+            }
+        },
+        computed: {
+            cartItemCount() {
+                return this.cart.reduce((sum, item) => sum + item.quantity, 0);
             }
         },
         mounted() {
@@ -163,6 +174,12 @@
 
             this.fetchRestaurant();
             this.fetchDishes();
+
+            window.addEventListener('resize', this.handleResize);
+            this.handleResize();
+        },
+        beforeUnmount() {
+            window.removeEventListener('resize', this.handleResize);
         },
         watch: {
             cartRestaurantName(newVal) {
@@ -171,304 +188,322 @@
                 } else {
                     localStorage.removeItem('cartRestaurantName');
                 }
+            },
+            isMobileCartVisible(newVal) {
+                const body = document.body;
+                if (newVal) {
+                    body.classList.add('blur-background');
+                } else {
+                    body.classList.remove('blur-background');
+                }
             }
-        }
+        },
+
     };
 </script>
 
 <template>
-    <div class="header-top d-flex w-100 bg-black flex-column">
-        <div class="d-flex">
-            <div class="hero-bg-left-clickable" @click="goToHome"></div>
-            <div class="row fda_search_row d-flex justify-content-center w-75">
-                <div class="search-bar-container col-6">
-                    <input type="text" class="fda_ip_search" placeholder="Cerca un piatto..." />
+    <div class="content-container">
+        <div class="header-top d-flex w-100 bg-black flex-column">
+            <div class="d-flex">
+                <div class="hero-bg-left-clickable" @click="goToHome"></div>
+                <div class="row fda_search_row d-flex justify-content-center w-75">
+                    <div class="search-bar-container col-6">
+                        <input type="text" class="fda_ip_search" placeholder="Cerca un piatto..." />
+                    </div>
                 </div>
             </div>
+            <button class="home-btn" @click="goToHome"><i class="bi bi-box-arrow-left"></i> Home</button>
         </div>
-        <button class="home-btn" @click="goToHome"><i class="bi bi-box-arrow-left"></i> Home</button>
+        <header class="d-flex">
+            <div class="hero-banner m-0" :style="{ backgroundImage: `url(${restaurant?.image})` }">
+            </div>
+            <div class="info-box text-white p-3 text-center">
+                <h1 class="fw-semibold fs-5 mb-3">{{ restaurant?.name }}</h1>
+                <p class="mb-2 fs-6">
+                    <i class="bi bi-geo-alt-fill text-danger me-2"></i>Indirizzo <br>
+                    <span class="fw-semibold">{{ restaurant?.address }}</span>
+                </p>
+                <p class="fs-6 mt-2">
+                    <i class="bi bi-tags-fill text-secondary me-2"></i>Categorie
+                <div class="category-span d-flex flex-wrap justify-content-center">
+                    <span class="fw-semibold" v-for="(category, index) in restaurant?.categories" :key="category.id">
+                        {{ category.name }}
+                        <span v-if="index < restaurant?.categories.length - 1">,&nbsp;</span>
+                    </span>
+                </div>
+                </p>
+            </div>
+        </header>
+
+        <main class="pt-4 container-fluid position-relative">
+            <div class="row">
+                <!-- Dishes -->
+                <div :class="cart.length > 0
+                    ? 'col-lg-8 col-8 piatti-desktop' : 'col-lg-12 col-12 piatti-desktop'">
+                    <div class="container dish-container">
+                        <p v-if="loading" class="text-center">Caricamento in corso...</p>
+                        <p v-if="error" class="text-danger text-center">{{ error }}</p>
+                        <div v-if="!loading && !error"
+                            class="dish-list row align-items-center d-flex justify-content-center">
+                            <div class="container-fluid">
+                                <div id="fda_app" class="row">
+                                    <section id="fda_product_tile"
+                                        class="col-12 flex-wrap d-flex justify-content-center gap-5">
+                                        <div v-for="dish in filteredDishes" :key="dish.id"
+                                            class="row fda_food_row mb-5">
+                                            <div class="col-9 w-100">
+                                                <div class="food_tile active h-100">
+                                                    <img :src="dish.image" alt="" class="fda_product_img" />
+                                                    <span class="food_name fs-5">{{ dish.name }}</span>
+                                                    <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
+                                                        dish.description
+                                                    }}</span>
+                                                    <ul id="food_meta" class="d-flex justify-content-center">
+                                                        <li>
+                                                            <div>
+                                                                <span v-if="dish.visible"
+                                                                    class="text-success rounded-2 fw-semibold">
+                                                                    <i class="bi bi-bag-check-fill mb-5 fs-6">
+                                                                        Disponibile</i>
+
+                                                                </span>
+                                                                <span v-else
+                                                                    class="info-span text-danger rounded-2 fw-semibold">
+                                                                    <div>
+                                                                        <i
+                                                                            class="bi bi-bag-x-fill w-100 text-center"></i>
+                                                                        Non disponibile
+                                                                    </div>
+
+                                                                </span>
+                                                                <span class="badge add-to-cart-button mt-2">
+                                                                    <span class="fs-6">{{ dish.price }} €</span>
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                    <span>
+                                                        <span v-if="dish.visible">
+                                                            <button type="button" @click="addToCart(dish)"
+                                                                class="btn btn-sm btn-default fs-6">
+                                                                Ordina ora
+                                                            </button>
+                                                        </span>
+                                                        <span v-else>
+                                                            <button type="button"
+                                                                class=" btn btn-sm btn-default disabled">
+                                                                Ordina ora
+                                                            </button>
+                                                        </span>
+                                                    </span>
+                                                    <div v-if="(itemInCart = cart.find(cartItem => cartItem.id === dish.id))"
+                                                        class="mobile-dishes-counter">
+                                                        <span class="me-2 fs-6">
+                                                            Selezionati: {{ itemInCart.quantity }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- PIATTI TABLET E MOBILE -->
+                <div :class="cart.length > 0
+                    ? 'col-lg-10 col-10 piatti-mobile' : 'col-lg-12 col-12 piatti-mobile'">
+                    <div class="container dish-container">
+                        <p v-if="loading" class="text-center">Caricamento in corso...</p>
+                        <p v-if="error" class="text-danger text-center">{{ error }}</p>
+                        <div v-if="!loading && !error"
+                            class="dish-list row align-items-center d-flex justify-content-center">
+                            <div class="container-fluid">
+                                <div id="fda_app" class="row">
+                                    <section id="fda_product_tile"
+                                        class="col-12 flex-wrap d-flex justify-content-center gap-5">
+                                        <div v-for="dish in filteredDishes" :key="dish.id"
+                                            class="row fda_food_row mb-5">
+                                            <div class="col-9 w-100">
+                                                <div class="food_tile active h-100">
+                                                    <img :src="dish.image" alt="" class="fda_product_img" />
+                                                    <span class="food_name fs-5">{{ dish.name }}</span>
+                                                    <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
+                                                        dish.description
+                                                    }}</span>
+                                                    <ul id="food_meta" class="d-flex justify-content-center">
+                                                        <li>
+                                                            <div>
+                                                                <span v-if="dish.visible"
+                                                                    class="text-success rounded-2 fw-semibold">
+                                                                    <i class="bi bi-bag-check-fill mb-5 fs-6">
+                                                                        Disponibile</i>
+
+                                                                </span>
+                                                                <span v-else
+                                                                    class="info-span text-danger rounded-2 fw-semibold">
+                                                                    <div>
+                                                                        <i
+                                                                            class="bi bi-bag-x-fill w-100 text-center"></i>
+                                                                        Non disponibile
+                                                                    </div>
+
+                                                                </span>
+                                                                <span class="badge add-to-cart-button mt-2">
+                                                                    <span class="fs-6">{{ dish.price }} €</span>
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                    <span>
+                                                        <span v-if="dish.visible">
+                                                            <button type="button" @click="addToCart(dish)"
+                                                                class="btn btn-sm btn-default fs-6">
+                                                                Ordina ora
+                                                            </button>
+                                                        </span>
+                                                        <span v-else>
+                                                            <button type="button"
+                                                                class=" btn btn-sm btn-default disabled">
+                                                                Ordina ora
+                                                            </button>
+                                                        </span>
+                                                    </span>
+                                                    <div v-if="(itemInCart = cart.find(cartItem => cartItem.id === dish.id))"
+                                                        class="mobile-dishes-counter">
+                                                        <span class="me-2 fs-6">
+                                                            Selezionati: {{ itemInCart.quantity }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- BOTTONE PER MOSTRARE IL CARRELLO SU TABLET E SMARTPHONE -->
+                <button v-if="cart.length > 0" class=" col-md-1 col-1" id="cart-button"
+                    @click="isMobileCartVisible = true">
+                    <i class="bi bi-cart"></i>
+                    <span class="cart-badge" v-if="cartItemCount > 0">{{ cartItemCount }}</span>
+                </button>
+                <!-- Cart DESKTOP-->
+                <div :class="cart.length > 0 ? 'col-lg-4 col-4' : 'd-none'">
+                    <div class="cart sticky-top">
+                        <h4 class="text-center mb-2 fs-6">
+                            <i class="bi bi-cart4"></i> Carrello
+                        </h4>
+                        <p v-if="cart.length > 0" class="text-center text-dark mb-3 fs-6">
+                            Stai ordinando presso il Ristorante: {{ cartRestaurantName }}
+                        </p>
+                        <ul class="list-unstyled">
+                            <li v-for="(item, index) in cart" :key="index"
+                                class="cart-item d-flex justify-content-between align-items-center py-3 px-2 mb-1">
+                                <div class="d-flex align-items-center">
+                                    <span class="fw-semibold" id="item-name">{{ item.name }}</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <button @click="decreaseQuantity(index)"
+                                        class="btn btn-sm btn-outline-secondary me-2">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <span class="me-2 fs-6">{{ item.quantity }}</span>
+                                    <button @click="increaseQuantity(index)"
+                                        class="btn btn-sm btn-outline-secondary me-2">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="align-self-center d-flex flex-column align-items-center">
+                                    <span class="fw-semibold" id="item-price">{{ (item.price * item.quantity).toFixed(2)
+                                        }}
+                                        €</span>
+                                    <button @click="removeFromCart(index)" class=" btn btn-sm btn-danger"
+                                        id="remove-btn">Rimuovi
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+
+
+
+                        <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
+                            <h5 class="fw-semibold m-0 fs-6 mx-2">Totale <br> {{ total.toFixed(2) }} €</h5>
+                            <button class="btn btn-outline-success" @click="showCheckout = true"
+                                id="checkout-btn">Procedi
+                                al
+                                pagamento</button>
+                        </div>
+
+                        <CheckoutModal v-if="showCheckout" :cart="cart" :total="total" :showModal="showCheckout"
+                            @close="showCheckout = false" @order-completed="orderCompleted" />
+
+                        <SuccessModal v-if="showSuccessModal" :showModal="showSuccessModal"
+                            @close="showSuccessModal = false" />
+
+                        <!-- Modale cambio ristorante -->
+                        <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"
+                            @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
+                    </div>
+                </div>
+
+
+            </div>
+        </main>
+        <SuccessModal v-if="showSuccessModal" :showModal="showSuccessModal" @close="showSuccessModal = false" />
+        <Footer />
     </div>
-    <header class="d-flex">
-        <div class="hero-banner m-0" :style="{ backgroundImage: `url(${restaurant?.image})` }">
-        </div>
-        <div class="info-box text-white p-3 text-center">
-            <h1 class="fw-semibold fs-5 mb-3">{{ restaurant?.name }}</h1>
-            <p class="mb-2 fs-6">
-                <i class="bi bi-geo-alt-fill text-danger me-2"></i>Indirizzo <br>
-                <span class="fw-semibold">{{ restaurant?.address }}</span>
-            </p>
-            <p class="fs-6 mt-2">
-                <i class="bi bi-tags-fill text-secondary me-2"></i>Categorie
-            <div class="category-span d-flex flex-wrap justify-content-center">
-                <span class="fw-semibold" v-for="(category, index) in restaurant?.categories" :key="category.id">
-                    {{ category.name }}
-                    <span v-if="index < restaurant?.categories.length - 1">,&nbsp;</span>
-                </span>
-            </div>
-            </p>
-        </div>
-    </header>
 
-    <main class="pt-4 container-fluid position-relative">
-        <div class="row">
-            <!-- Dishes -->
-            <div :class="cart.length > 0
-                ? 'col-lg-8 col-8 piatti-desktop' : 'col-lg-12 col-12 piatti-desktop'">
-                <div class="container dish-container">
-                    <p v-if="loading" class="text-center">Caricamento in corso...</p>
-                    <p v-if="error" class="text-danger text-center">{{ error }}</p>
-                    <div v-if="!loading && !error"
-                        class="dish-list row align-items-center d-flex justify-content-center">
-                        <div class="container-fluid">
-                            <div id="fda_app" class="row">
-                                <section id="fda_product_tile"
-                                    class="col-12 flex-wrap d-flex justify-content-center gap-5">
-                                    <div v-for="dish in filteredDishes" :key="dish.id" class="row fda_food_row mb-5">
-                                        <div class="col-9 w-100">
-                                            <div class="food_tile active h-100">
-                                                <img :src="dish.image" alt="" class="fda_product_img" />
-                                                <span class="food_name fs-5">{{ dish.name }}</span>
-                                                <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
-                                                    dish.description
-                                                    }}</span>
-                                                <ul id="food_meta" class="d-flex justify-content-center">
-                                                    <li>
-                                                        <div>
-                                                            <span v-if="dish.visible"
-                                                                class="text-success rounded-2 fw-semibold">
-                                                                <i class="bi bi-bag-check-fill mb-5 fs-6">
-                                                                    Disponibile</i>
-
-                                                            </span>
-                                                            <span v-else
-                                                                class="info-span text-danger rounded-2 fw-semibold">
-                                                                <div>
-                                                                    <i class="bi bi-bag-x-fill w-100 text-center"></i>
-                                                                    Non disponibile
-                                                                </div>
-
-                                                            </span>
-                                                            <span class="badge add-to-cart-button mt-2">
-                                                                <span class="fs-6">{{ dish.price }} €</span>
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <span>
-                                                    <span v-if="dish.visible">
-                                                        <button type="button" @click="addToCart(dish)"
-                                                            class="btn btn-sm btn-default fs-6">
-                                                            Ordina ora
-                                                        </button>
-                                                    </span>
-                                                    <span v-else>
-                                                        <button type="button" class=" btn btn-sm btn-default disabled">
-                                                            Ordina ora
-                                                        </button>
-                                                    </span>
-                                                </span>
-                                                <div v-if="(itemInCart = cart.find(cartItem => cartItem.id === dish.id))"
-                                                    class="mobile-dishes-counter">
-                                                    <span class="me-2 fs-6">
-                                                        Selezionati: {{ itemInCart.quantity }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-                            </div>
-                        </div>
+    <!-- MODALE MOBILE/TABLET FUORI DAL CONTENT-CONTAINER -->
+    <div v-if="isMobileCartVisible" class="modal">
+        <div class="modal-content p-4 bg-white position-relative"
+            style="max-height:80vh; max-width:90vw; overflow-y:auto; z-index:10000;">
+            <button class="btn-close position-absolute top-0 end-0 m-3" @click="isMobileCartVisible = false"></button>
+            <h4 class="text-center mb-2 fs-6">
+                <i class="bi bi-cart4"></i> Carrello
+            </h4>
+            <ul class="list-unstyled">
+                <li v-for="(item, index) in cart" :key="index"
+                    class="cart-item d-flex justify-content-between align-items-center py-3 px-2 mb-1">
+                    <div class="d-flex align-items-center">
+                        <span class="fw-semibold" id="item-name">{{ item.name }}</span>
                     </div>
-                </div>
-            </div>
-            <!-- PIATTI TABLET E MOBILE -->
-            <div :class="cart.length > 0
-                ? 'col-lg-10 col-10 piatti-mobile' : 'col-lg-12 col-12 piatti-mobile'">
-                <div class="container dish-container">
-                    <p v-if="loading" class="text-center">Caricamento in corso...</p>
-                    <p v-if="error" class="text-danger text-center">{{ error }}</p>
-                    <div v-if="!loading && !error"
-                        class="dish-list row align-items-center d-flex justify-content-center">
-                        <div class="container-fluid">
-                            <div id="fda_app" class="row">
-                                <section id="fda_product_tile"
-                                    class="col-12 flex-wrap d-flex justify-content-center gap-5">
-                                    <div v-for="dish in filteredDishes" :key="dish.id" class="row fda_food_row mb-5">
-                                        <div class="col-9 w-100">
-                                            <div class="food_tile active h-100">
-                                                <img :src="dish.image" alt="" class="fda_product_img" />
-                                                <span class="food_name fs-5">{{ dish.name }}</span>
-                                                <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
-                                                    dish.description
-                                                    }}</span>
-                                                <ul id="food_meta" class="d-flex justify-content-center">
-                                                    <li>
-                                                        <div>
-                                                            <span v-if="dish.visible"
-                                                                class="text-success rounded-2 fw-semibold">
-                                                                <i class="bi bi-bag-check-fill mb-5 fs-6">
-                                                                    Disponibile</i>
-
-                                                            </span>
-                                                            <span v-else
-                                                                class="info-span text-danger rounded-2 fw-semibold">
-                                                                <div>
-                                                                    <i class="bi bi-bag-x-fill w-100 text-center"></i>
-                                                                    Non disponibile
-                                                                </div>
-
-                                                            </span>
-                                                            <span class="badge add-to-cart-button mt-2">
-                                                                <span class="fs-6">{{ dish.price }} €</span>
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <span>
-                                                    <span v-if="dish.visible">
-                                                        <button type="button" @click="addToCart(dish)"
-                                                            class="btn btn-sm btn-default fs-6">
-                                                            Ordina ora
-                                                        </button>
-                                                    </span>
-                                                    <span v-else>
-                                                        <button type="button" class=" btn btn-sm btn-default disabled">
-                                                            Ordina ora
-                                                        </button>
-                                                    </span>
-                                                </span>
-                                                <div v-if="(itemInCart = cart.find(cartItem => cartItem.id === dish.id))"
-                                                    class="mobile-dishes-counter">
-                                                    <span class="me-2 fs-6">
-                                                        Selezionati: {{ itemInCart.quantity }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- BOTTONE PER MOSTRARE IL CARRELLO SU TABLET E SMARTPHONE -->
-            <button v-if="cart.length > 0" class=" col-md-1 col-1" id="cart-button" @click="isMobileCartVisible = true">
-                <i class="bi bi-cart"></i>
-            </button>
-            <!-- CARRELLO TABLET E MOBILE -->
-            <div v-if="isMobileCartVisible" class="modal d-flex justify-content-center align-items-center">
-                <div class="modal-content w-100 h-100 bg-white position-relative">
-                    <!-- pulsante per chiudere il modal -->
-                    <button class="btn-close position-absolute top-0 end-0 m-3"
-                        @click="isMobileCartVisible = false"></button>
-
-                    <h4 class="text-center mb-2 fs-6">
-                        <i class="bi bi-cart4"></i> Carrello
-                    </h4>
-
-                    <ul class="list-unstyled">
-                        <li v-for="(item, index) in cart" :key="index"
-                            class="cart-item d-flex justify-content-between align-items-center py-3 px-2 mb-1">
-                            <div class="d-flex align-items-center">
-                                <span class="fw-semibold" id="item-name">{{ item.name }}</span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <button @click="decreaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
-                                    <i class="bi bi-dash"></i>
-                                </button>
-                                <span class="me-2 fs-6">{{ item.quantity }}</span>
-                                <button @click="increaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
-                                    <i class="bi bi-plus"></i>
-                                </button>
-                            </div>
-                            <div class="align-self-center d-flex flex-column align-items-center">
-                                <span class="fw-semibold" id="item-price">{{ (item.price * item.quantity).toFixed(2) }}
-                                    €</span>
-                                <button @click="removeFromCart(index)" class="btn btn-sm btn-danger"
-                                    id="remove-btn">Rimuovi</button>
-                            </div>
-                        </li>
-                    </ul>
-
-                    <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-semibold m-0 fs-6 mx-2">Totale <br> {{ total.toFixed(2) }} €</h5>
-                        <button class="btn btn-outline-success" @click="showCheckout = true" id="checkout-btn">
-                            Procedi al pagamento
+                    <div class="d-flex align-items-center">
+                        <button @click="decreaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="bi bi-dash"></i>
+                        </button>
+                        <span class="me-2 fs-6">{{ item.quantity }}</span>
+                        <button @click="increaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="bi bi-plus"></i>
                         </button>
                     </div>
-                    <CheckoutModal v-if="showCheckout" :cart="cart" :total="total" :showModal="showCheckout"
-                        @close="showCheckout = false" @order-completed="orderCompleted" />
-                    <!-- 
-                    <SuccessModal v-if="showSuccessModal" :showModal="showSuccessModal"
-                        @close="showSuccessModal = false" /> -->
-
-                    <!-- Modale cambio ristorante -->
-                    <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"
-                        @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
-                </div>
-            </div>
-            <!-- Cart DESKTOP-->
-            <div :class="cart.length > 0 ? 'col-lg-4 col-4' : 'd-none'">
-                <div class="cart sticky-top">
-                    <h4 class="text-center mb-2 fs-6">
-                        <i class="bi bi-cart4"></i> Carrello
-                    </h4>
-                    <p v-if="cart.length > 0" class="text-center text-dark mb-3 fs-6">
-                        Stai ordinando presso il Ristorante: {{ cartRestaurantName }}
-                    </p>
-                    <ul class="list-unstyled">
-                        <li v-for="(item, index) in cart" :key="index"
-                            class="cart-item d-flex justify-content-between align-items-center py-3 px-2 mb-1">
-                            <div class="d-flex align-items-center">
-                                <span class="fw-semibold" id="item-name">{{ item.name }}</span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <button @click="decreaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
-                                    <i class="bi bi-dash"></i>
-                                </button>
-                                <span class="me-2 fs-6">{{ item.quantity }}</span>
-                                <button @click="increaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
-                                    <i class="bi bi-plus"></i>
-                                </button>
-                            </div>
-                            <div class="align-self-center d-flex flex-column align-items-center">
-                                <span class="fw-semibold" id="item-price">{{ (item.price * item.quantity).toFixed(2) }}
-                                    €</span>
-                                <button @click="removeFromCart(index)" class=" btn btn-sm btn-danger"
-                                    id="remove-btn">Rimuovi
-                                </button>
-                            </div>
-                        </li>
-                    </ul>
-
-
-
-                    <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-semibold m-0 fs-6 mx-2">Totale <br> {{ total.toFixed(2) }} €</h5>
-                        <button class="btn btn-outline-success" @click="showCheckout = true" id="checkout-btn">Procedi
-                            al
-                            pagamento</button>
+                    <div class="align-self-center d-flex flex-column align-items-center">
+                        <span class="fw-semibold" id="item-price">{{ (item.price * item.quantity).toFixed(2) }}
+                            €</span>
+                        <button @click="removeFromCart(index)" class="btn btn-sm btn-danger"
+                            id="remove-btn">Rimuovi</button>
                     </div>
+                </li>
+            </ul>
 
-                    <CheckoutModal v-if="showCheckout" :cart="cart" :total="total" :showModal="showCheckout"
-                        @close="showCheckout = false" @order-completed="orderCompleted" />
-
-                    <SuccessModal v-if="showSuccessModal" :showModal="showSuccessModal"
-                        @close="showSuccessModal = false" />
-
-                    <!-- Modale cambio ristorante -->
-                    <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"
-                        @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
-                </div>
+            <div v-if="cart.length > 0" class="d-flex justify-content-between align-items-center">
+                <h5 class="fw-semibold m-0 fs-6 mx-2">Totale <br> {{ total.toFixed(2) }} €</h5>
+                <button class="btn btn-outline-success text-white" @click="showCheckout = true" id="checkout-btn">
+                    Procedi al pagamento
+                </button>
             </div>
+            <CheckoutModal v-if="showCheckout" :cart="cart" :total="total" :showModal="showCheckout"
+                @close="showCheckout = false" @order-completed="orderCompleted" />
 
-
+            <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"
+                @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
         </div>
-    </main>
-    <SuccessModal v-if="showSuccessModal" :showModal="showSuccessModal" @close="showSuccessModal = false" />
-    <Footer />
+    </div>
+
 </template>
 
 
@@ -538,6 +573,38 @@
         align-items: center;
         width: 30vw;
         background-color: #2f2e2e;
+    }
+
+    /* STILI PER LA MODALE MOBILE/TABLET CON BLUR */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        backdrop-filter: blur(5px);
+        background: rgba(0, 0, 0, 0.1);
+        z-index: 9998;
+    }
+
+    .modal-content {
+        position: relative;
+        z-index: 10000;
+        background: white;
+        border-radius: 10px;
     }
 
     /*Restaurants*/
@@ -940,23 +1007,40 @@
 
     #cart-button {
         position: sticky;
-        top: 0;
+        top: 20px;
         z-index: 1;
-        height: 5vh;
+        width: 50px;
+        height: 50px;
         background-color: #e55b02;
         color: white;
         border: none;
-        border-radius: 1rem;
-        top: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-left: 33px;
-
-        &:active {
-            scale: 1.1;
-        }
+        cursor: pointer;
     }
 
+    #cart-button:active {
+        scale: 1.1;
+    }
 
-
+    #cart-button .cart-badge {
+        position: absolute;
+        bottom: -4px;
+        right: -4px;
+        background: red;
+        color: white;
+        font-size: 0.75rem;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
 
 
     /* DESKTOP S-M-L */
