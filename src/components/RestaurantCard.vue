@@ -233,7 +233,7 @@ export default {
         </header>
 
         <main class="pt-4 container-fluid position-relative">
-            <div class="row">
+            <div class="dishes-row row">
                 <!-- Dishes -->
                 <div :class="cart.length > 0
                     ? 'col-lg-8 col-8 piatti-desktop' : 'col-lg-12 col-12 piatti-desktop'">
@@ -254,7 +254,7 @@ export default {
                                                     <span class="food_name fs-5">{{ dish.name }}</span>
                                                     <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
                                                         dish.description
-                                                        }}</span>
+                                                    }}</span>
                                                     <ul id="food_meta" class="d-flex justify-content-center">
                                                         <li>
                                                             <div>
@@ -328,7 +328,7 @@ export default {
                                                     <span class="food_name fs-5">{{ dish.name }}</span>
                                                     <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
                                                         dish.description
-                                                        }}</span>
+                                                    }}</span>
                                                     <ul id="food_meta" class="d-flex justify-content-center">
                                                         <li>
                                                             <div>
@@ -394,9 +394,6 @@ export default {
                         <h4 class="text-center mb-2 fs-6">
                             <i class="bi bi-cart4"></i> Carrello
                         </h4>
-                        <p v-if="cart.length > 0" class="text-center text-dark mb-3 fs-6">
-                            Stai ordinando presso il Ristorante: {{ cartRestaurantName }}
-                        </p>
                         <ul class="list-unstyled">
                             <li v-for="(item, index) in cart" :key="index"
                                 class="cart-item d-flex justify-content-between align-items-center py-3 px-2 mb-1">
@@ -469,11 +466,13 @@ export default {
                         <span class="fw-semibold" id="item-name">{{ item.name }}</span>
                     </div>
                     <div class="d-flex align-items-center">
-                        <button @click="decreaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                        <button @click="decreaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2"
+                            id="decrease-btn">
                             <i class="bi bi-dash"></i>
                         </button>
                         <span class="me-2 fs-6">{{ item.quantity }}</span>
-                        <button @click="increaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2">
+                        <button @click="increaseQuantity(index)" class="btn btn-sm btn-outline-secondary me-2"
+                            id="increase-btn">
                             <i class="bi bi-plus"></i>
                         </button>
                     </div>
@@ -1048,8 +1047,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 33px;
-    margin-bottom: 15px;
     cursor: pointer;
 }
 
@@ -1152,6 +1149,21 @@ body {
         margin-top: 10px;
     }
 
+    #increase-btn,
+    #decrease-btn {
+        background-color: #ee5f07;
+        color: white;
+        border: none;
+    }
+
+    .dishes-row {
+        gap: 4vw;
+    }
+
+    #cart-button {
+        width: 45px;
+        height: 45px;
+    }
 
 }
 
@@ -1196,6 +1208,17 @@ body {
 
     .piatti-desktop {
         display: none;
+    }
+
+    #cart-button {
+        width: 35px;
+        height: 35px;
+        margin-left: 0px;
+        margin-bottom: 0px;
+    }
+
+    .dishes-row {
+        gap: 0.5rem;
     }
 
 }
