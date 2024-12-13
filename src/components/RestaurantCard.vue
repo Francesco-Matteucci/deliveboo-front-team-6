@@ -258,7 +258,7 @@
                                                     <span class="food_name fs-5">{{ dish.name }}</span>
                                                     <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
                                                         dish.description
-                                                    }}</span>
+                                                        }}</span>
                                                     <ul id="food_meta" class="d-flex justify-content-center">
                                                         <li>
                                                             <div>
@@ -332,7 +332,7 @@
                                                     <span class="food_name fs-5">{{ dish.name }}</span>
                                                     <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
                                                         dish.description
-                                                    }}</span>
+                                                        }}</span>
                                                     <ul id="food_meta" class="d-flex justify-content-center">
                                                         <li>
                                                             <div>
@@ -441,13 +441,11 @@
 
                         <CheckoutModal v-if="showCheckout" :cart="cart" :total="total" :showModal="showCheckout"
                             @close="showCheckout = false" @order-completed="orderCompleted" />
-
+                        <!-- 
                         <SuccessModal v-if="showSuccessModal" :showModal="showSuccessModal"
-                            @close="showSuccessModal = false" />
+                            @close="showSuccessModal = false" /> -->
 
-                        <!-- Modale cambio ristorante -->
-                        <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"
-                            @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
+
                     </div>
                 </div>
 
@@ -455,6 +453,9 @@
             </div>
         </main>
         <SuccessModal v-if="showSuccessModal" :showModal="showSuccessModal" @close="showSuccessModal = false" />
+        <!-- Modale cambio ristorante -->
+        <ClearCartModal v-if="showClearCartModal" :showModal="showClearCartModal" :nextRoute="nextRoute"
+            @close="showClearCartModal = false" @clear-cart="clearCartBeforeChange" />
         <Footer />
     </div>
 
