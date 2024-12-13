@@ -201,7 +201,6 @@ export default {
 
 <template>
     <div class="content-container">
-        <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
         <div class="hero-banner m-0 w-100" :style="{ backgroundImage: `url(${restaurant?.image})` }">
             <div class="hero-overlay"></div>
             <div class="d-flex w-100 flex-column justify-content-between" style="z-index: 10;">
@@ -222,7 +221,7 @@ export default {
                             <span class="fw-semibold">{{ restaurant?.address }}</span>
                         </p>
                         <p class="category-p fs-6 ">
-                            <i class="bi bi-tags-fill text-secondary me-2"></i>Categorie
+                            <i class="bi bi-tags-fill me-2"></i>Categorie
                         <div class="d-flex flex-wrap">
                             <span class="fw-semibold" v-for="(category, index) in restaurant?.categories"
                                 :key="category.id">
@@ -235,7 +234,6 @@ export default {
                 </div>
             </div>
         </div>
-        <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 
         <main class="pt-4 container-fluid position-relative">
             <div class="dishes-row row">
@@ -573,6 +571,10 @@ export default {
     background-color: #2f2e2e00;
 }
 
+.category-p i {
+    color: #e73838;
+}
+
 /* STILI PER LA MODALE MOBILE/TABLET CON BLUR */
 .modal {
     position: fixed;
@@ -580,7 +582,7 @@ export default {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 2;
+    z-index: 11;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -798,7 +800,7 @@ textarea:focus {
 
 
 #item-name {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     min-width: 80px;
     max-width: 80px;
     word-wrap: break-word;
@@ -1057,7 +1059,7 @@ body {
     background-position: center;
     background-size: 100%;
     margin-top: 1vw;
-    width: 15vw;
+    width: 12vw;
     height: 14vh;
     cursor: pointer;
 }
