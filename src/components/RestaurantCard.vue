@@ -258,7 +258,7 @@
                                                     <span class="food_name fs-5">{{ dish.name }}</span>
                                                     <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
                                                         dish.description
-                                                        }}</span>
+                                                    }}</span>
                                                     <ul id="food_meta" class="d-flex justify-content-center">
                                                         <li>
                                                             <div>
@@ -332,7 +332,7 @@
                                                     <span class="food_name fs-5">{{ dish.name }}</span>
                                                     <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
                                                         dish.description
-                                                        }}</span>
+                                                    }}</span>
                                                     <ul id="food_meta" class="d-flex justify-content-center">
                                                         <li>
                                                             <div>
@@ -609,6 +609,35 @@
         overflow-y: auto;
         padding: 20px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-content form {
+        width: 100%;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    input:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #ff6403;
+        box-shadow: 0 0 5px rgba(255, 100, 3, 0.5);
+    }
+
+    #payment-form {
+        min-height: 200px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #f9f9f9;
     }
 
     /*Restaurants*/
@@ -1050,20 +1079,6 @@
 
     /* DESKTOP S-M-L */
     @media (min-width: 768px) {
-        .modal-content {
-            padding: 15px;
-            max-height: 85vh;
-        }
-
-        .modal-content form {
-            width: 100%;
-        }
-
-        input,
-        select,
-        button {
-            font-size: 0.9rem;
-        }
 
         #cart-button {
             display: none;
@@ -1122,6 +1137,25 @@
             display: none;
         }
 
+        .modal-content {
+            padding: 15px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        input,
+        textarea,
+        button {
+            font-size: 0.85rem;
+            /* Adatta i font per schermi più piccoli */
+        }
+
+        #payment-form {
+            min-height: 200px;
+            margin-top: 10px;
+        }
+
+
     }
 
     /* MOBILE */
@@ -1166,5 +1200,6 @@
         .piatti-desktop {
             display: none;
         }
+
     }
 </style>

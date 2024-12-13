@@ -36,28 +36,35 @@
                 return this.emailTouched && !pattern.test(this.email);
             },
             phoneInvalid() {
+                // Controllo che ci siano solo cifre e almeno 7 cifre
                 const pattern = /^[0-9]+$/;
                 return this.phoneTouched && (!pattern.test(this.phone_number) || this.phone_number.length < 7);
             }
         },
         methods: {
             initializeDropIn() {
-                const dropin = document.querySelector("#payment-form");
-                braintree.dropin.create(
-                    {
-                        authorization: 'sandbox_5rzg4db5_n2tdvskp75wvh2g3',
-                        container: dropin,
-                        locale: 'it_IT',
-                        paymentOptionPriority: ['card'],
-                    },
-                    (err, instance) => {
-                        if (err) {
-                            console.error("Errore nell'inizializzazione del drop-in:", err);
-                        } else {
-                            this.paymentInstance = instance;
-                        }
+                this.$nextTick(() => {
+                    const dropin = this.$refs.paymentForm;
+                    if (!dropin) {
+                        console.error("Il contenitore del drop-in non è disponibile.");
+                        return;
                     }
-                );
+                    braintree.dropin.create(
+                        {
+                            authorization: 'sandbox_5rzg4db5_n2tdvskp75wvh2g3',
+                            container: dropin,
+                            locale: 'it_IT',
+                            paymentOptionPriority: ['card'],
+                        },
+                        (err, instance) => {
+                            if (err) {
+                                console.error("Errore nell'inizializzazione del drop-in:", err);
+                            } else {
+                                this.paymentInstance = instance;
+                            }
+                        }
+                    );
+                });
             },
             async processPayment() {
                 try {
@@ -92,6 +99,13 @@
         },
         mounted() {
             this.initializeDropIn();
+        },
+        watch: {
+            showModal(newVal) {
+                if (newVal) {
+                    this.initializeDropIn();
+                }
+            },
         },
     };
 </script>
@@ -164,7 +178,7 @@
                                 placeholder="Appartamento, casa, hotel..."></textarea>
                         </div>
 
-                        <div id="payment-form" class="mb-3"></div>
+                        <div id="payment-form" ref="paymentForm" class="mb-3"></div>
 
                         <div class="d-flex justify-content-between mt-4">
                             <button type="button" class="btn btn-outline-secondary me-3" @click="closeModal">
