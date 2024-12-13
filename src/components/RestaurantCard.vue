@@ -1019,6 +1019,7 @@
         align-items: center;
         justify-content: center;
         margin-left: 33px;
+        margin-bottom: 15px;
         cursor: pointer;
     }
 
