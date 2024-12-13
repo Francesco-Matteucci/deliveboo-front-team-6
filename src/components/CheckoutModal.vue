@@ -1,113 +1,113 @@
 <script>
-    import axios from 'axios';
+import axios from 'axios';
 
-    export default {
-        props: {
-            cart: {
-                type: Array,
-                required: true,
-            },
-            total: {
-                type: Number,
-                required: true,
-            },
-            showModal: {
-                type: Boolean,
-                required: true,
-            },
+export default {
+    props: {
+        cart: {
+            type: Array,
+            required: true,
         },
-        data() {
-            return {
-                email: "",
-                firstname: "",
-                lastname: "",
-                address: "",
-                phone_number: "",
-                note: "",
-                paymentInstance: null,
-                primaryColor: '#ff6403',
-                emailTouched: false,
-                phoneTouched: false
-            };
+        total: {
+            type: Number,
+            required: true,
         },
-        computed: {
-            emailInvalid() {
-                const pattern = /^[^\s@]+@[^\s@]+\.(com|it|net)$/i;
-                return this.emailTouched && !pattern.test(this.email);
-            },
-            phoneInvalid() {
-                // Controllo che ci siano solo cifre e almeno 7 cifre
-                const pattern = /^[0-9]+$/;
-                return this.phoneTouched && (!pattern.test(this.phone_number) || this.phone_number.length < 7);
-            }
+        showModal: {
+            type: Boolean,
+            required: true,
         },
-        methods: {
-            initializeDropIn() {
-                this.$nextTick(() => {
-                    const dropin = this.$refs.paymentForm;
-                    if (!dropin) {
-                        console.error("Il contenitore del drop-in non è disponibile.");
-                        return;
-                    }
-                    braintree.dropin.create(
-                        {
-                            authorization: 'sandbox_5rzg4db5_n2tdvskp75wvh2g3',
-                            container: dropin,
-                            locale: 'it_IT',
-                            paymentOptionPriority: ['card'],
-                        },
-                        (err, instance) => {
-                            if (err) {
-                                console.error("Errore nell'inizializzazione del drop-in:", err);
-                            } else {
-                                this.paymentInstance = instance;
-                            }
+    },
+    data() {
+        return {
+            email: "",
+            firstname: "",
+            lastname: "",
+            address: "",
+            phone_number: "",
+            note: "",
+            paymentInstance: null,
+            primaryColor: '#ff6403',
+            emailTouched: false,
+            phoneTouched: false
+        };
+    },
+    computed: {
+        emailInvalid() {
+            const pattern = /^[^\s@]+@[^\s@]+\.(com|it|net)$/i;
+            return this.emailTouched && !pattern.test(this.email);
+        },
+        phoneInvalid() {
+            // Controllo che ci siano solo cifre e almeno 7 cifre
+            const pattern = /^[0-9]+$/;
+            return this.phoneTouched && (!pattern.test(this.phone_number) || this.phone_number.length < 7);
+        }
+    },
+    methods: {
+        initializeDropIn() {
+            this.$nextTick(() => {
+                const dropin = this.$refs.paymentForm;
+                if (!dropin) {
+                    console.error("Il contenitore del drop-in non è disponibile.");
+                    return;
+                }
+                braintree.dropin.create(
+                    {
+                        authorization: 'sandbox_5rzg4db5_n2tdvskp75wvh2g3',
+                        container: dropin,
+                        locale: 'it_IT',
+                        paymentOptionPriority: ['card'],
+                    },
+                    (err, instance) => {
+                        if (err) {
+                            console.error("Errore nell'inizializzazione del drop-in:", err);
+                        } else {
+                            this.paymentInstance = instance;
                         }
-                    );
+                    }
+                );
+            });
+        },
+        async processPayment() {
+            try {
+                const payload = await this.paymentInstance.requestPaymentMethod();
+                console.log("Pagamento simulato con successo, nonce:", payload.nonce);
+
+                await axios.post('http://127.0.0.1:8000/api/orders', {
+                    cart: this.cart,
+                    total_price: this.total,
+                    firstname: this.firstname,
+                    lastname: this.lastname,
+                    address: this.address,
+                    phone_number: this.phone_number,
+                    note: this.note,
+                    restaurant_id: this.cart.length > 0 ? this.cart[0].restaurant_id : 1,
                 });
-            },
-            async processPayment() {
-                try {
-                    const payload = await this.paymentInstance.requestPaymentMethod();
-                    console.log("Pagamento simulato con successo, nonce:", payload.nonce);
+                console.log("Ordine inviato con successo al back-end");
 
-                    await axios.post('http://127.0.0.1:8000/api/orders', {
-                        cart: this.cart,
-                        total_price: this.total,
-                        firstname: this.firstname,
-                        lastname: this.lastname,
-                        address: this.address,
-                        phone_number: this.phone_number,
-                        note: this.note,
-                        restaurant_id: this.cart.length > 0 ? this.cart[0].restaurant_id : 1,
-                    });
-                    console.log("Ordine inviato con successo al back-end");
+                this.$emit('order-completed');
+                console.log("Evento order-completed emesso");
 
-                    this.$emit('order-completed');
-                    console.log("Evento order-completed emesso");
+                this.closeModal();
+                console.log("closeModal() chiamato");
 
-                    this.closeModal();
-                    console.log("closeModal() chiamato");
-
-                } catch (error) {
-                    console.error("Errore durante il pagamento:", error);
-                }
-            },
-            closeModal() {
-                this.$emit('close');
+            } catch (error) {
+                console.error("Errore durante il pagamento:", error);
             }
         },
-        mounted() {
-            this.initializeDropIn();
+        closeModal() {
+            this.$emit('close');
+        }
+    },
+    mounted() {
+        this.initializeDropIn();
+    },
+    watch: {
+        showModal(newVal) {
+            if (newVal) {
+                this.initializeDropIn();
+            }
         },
-        watch: {
-            showModal(newVal) {
-                if (newVal) {
-                    this.initializeDropIn();
-                }
-            },
-        },
-    };
+    },
+};
 </script>
 
 <template>
@@ -124,7 +124,7 @@
                     <ul class="list-unstyled mb-0">
                         <li v-for="(item, index) in cart" :key="index" class="d-flex justify-content-between mb-2">
                             <span class="fw-semibold">{{ item.name }} x{{ item.quantity }}</span>
-                            <span class="fw-bold">{{ (item.price * item.quantity).toFixed(2) }} €</span>
+                            <span class="fw-semibold">{{ (item.price * item.quantity).toFixed(2) }} €</span>
                         </li>
                     </ul>
                     <div class="d-flex align-items-center justify-content-between">
@@ -181,12 +181,12 @@
                         <div id="payment-form" ref="paymentForm" class="mb-3"></div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <button type="button" class="btn btn-outline-secondary me-3" @click="closeModal">
+                            <button type="button" class="btn btn-outline-secondary me-3 fs-6" @click="closeModal">
                                 Annulla
                             </button>
-                            <button type="submit" class="btn text-white" :style="{ backgroundColor: primaryColor }"
+                            <button type="submit" class="btn text-white fs-6" :style="{ backgroundColor: primaryColor }"
                                 :disabled="emailInvalid || phoneInvalid">
-                                Paga
+                                Completa l'ordine
                             </button>
                         </div>
                     </form>
@@ -198,34 +198,34 @@
 </template>
 
 <style scoped>
-    .modal-backdrop {
-        background-color: rgba(0, 0, 0, .5);
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.custom-modal-header {
+    background: linear-gradient(to right, #000000, #752f02);
+    border-bottom: none;
+}
+
+.custom-modal-content {
+    border: none;
+    overflow: hidden;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
 
-    .custom-modal-header {
-        background: linear-gradient(to right, #000000, #752f02);
-        border-bottom: none;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
+}
 
-    .custom-modal-content {
-        border: none;
-        overflow: hidden;
-        animation: fadeInUp 0.3s ease-out;
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .modal-content {
-        border-radius: 20px;
-    }
+.modal-content {
+    border-radius: 20px;
+}
 </style>
