@@ -26,13 +26,18 @@
 
 <template>
   <section class="hero">
-    <div class="d-flex justify-content-end gap-4 p-3">
+    <div class="d-flex justify-content-between align-items-center gap-4 p-3 position-relative">
+      <!-- Hero Background Left Clickable -->
+      <div class="hero-bg-left-clickable" @click="reloadPage">
+        <img src="/src/assets/logo.png" alt="Logo Deliveboo" class="img-fluid" />
+      </div>
+
+      <!-- Register Button -->
       <a href="http://127.0.0.1:8000/" class="d-flex align-items-center gap-2 text-white fs-6">
         <i class="bi bi-shop fs-4"></i>
         <span class="d-none d-md-inline">Registra il tuo ristorante</span>
       </a>
     </div>
-    <div class="hero-bg-left-clickable" @click="reloadPage"></div>
     <div class="hero-content text-center mt-5">
       <h1 class="hero-title text-white fs-3">Scopri i migliori ristoranti</h1>
       <p class="hero-description text-white fs-5">
@@ -60,7 +65,6 @@
     object-fit: cover;
     background-position: right bottom, right top, left bottom;
     background-repeat: no-repeat;
-    padding: 80px 20px;
     text-align: center;
     height: 100vh;
   }
@@ -88,7 +92,7 @@
   }
 
   .hero-bg-left-clickable {
-    background-image: url("/src/assets/logo-deliveboo.webp");
+    /* background-image: url("/src/assets/logo-deliveboo.webp");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100%;
@@ -97,9 +101,9 @@
     top: 20px;
     left: 0;
     width: 20vw;
-    height: 25vh;
+    height: 25vh; */
     cursor: pointer;
-    min-width: 250px;
+    min-width: 140px;
   }
 
   button {
