@@ -94,7 +94,7 @@
     background-size: 100%;
     margin-top: 1vw;
     position: absolute;
-    top: 0;
+    top: 20px;
     left: 0;
     width: 20vw;
     height: 25vh;
