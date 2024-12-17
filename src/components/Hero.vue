@@ -26,7 +26,7 @@ export default {
 
 <template>
   <section class="hero">
-    <div class="d-flex justify-content-end gap-4 pe-5">
+    <div class="d-flex justify-content-end gap-4">
       <a href="http://127.0.0.1:8000/" class="fs-5 text-white">Registra il tuo ristorante</a>
     </div>
     <div class="hero-bg-left-clickable" @click="reloadPage"></div>
@@ -142,8 +142,8 @@ a{
 /* TABLET */
 @media (max-width: 768px) {
   .hero-bg-left-clickable {
-    width: 22vw;
-    height: 15vh;
+    width: 30vw;
+    height: 22vh;
   }
 }
 
@@ -151,7 +151,7 @@ a{
 @media (max-width: 375px) {
   .hero-bg-left-clickable {
     width: 30vw;
-    height: 15vh;
+    height: 22vh;
   }
 }
 </style>
