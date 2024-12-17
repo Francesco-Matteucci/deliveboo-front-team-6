@@ -39,6 +39,12 @@
                 // Controllo che ci siano solo cifre e almeno 7 cifre
                 const pattern = /^[0-9]+$/;
                 return this.phoneTouched && (!pattern.test(this.phone_number) || this.phone_number.length < 7);
+            },
+            noteTooLong() {
+                return this.note.length > 200;
+            },
+            formInvalid() {
+                return this.emailInvalid || this.phoneInvalid || this.noteTooLong;
             }
         },
         methods: {
@@ -178,7 +184,11 @@
                         <div class="mb-3">
                             <label for="note" class="form-label fw-semibold fs-6">Note (opzionali)</label>
                             <textarea id="note" v-model="note" class="form-control"
-                                placeholder="Appartamento, casa, hotel..."></textarea>
+                                placeholder="Appartamento, casa, hotel..." maxlength="200"></textarea>
+                            <!-- Messaggio dinamico -->
+                            <small v-if="noteTooLong" class="text-danger">
+                                Le note non possono superare i 200 caratteri!
+                            </small>
                             <div class="separatore mt-5"></div>
                             <div class="w-100 text-center mt-3"><span class="fs-6 fw-semibold">Dati per il
                                     pagamento</span></div>

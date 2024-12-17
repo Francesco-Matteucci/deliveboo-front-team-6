@@ -82,7 +82,7 @@
         position: fixed;
         bottom: 20px;
         right: 20px;
-        z-index: 2;
+        z-index: 5;
         border-radius: 50%;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
 
@@ -134,7 +134,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 1;
+        z-index: 4;
     }
 
     .cart-modal-content {
