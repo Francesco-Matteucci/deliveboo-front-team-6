@@ -579,6 +579,7 @@ export default {
     background-color: #ff6204;
     padding: 5px;
     border-radius: 5px;
+    user-select: none;
 }
 
 /* STILI PER LA MODALE MOBILE/TABLET CON BLUR */
@@ -647,61 +648,6 @@ textarea:focus {
     border-radius: 5px;
     background: #f9f9f9;
 }
-
-/*Restaurants*/
-
-.restaurant-card {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.restaurant-card:hover {
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.restaurant-banner {
-    height: 200px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-
-.restaurant-overlay {
-    background: rgba(0, 0, 0, 0.5);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.restaurant-details {
-    background: #fff;
-    padding: 20px;
-    border-top: 2px solid #ddd;
-}
-
-.restaurant-details h2 {
-    font-size: 1.5rem;
-}
-
-.restaurant-details p {
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-.restaurant-description {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: #6c757d;
-}
-
 /*Cart*/
 .mobile-dishes-counter span {
     color: rgb(116, 113, 113);
@@ -835,46 +781,6 @@ body {
 
 #fda_app>section {
     padding-bottom: 0;
-}
-
-.menu {
-    transform-origin: top left;
-    transform: rotate(-90deg) translateX(-1150%);
-    margin-left: 18.5px;
-}
-
-.menu ul {
-    position: relative;
-    padding: 0;
-    width: 500px;
-    bottom: 0;
-}
-
-.menu li {
-    position: relative;
-    list-style: none;
-    float: left;
-    margin: 0 15px;
-    font-size: 10px;
-    color: rgba(38, 29, 86, 0.5);
-}
-
-.menu li.active {
-    font-weight: 600;
-    color: rgba(38, 29, 86, 1);
-}
-
-.menu li.active:before {
-    content: "";
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    display: block;
-    background-color: rgba(255, 0, 0, 0.6);
-    border-radius: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: 20px;
 }
 
 #fda_header_bar {
@@ -1207,7 +1113,7 @@ body {
     }
 
     .category-p {
-        text-align: end;
+        text-align: start;
         margin-right: 10px;
         margin-bottom: 0px;
     }
