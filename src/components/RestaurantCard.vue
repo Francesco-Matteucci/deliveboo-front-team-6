@@ -213,20 +213,19 @@ export default {
                     </div>
                 </div>
                 <button class="home-btn mx-2 p-0" @click="goToHome"><i class="bi bi-box-arrow-left"></i> Home</button>
-                <div class="info-box px-2 text-white flex-column">
+                <div class="info-box px-3 text-white flex-column">
                     <h1 class="fw-semibold fs-1 mb-3">{{ restaurant?.name }}</h1>
                     <div class="d-flex flex-wrap w-100 justify-content-between">
                         <p class="fs-6 m-0">
-                            <i class="bi bi-geo-alt-fill text-danger me-2"></i>Indirizzo <br>
+                            <div class="mb-2"><i class="bi bi-geo-alt-fill text-danger me-2"></i>Indirizzo </div>
                             <span class="fw-semibold">{{ restaurant?.address }}</span>
                         </p>
                         <p class="category-p fs-6 ">
-                            <i class="bi bi-tags-fill me-2"></i>Categorie
-                        <div class="d-flex flex-wrap">
-                            <span class="fw-semibold" v-for="(category, index) in restaurant?.categories"
+                            <div class="mb-2"><i class="bi bi-tags-fill me-2"></i>Categorie</div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span v-for="(category, index) in restaurant?.categories"
                                 :key="category.id">
-                                {{ category.name }}
-                                <span v-if="index < restaurant?.categories.length - 1">,&nbsp;</span>
+                                <span class="bg-orange">{{ category.name }}</span>
                             </span>
                         </div>
                         </p>
@@ -257,7 +256,7 @@ export default {
                                                     <span class="food_name fs-5">{{ dish.name }}</span>
                                                     <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
                                                         dish.description
-                                                    }}</span>
+                                                        }}</span>
                                                     <ul id="food_meta" class="d-flex justify-content-center">
                                                         <li>
                                                             <div>
@@ -331,7 +330,7 @@ export default {
                                                     <span class="food_name fs-5">{{ dish.name }}</span>
                                                     <span class="food_detail fs-6 overflow-y-auto overflow-x-auto">{{
                                                         dish.description
-                                                    }}</span>
+                                                        }}</span>
                                                     <ul id="food_meta" class="d-flex justify-content-center">
                                                         <li>
                                                             <div>
@@ -569,10 +568,18 @@ export default {
     align-items: flex-start;
     width: 100%;
     background-color: #2f2e2e00;
+    padding-bottom: 10px;
 }
 
 .category-p i {
     color: #e73838;
+}
+
+.bg-orange{
+    background-color: #ff6204;
+    padding: 5px;
+    border-radius: 5px;
+    user-select: none;
 }
 
 /* STILI PER LA MODALE MOBILE/TABLET CON BLUR */
@@ -641,61 +648,6 @@ textarea:focus {
     border-radius: 5px;
     background: #f9f9f9;
 }
-
-/*Restaurants*/
-
-.restaurant-card {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.restaurant-card:hover {
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.restaurant-banner {
-    height: 200px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-
-.restaurant-overlay {
-    background: rgba(0, 0, 0, 0.5);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.restaurant-details {
-    background: #fff;
-    padding: 20px;
-    border-top: 2px solid #ddd;
-}
-
-.restaurant-details h2 {
-    font-size: 1.5rem;
-}
-
-.restaurant-details p {
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-.restaurant-description {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: #6c757d;
-}
-
 /*Cart*/
 .mobile-dishes-counter span {
     color: rgb(116, 113, 113);
@@ -829,46 +781,6 @@ body {
 
 #fda_app>section {
     padding-bottom: 0;
-}
-
-.menu {
-    transform-origin: top left;
-    transform: rotate(-90deg) translateX(-1150%);
-    margin-left: 18.5px;
-}
-
-.menu ul {
-    position: relative;
-    padding: 0;
-    width: 500px;
-    bottom: 0;
-}
-
-.menu li {
-    position: relative;
-    list-style: none;
-    float: left;
-    margin: 0 15px;
-    font-size: 10px;
-    color: rgba(38, 29, 86, 0.5);
-}
-
-.menu li.active {
-    font-weight: 600;
-    color: rgba(38, 29, 86, 1);
-}
-
-.menu li.active:before {
-    content: "";
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    display: block;
-    background-color: rgba(255, 0, 0, 0.6);
-    border-radius: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: 20px;
 }
 
 #fda_header_bar {
@@ -1115,7 +1027,6 @@ body {
 
     .category-p {
         text-align: end;
-        margin-bottom: 0px;
     }
 }
 
@@ -1202,7 +1113,7 @@ body {
     }
 
     .category-p {
-        text-align: end;
+        text-align: start;
         margin-right: 10px;
         margin-bottom: 0px;
     }
@@ -1266,7 +1177,7 @@ body {
     }
 
     .category-p {
-        text-align: start;
+        text-align:start;
         margin-top: 15px;
         margin-bottom: 0px;
     }

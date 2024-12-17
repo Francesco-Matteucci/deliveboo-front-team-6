@@ -149,7 +149,7 @@ export default {
           <div @click="goToRestaurant(restaurant.slug)" class="restaurant-card">
             <div class="categories-overlay">
               <span v-for="category in restaurant.categories" :key="category.id" class="badge me-1" :class="{
-                'bg-primary': selectedCategories.includes(category.id),
+                'bg-orange': selectedCategories.includes(category.id),
                 'bg-dark': !selectedCategories.includes(category.id),
               }">
                 {{ category.name }}
@@ -177,6 +177,11 @@ export default {
 </template>
 
 <style scoped>
+
+.bg-orange{
+  background-color: #ff6204;
+}
+
 .container-fluid {
   background-color: rgb(14 14 14);
 }
