@@ -1,113 +1,114 @@
 <script>
-import axios from 'axios';
+    import axios from 'axios';
 
-export default {
-    props: {
-        cart: {
-            type: Array,
-            required: true,
+    export default {
+        props: {
+            cart: {
+                type: Array,
+                required: true,
+            },
+            total: {
+                type: Number,
+                required: true,
+            },
+            showModal: {
+                type: Boolean,
+                required: true,
+            },
         },
-        total: {
-            type: Number,
-            required: true,
+        data() {
+            return {
+                email: "",
+                firstname: "",
+                lastname: "",
+                address: "",
+                phone_number: "",
+                note: "",
+                paymentInstance: null,
+                primaryColor: '#ff6403',
+                emailTouched: false,
+                phoneTouched: false
+            };
         },
-        showModal: {
-            type: Boolean,
-            required: true,
+        computed: {
+            emailInvalid() {
+                const pattern = /^[^\s@]+@[^\s@]+\.(com|it|net)$/i;
+                return this.emailTouched && !pattern.test(this.email);
+            },
+            phoneInvalid() {
+                // Controllo che ci siano solo cifre e almeno 7 cifre
+                const pattern = /^[0-9]+$/;
+                return this.phoneTouched && (!pattern.test(this.phone_number) || this.phone_number.length < 7);
+            }
         },
-    },
-    data() {
-        return {
-            email: "",
-            firstname: "",
-            lastname: "",
-            address: "",
-            phone_number: "",
-            note: "",
-            paymentInstance: null,
-            primaryColor: '#ff6403',
-            emailTouched: false,
-            phoneTouched: false
-        };
-    },
-    computed: {
-        emailInvalid() {
-            const pattern = /^[^\s@]+@[^\s@]+\.(com|it|net)$/i;
-            return this.emailTouched && !pattern.test(this.email);
-        },
-        phoneInvalid() {
-            // Controllo che ci siano solo cifre e almeno 7 cifre
-            const pattern = /^[0-9]+$/;
-            return this.phoneTouched && (!pattern.test(this.phone_number) || this.phone_number.length < 7);
-        }
-    },
-    methods: {
-        initializeDropIn() {
-            this.$nextTick(() => {
-                const dropin = this.$refs.paymentForm;
-                if (!dropin) {
-                    console.error("Il contenitore del drop-in non è disponibile.");
-                    return;
-                }
-                braintree.dropin.create(
-                    {
-                        authorization: 'sandbox_5rzg4db5_n2tdvskp75wvh2g3',
-                        container: dropin,
-                        locale: 'it_IT',
-                        paymentOptionPriority: ['card'],
-                    },
-                    (err, instance) => {
-                        if (err) {
-                            console.error("Errore nell'inizializzazione del drop-in:", err);
-                        } else {
-                            this.paymentInstance = instance;
-                        }
+        methods: {
+            initializeDropIn() {
+                this.$nextTick(() => {
+                    const dropin = this.$refs.paymentForm;
+                    if (!dropin) {
+                        console.error("Il contenitore del drop-in non è disponibile.");
+                        return;
                     }
-                );
-            });
-        },
-        async processPayment() {
-            try {
-                const payload = await this.paymentInstance.requestPaymentMethod();
-                console.log("Pagamento simulato con successo, nonce:", payload.nonce);
-
-                await axios.post('http://127.0.0.1:8000/api/orders', {
-                    cart: this.cart,
-                    total_price: this.total,
-                    firstname: this.firstname,
-                    lastname: this.lastname,
-                    address: this.address,
-                    phone_number: this.phone_number,
-                    note: this.note,
-                    restaurant_id: this.cart.length > 0 ? this.cart[0].restaurant_id : 1,
+                    braintree.dropin.create(
+                        {
+                            authorization: 'sandbox_5rzg4db5_n2tdvskp75wvh2g3',
+                            container: dropin,
+                            locale: 'it_IT',
+                            paymentOptionPriority: ['card'],
+                        },
+                        (err, instance) => {
+                            if (err) {
+                                console.error("Errore nell'inizializzazione del drop-in:", err);
+                            } else {
+                                this.paymentInstance = instance;
+                            }
+                        }
+                    );
                 });
-                console.log("Ordine inviato con successo al back-end");
+            },
+            async processPayment() {
+                try {
+                    const payload = await this.paymentInstance.requestPaymentMethod();
+                    console.log("Pagamento simulato con successo, nonce:", payload.nonce);
 
-                this.$emit('order-completed');
-                console.log("Evento order-completed emesso");
+                    await axios.post('http://127.0.0.1:8000/api/orders', {
+                        cart: this.cart,
+                        total_price: this.total,
+                        firstname: this.firstname,
+                        lastname: this.lastname,
+                        address: this.address,
+                        phone_number: this.phone_number,
+                        note: this.note,
+                        email: this.email,
+                        restaurant_id: this.cart.length > 0 ? this.cart[0].restaurant_id : 1,
+                    });
+                    console.log("Ordine inviato con successo al back-end");
 
-                this.closeModal();
-                console.log("closeModal() chiamato");
+                    this.$emit('order-completed');
+                    console.log("Evento order-completed emesso");
 
-            } catch (error) {
-                console.error("Errore durante il pagamento:", error);
+                    this.closeModal();
+                    console.log("closeModal() chiamato");
+
+                } catch (error) {
+                    console.error("Errore durante il pagamento:", error);
+                }
+            },
+            closeModal() {
+                this.$emit('close');
             }
         },
-        closeModal() {
-            this.$emit('close');
-        }
-    },
-    mounted() {
-        this.initializeDropIn();
-    },
-    watch: {
-        showModal(newVal) {
-            if (newVal) {
-                this.initializeDropIn();
-            }
+        mounted() {
+            this.initializeDropIn();
         },
-    },
-};
+        watch: {
+            showModal(newVal) {
+                if (newVal) {
+                    this.initializeDropIn();
+                }
+            },
+        },
+    };
 </script>
 
 <template>
@@ -202,50 +203,50 @@ export default {
 </template>
 
 <style scoped>
-.modal-backdrop {
-    background-color: rgba(0, 0, 0, .5);
-}
-
-.custom-modal-header {
-    background: linear-gradient(to right, #000000, #752f02);
-    border-bottom: none;
-}
-
-.custom-modal-content {
-    border: none;
-    overflow: hidden;
-    animation: fadeInUp 0.3s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, .5);
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .custom-modal-header {
+        background: linear-gradient(to right, #000000, #752f02);
+        border-bottom: none;
     }
-}
 
-.modal-content {
-    border-radius: 20px;
-}
+    .custom-modal-content {
+        border: none;
+        overflow: hidden;
+        animation: fadeInUp 0.3s ease-out;
+    }
 
-.separatore {
-    width: 100%;
-    height: 1px;
-    background-color: black
-}
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
 
-form input,
-.form-control {
-    border: 1px solid#a7a7a7;
-}
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-.form-control:focus {
-    background-color: #f5f5f5;
-    box-shadow: 1px 1px 5px 1px black;
-}
+    .modal-content {
+        border-radius: 20px;
+    }
+
+    .separatore {
+        width: 100%;
+        height: 1px;
+        background-color: black
+    }
+
+    form input,
+    .form-control {
+        border: 1px solid#a7a7a7;
+    }
+
+    .form-control:focus {
+        background-color: #f5f5f5;
+        box-shadow: 1px 1px 5px 1px black;
+    }
 </style>
