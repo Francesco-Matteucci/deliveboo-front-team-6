@@ -26,6 +26,9 @@ export default {
 
 <template>
   <section class="hero">
+    <div class="d-flex justify-content-end gap-4 pe-5">
+      <a href="http://127.0.0.1:8000/" class="fs-5 text-white">Registra il tuo ristorante</a>
+    </div>
     <div class="hero-bg-left-clickable" @click="reloadPage"></div>
     <div class="hero-content text-center mt-5">
       <h1 class="hero-title text-white fs-3">Scopri i migliori ristoranti</h1>
@@ -54,11 +57,9 @@ export default {
   object-fit: cover;
   background-position: right bottom, right top, left bottom;
   background-repeat: no-repeat;
-  padding: 100px 20px;
+  padding: 80px 20px;
   text-align: center;
   height: 100vh;
-  align-items: center;
-  display: flex;
 }
 
 .hero-content {
@@ -68,6 +69,7 @@ export default {
   /* Porta in primo piano il contenuto */
   position: relative;
   /* Necessario per z-index */
+  padding-top: 200px;
 }
 
 .hero-title {
@@ -130,6 +132,11 @@ button {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.66);
   z-index: -1;
+}
+
+a{
+  padding: 5px 10px;
+  border-radius: 10px;
 }
 
 /* TABLET */
