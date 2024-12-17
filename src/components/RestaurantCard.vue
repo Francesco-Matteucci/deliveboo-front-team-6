@@ -207,9 +207,10 @@ export default {
                 <div class="d-flex">
                     <div class="hero-bg-left-clickable" @click="goToHome"></div>
                     <div class="row fda_search_row d-flex justify-content-center w-75">
-                        <div class="search-bar-container col-6">
+                        <!--Per la ricerca del piatto-->
+                        <!-- <div class="search-bar-container col-6">
                             <input type="text" class="fda_ip_search" placeholder="Cerca un piatto..." />
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <button class="home-btn mx-2 p-0" @click="goToHome"><i class="bi bi-box-arrow-left"></i> Home</button>
