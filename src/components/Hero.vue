@@ -27,7 +27,7 @@
 <template>
   <section class="hero">
     <div class="d-flex justify-content-end gap-4">
-      <a href="http://127.0.0.1:8000/" class="fs-5 text-white">Registra il tuo ristorante</a>
+      <a href="http://127.0.0.1:8000/" class="fs-6 text-white">Registra il tuo ristorante</a>
     </div>
     <div class="hero-bg-left-clickable" @click="reloadPage"></div>
     <div class="hero-content text-center mt-5">
