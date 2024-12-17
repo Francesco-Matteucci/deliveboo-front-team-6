@@ -26,8 +26,11 @@
 
 <template>
   <section class="hero">
-    <div class="d-flex justify-content-end gap-4">
-      <a href="http://127.0.0.1:8000/" class="fs-6 text-white">Registra il tuo ristorante</a>
+    <div class="d-flex justify-content-end gap-4 p-3">
+      <a href="http://127.0.0.1:8000/" class="d-flex align-items-center gap-2 text-white fs-6">
+        <i class="bi bi-shop fs-4"></i>
+        <span class="d-none d-md-inline">Registra il tuo ristorante</span>
+      </a>
     </div>
     <div class="hero-bg-left-clickable" @click="reloadPage"></div>
     <div class="hero-content text-center mt-5">
@@ -93,9 +96,10 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 15vw;
-    height: 20vh;
+    width: 20vw;
+    height: 25vh;
     cursor: pointer;
+    min-width: 250px;
   }
 
   button {
@@ -139,19 +143,33 @@
     border-radius: 10px;
   }
 
-  /* TABLET */
-  @media (max-width: 768px) {
+
+  /* @media (max-width: 768px) {
     .hero-bg-left-clickable {
       width: 30vw;
       height: 22vh;
     }
   }
 
-  /* MOBILE */
+
   @media (max-width: 375px) {
     .hero-bg-left-clickable {
       width: 30vw;
       height: 22vh;
     }
+  } */
+
+  a {
+    padding: 10px 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    background-color: #ff6204;
+    transition: transform 0.3s ease;
   }
+
+  a:hover {
+    transform: scale(1.05);
+    background-color: #e55b02;
+  }
+
 </style>
