@@ -115,10 +115,10 @@ export default {
           </button>
         </div>
 
-        <div class="search-bar-container text-center text-white mt-4">
+        <!-- <div class="search-bar-container text-center text-white mt-4">
           <input type="text" v-model="searchQuery" @input="filterBySearch" placeholder="Cerca un ristorante..."
             class="form-control mx-auto mt-2" />
-        </div>
+        </div> -->
       </div>
 
       <div v-if="loading" class="d-flex justify-content-center">
